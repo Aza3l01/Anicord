@@ -133,7 +133,7 @@ async def mangasearch(ctx: lightbulb.Context) -> None:
 
 #animeme
 @bot.command
-@lightbulb.add_cooldown(length=20, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.command("animeme", "Get an anime meme.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def animeme(ctx: lightbulb.Context) -> None:
@@ -142,7 +142,7 @@ async def animeme(ctx: lightbulb.Context) -> None:
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     
     sub = reddit.subreddit("Animemes+goodanimemes")
-    posts = [post for post in sub.hot(limit=30)]
+    posts = [post for post in sub.hot(limit=50)]
     random_post = random.choice(posts)
     
     embed = hikari.Embed(
