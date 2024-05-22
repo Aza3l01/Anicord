@@ -164,7 +164,7 @@ async def animeme(ctx: lightbulb.Context) -> None:
 #hmeme
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.command("hmeme", "Get an hentai meme.")
+@lightbulb.command("hmeme", "Get a hentai meme.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def hmeme(ctx: lightbulb.Context) -> None:
     await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
@@ -204,7 +204,7 @@ async def aniextended(ctx: lightbulb.Context) -> None:
 #hgif
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.command("hgif", "Get an hentai gif.")
+@lightbulb.command("hgif", "Get a hentai gif.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def hgif(ctx: lightbulb.Context) -> None:
     await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
