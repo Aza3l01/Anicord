@@ -1,8 +1,12 @@
+import aiohttp
 import hikari
 import lightbulb
 from mal import *
 import praw
-import random
+import jikanpy
+from random import randint, choice
+
+jikan = jikanpy.Jikan()
 
 bot = lightbulb.BotApp(
     token="MTAwMzI0NzQ5OTkxMTM3Njk1Ng.GbxSQg.HK-XlFjM7JGel8p7pwKZhwrwRJbfghgpReVJZQ"
@@ -131,6 +135,68 @@ async def mangasearch(ctx: lightbulb.Context) -> None:
     
     await ctx.respond(embed=embed)
 
+#character
+async def fetch_character_info(name, limit=5):
+    async with aiohttp.ClientSession() as session:
+        url = "https://api.jikan.moe/v4/characters"
+        params = {
+            "q": name,
+            "limit": limit  # Increase the limit to fetch more characters
+        }
+        async with session.get(url, params=params) as response:
+            if response.status != 200:
+                print(f"Failed to fetch character data: HTTP {response.status}")
+                return None
+            return await response.json()
+
+@bot.command
+@lightbulb.add_cooldown(length=20, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.option("name", "Character")
+@lightbulb.command("character", "Look up a character.", auto_defer=True)
+@lightbulb.implements(lightbulb.SlashCommand)
+async def character(ctx: lightbulb.Context) -> None:
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    name = ctx.options.name.strip()
+    character_data = await fetch_character_info(name)
+    if not character_data or not character_data.get('data'):
+        await ctx.respond("No valid character found.")
+        return
+
+    sorted_characters_by_popularity = sorted(character_data['data'], key=lambda x: x.get('favorites', 0), reverse=True)
+
+    most_popular_character = sorted_characters_by_popularity[0]
+    name_english = most_popular_character.get('name')
+    name_japanese = most_popular_character.get('name_kanji')
+    description = most_popular_character.get('about', 'No description available.')
+    image_url = most_popular_character.get('images', {}).get('jpg', {}).get('image_url')
+    mal_url = most_popular_character.get('url')
+
+    details = []
+    description_lines = description.split('\n')
+    for line in description_lines:
+        if ':' in line:
+            details.append(line.strip())
+    
+    details_description = '\n'.join(details).strip()
+
+    embed = hikari.Embed(
+        title=f"{name_english} | {name_japanese}",
+        url=mal_url,
+        color=0x2f3136
+    )
+
+    if image_url:
+        embed.set_image(image_url)
+
+    embed.description = details_description if details_description else "No specific details available."
+
+    embed.set_footer("Anicord has no control over any content.")
+
+    if any(word in str(ctx.author.id) for word in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+    
+    await ctx.respond(embed=embed)
+
 #animeme
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
@@ -161,6 +227,62 @@ async def animeme(ctx: lightbulb.Context) -> None:
     embed.set_footer("This content is served by the Reddit API and Anicord has no control over it.")
     await ctx.respond(embed=embed)
 
+#random
+@bot.command
+@lightbulb.add_cooldown(length=20, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.command("random", "Generate a random anime.", auto_defer=True)
+@lightbulb.implements(lightbulb.SlashCommand)
+async def random(ctx: lightbulb.Context) -> None:
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    anime_id = randint(1, 5000)
+
+    anime = Anime(anime_id)
+
+    embed = hikari.Embed(
+        title=f"{anime.title_english or 'N/A'} | {anime.title_japanese or 'N/A'}",
+        description=anime.synopsis or 'No synopsis available.',
+        url=anime.url,
+        color=0x2f3136
+    )
+    embed.set_thumbnail(anime.image_url)
+
+    if anime.premiered:
+        embed.add_field(name="Premiered", value=anime.premiered, inline=True)
+    if anime.status:
+        embed.add_field(name="Status", value=anime.status, inline=True)
+    if anime.type:
+        embed.add_field(name="Type", value=anime.type, inline=True)
+    if anime.score is not None:
+        embed.add_field(name="Score", value=str(anime.score), inline=True)
+    if anime.episodes is not None:
+        embed.add_field(name="Episodes", value=str(anime.episodes), inline=True)
+    if anime.broadcast:
+        embed.add_field(name="Broadcast Time", value=anime.broadcast, inline=True)
+    if anime.rank is not None:
+        embed.add_field(name="Ranking", value=str(anime.rank), inline=True)
+    if anime.popularity is not None:
+        embed.add_field(name="Popularity", value=str(anime.popularity), inline=True)
+    if anime.rating:
+        embed.add_field(name="Rating", value=anime.rating, inline=True)
+
+    embed.set_footer("Queries are served by an unofficial MAL API and Anicord has no control over the content.")
+    
+    if any(word in str(ctx.author.id) for word in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+    
+    await ctx.respond(embed=embed)
+
+#aniextended
+@bot.command
+@lightbulb.add_cooldown(length=1, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.command("aniextended", "Receive search queries for a more detailed experience.", auto_defer=True)
+@lightbulb.implements(lightbulb.SlashCommand)
+async def aniextended(ctx: lightbulb.Context) -> None:
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    await ctx.respond("/aniextended is currently unavailable but will be updated soon. Visit the [support server](https://discord.com/invite/xNb8mpySK8) for updates.")
+    if any(word in str(ctx.author.id) for word in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+
 #hmeme
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
@@ -188,18 +310,6 @@ async def hmeme(ctx: lightbulb.Context) -> None:
     embed.set_image(random_post.url)
     embed.set_footer("This content is served by the Reddit API and Anicord has no control over it.")
     await ctx.respond(embed=embed)
-
-#aniextended
-@bot.command
-@lightbulb.add_cooldown(length=1, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("name", "Anime")
-@lightbulb.command("aniextended", "Receive search queries for a more detailed experience.", auto_defer=True)
-@lightbulb.implements(lightbulb.SlashCommand)
-async def aniextended(ctx: lightbulb.Context) -> None:
-    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
-    await ctx.respond("/aniextended is currently unavailable but will be updated soon. Visit the [support server](https://discord.com/invite/xNb8mpySK8) for updates.")
-    if any(word in str(ctx.author.id) for word in prem_users):
-        await ctx.command.cooldown_manager.reset_cooldown(ctx)
 
 #hgif
 @bot.command
@@ -247,7 +357,7 @@ async def happy(ctx: lightbulb.Context) -> None:
         "https://media1.tenor.com/m/ssO9d-jnRYIAAAAd/chika-fujiwara-spinning.gif",
         "https://media1.tenor.com/m/4fjOL2wLihcAAAAC/yum-anime.gif"
     ]
-    random_gif = random.choice(gif)
+    random_gif = choice(gif)
     embed = hikari.Embed(
         title=f"{ctx.author.username} is happy!",
         color=0x2f3136
@@ -269,7 +379,7 @@ async def cry(ctx: lightbulb.Context) -> None:
         "https://media1.tenor.com/m/0qj0aqZ0nucAAAAC/anya-spy-x-family-anime-anya-crying.gif",
         "https://media1.tenor.com/m/IHVd7sXB66YAAAAC/anime-cry-hinagiku.gif"
     ]
-    random_gif = random.choice(gif)
+    random_gif = choice(gif)
     embed = hikari.Embed(
         title=f"{ctx.author.username} is crying :(",
         color=0x2f3136
