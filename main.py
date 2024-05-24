@@ -29,13 +29,77 @@ async def on_starting(_: hikari.StartedEvent) -> None:
         )
     )
 
-prem_users = ["364400063281102852"]
+prem_users = ["32"]
+
+#help command
+@bot.command
+@lightbulb.add_cooldown(length=20, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.command("help", "Get help")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def help(ctx):
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    if any(word in str(ctx.author.id) for word in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+    embed = hikari.Embed(
+        title="__**Help**__",
+        description=(
+            "**Core Commands:**\n"
+            "**/core:** Overview of all core commands.\n\n"
+            "**Role-play Reactions:**\n"
+            "**/roleplay:** Overview of all role-play commands.\n\n"
+            "**NSFW Role-play Reactions:**\n"
+            "**/hroleplay:** Overview of NSFW all role-play commands.\n\n"
+            "**Other NSFW Commands:**\n"
+            "**/nsfw:** Overview of NSFW commands like hentai memes and gifs.\n\n"
+            "**Miscellaneous:**\n"
+            "**/misc:** Overview of miscellaneous commands.\n\n"
+            "All NSFW commands are only accessible in NSFW channels."
+        ),
+        color=0x2f3136
+    )
+    embed.set_footer("Anicord is under development. Join the support server if you need help :)")
+    await ctx.respond(embed=embed)
+    await ctx.respond(
+        embed=hikari.Embed(
+            description=(
+                "**Thank you!**\n"
+                "If you like using Anicord, consider [voting](https://top.gg/bot/1003247499911376956/vote) or leaving a [review](https://top.gg/bot/1003247499911376956).\n"
+                "To help keep Anicord online, consider becoming a [member](https://buymeacoffee.com/azael/membership)."
+            ),
+            color=0x2f3136
+        )
+    )
+
+#----------------------------------------------------------------------------------------
+#core
+@bot.command
+@lightbulb.add_cooldown(length=20, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.command("core", "Overview of all core commands.")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def core(ctx):
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    if any(word in str(ctx.author.id) for word in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+    embed = hikari.Embed(
+        title="__**Core Commands**__",
+        description=(
+            "**/anime:** Look up an anime.\n"
+            "**/manga:** Look up an manga.\n"
+            "**/extended:** Choose between different search queries.\n"
+            "**/character:** Look up a character.\n"
+            "**/animeme:** View an anime meme.\n"
+            "**/random:** Generate a random anime.\n"
+        ),
+        color=0x2f3136
+    )
+    embed.set_footer("Anicord is under development. Join the support server if you need help :)")
+    await ctx.respond(embed=embed)
 
 #anime
 @bot.command
 @lightbulb.add_cooldown(length=20, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.option("name", "Anime")
-@lightbulb.command("anisearch", "Look up an anime.", auto_defer=True)
+@lightbulb.command("anime", "Look up an anime.", auto_defer=True)
 @lightbulb.implements(lightbulb.SlashCommand)
 async def anisearch(ctx: lightbulb.Context) -> None:
     await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
@@ -90,7 +154,7 @@ async def anisearch(ctx: lightbulb.Context) -> None:
 @bot.command
 @lightbulb.add_cooldown(length=20, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.option("name", "Manga")
-@lightbulb.command("mangasearch", "Look up a manga.", auto_defer=True)
+@lightbulb.command("manga", "Look up a manga.", auto_defer=True)
 @lightbulb.implements(lightbulb.SlashCommand)
 async def mangasearch(ctx: lightbulb.Context) -> None:
     await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
@@ -134,6 +198,17 @@ async def mangasearch(ctx: lightbulb.Context) -> None:
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     
     await ctx.respond(embed=embed)
+
+#aniextended
+@bot.command
+@lightbulb.add_cooldown(length=1, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.command("extended", "Receive search queries for a more detailed experience.", auto_defer=True)
+@lightbulb.implements(lightbulb.SlashCommand)
+async def aniextended(ctx: lightbulb.Context) -> None:
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    await ctx.respond("/aniextended is currently unavailable but will be updated soon. Visit the [support server](https://discord.com/invite/CvpujuXmEf) for updates.")
+    if any(word in str(ctx.author.id) for word in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
 
 #character
 async def fetch_character_info(name, limit=5):
@@ -212,7 +287,7 @@ async def animeme(ctx: lightbulb.Context) -> None:
         await ctx.respond("Somehow all posts on reddit are NSFW right now, please try again later. 💀")
         return
     
-    random_post = random.choice(sfw_posts)
+    random_post = choice(sfw_posts)
     
     embed = hikari.Embed(
         title=random_post.title,
@@ -269,76 +344,29 @@ async def random(ctx: lightbulb.Context) -> None:
     
     await ctx.respond(embed=embed)
 
-#aniextended
+#----------------------------------------------------------------------------------------
+#roleplay
 @bot.command
-@lightbulb.add_cooldown(length=1, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.command("aniextended", "Receive search queries for a more detailed experience.", auto_defer=True)
+@lightbulb.add_cooldown(length=20, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.command("roleplay", "Overview of all role-play commands.")
 @lightbulb.implements(lightbulb.SlashCommand)
-async def aniextended(ctx: lightbulb.Context) -> None:
+async def roleplay(ctx):
     await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
-    await ctx.respond("/aniextended is currently unavailable but will be updated soon. Visit the [support server](https://discord.com/invite/xNb8mpySK8) for updates.")
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
-
-#hmeme
-@bot.command
-@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.command("hmeme", "Get a hentai meme.")
-@lightbulb.implements(lightbulb.SlashCommand)
-async def hmeme(ctx: lightbulb.Context) -> None:
-    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
-    if not ctx.get_channel().is_nsfw:
-        await ctx.respond("This command can only be used in NSFW channels.")
-        return
-
-    if any(word in str(ctx.author.id) for word in prem_users):
-        await ctx.command.cooldown_manager.reset_cooldown(ctx)
-    
-    sub = reddit.subreddit("hentaimemes")
-    posts = [post for post in sub.hot(limit=50)]
-    random_post = random.choice(posts)
-    
     embed = hikari.Embed(
-        title=random_post.title,
-        description="",
-        url="https://www.reddit.com" + random_post.permalink,
+        title="__**Role-play Reactions**__",
+        description=(
+            "**/happy:** Emote as happy.\n"
+            "**/cry:** Emote as crying.\n"
+            "More Commands In Development."
+        ),
         color=0x2f3136
     )
-    embed.set_image(random_post.url)
-    embed.set_footer("This content is served by the Reddit API and Anicord has no control over it.")
+    embed.set_footer("Anicord is under development. Join the support server if you need help :)")
     await ctx.respond(embed=embed)
 
-#hgif
-@bot.command
-@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.command("hgif", "Get a hentai gif.")
-@lightbulb.implements(lightbulb.SlashCommand)
-async def hgif(ctx: lightbulb.Context) -> None:
-    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
-    if not ctx.get_channel().is_nsfw:
-        await ctx.respond("This command can only be used in NSFW channels.")
-        return
-
-    if any(word in str(ctx.author.id) for word in prem_users):
-        await ctx.command.cooldown_manager.reset_cooldown(ctx)
-    
-    sub = reddit.subreddit("HENTAI_GIF")
-    posts = [post for post in sub.hot(limit=50)]
-    random_post = random.choice(posts)
-    
-    embed = hikari.Embed(
-        title=random_post.title,
-        description="",
-        url="https://www.reddit.com" + random_post.permalink,
-        color=0x2f3136
-    )
-    embed.set_image(random_post.url)
-    embed.set_footer("This content is served by the Reddit API and Anicord has no control over it.")
-    await ctx.respond(embed=embed)
-
-#Reactions
 #Self
-
 #happy
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
@@ -386,31 +414,157 @@ async def cry(ctx: lightbulb.Context) -> None:
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
 
-#help command
-@bot.command
-@lightbulb.command("help", "Get help")
-@lightbulb.implements(lightbulb.SlashCommand)
-async def help(ctx):
-    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+#interactive
 
+#----------------------------------------------------------------------------------------
+#hroleplay
+@bot.command
+@lightbulb.add_cooldown(length=20, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.command("hroleplay", "Overview of all role-play commands.")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def hroleplay(ctx):
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    if any(word in str(ctx.author.id) for word in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
-        title="__**Commands**__",
+        title="__**NSFW Role-play Reactions**__",
         description=(
-            "**__Main:__**\n"
-            "**/anisearch:** Look up an anime.\n"
-            "**/mangasearch:** Look up a manga.\n"
-            "**/animeme:** Get an anime meme.\n"
-            "**/aniextended:** Choose from search queries for a more detailed experience.\n"
-            "**/charactersearch:** *In Development*\n\n"
-            "**__Reactions:__**\n"
-            "**/happy:** Emote as happy.\n"
-            "**/cry:** Emote as crying.\n"
-            "*More Reactions In Development*\n\n"
-            "**__NSFW:__** (Only Works In NSFW Channels)\n"
+            "**/:** .\n"
+            "**/:** .\n"
+            "More Commands In Development."
+        ),
+        color=0x2f3136
+    )
+    embed.set_footer("Anicord is under development. Join the support server if you need help :)")
+    await ctx.respond(embed=embed)
+
+#----------------------------------------------------------------------------------------
+#nsfw
+@bot.command
+@lightbulb.add_cooldown(length=20, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.command("nsfw", "Overview of all role-play commands.")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def nsfw(ctx):
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    if any(word in str(ctx.author.id) for word in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+    embed = hikari.Embed(
+        title="__**Other NSFW Commands**__",
+        description=(
             "**/hmeme:** Get a hentai meme.\n"
             "**/hgif:** Get a hentai gif.\n"
-            "*More NSFW Commands In Development*\n\n"
-            "**__Misc:__**\n"
+            "**/himage:** Get a hentai image.\n"
+            "More Commands In Development."
+        ),
+        color=0x2f3136
+    )
+    embed.set_footer("Anicord is under development. Join the support server if you need help :)")
+    await ctx.respond(embed=embed)
+
+#hmeme
+@bot.command
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.command("hmeme", "Get a hentai meme.")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def hmeme(ctx: lightbulb.Context) -> None:
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    if not ctx.get_channel().is_nsfw:
+        await ctx.respond("This command can only be used in NSFW channels.")
+        return
+
+    if any(word in str(ctx.author.id) for word in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+    
+    sub = reddit.subreddit("hentaimemes")
+    posts = [post for post in sub.hot(limit=50)]
+    random_post = choice(posts)
+    
+    embed = hikari.Embed(
+        title=random_post.title,
+        description="",
+        url="https://www.reddit.com" + random_post.permalink,
+        color=0x2f3136
+    )
+    embed.set_image(random_post.url)
+    embed.set_footer("This content is served by the Reddit API and Anicord has no control over it.")
+    await ctx.respond(embed=embed)
+
+#hgif
+@bot.command
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.command("hgif", "Get a hentai gif.")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def hgif(ctx: lightbulb.Context) -> None:
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    if not ctx.get_channel().is_nsfw:
+        await ctx.respond("This command can only be used in NSFW channels.")
+        return
+
+    if any(word in str(ctx.author.id) for word in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+    
+    sub = reddit.subreddit("HENTAI_GIF")
+    posts = [post for post in sub.hot(limit=50)]
+    random_post = choice(posts)
+    
+    embed = hikari.Embed(
+        title=random_post.title,
+        description="",
+        url="https://www.reddit.com" + random_post.permalink,
+        color=0x2f3136
+    )
+    embed.set_image(random_post.url)
+    embed.set_footer("This content is served by the Reddit API and Anicord has no control over it.")
+    await ctx.respond(embed=embed)
+
+#himage
+@bot.command
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.command("himage", "Get a hentai image.")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def himage(ctx: lightbulb.Context) -> None:
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    if not ctx.get_channel().is_nsfw:
+        await ctx.respond("This command can only be used in NSFW channels.")
+        return
+
+    if any(word in str(ctx.author.id) for word in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+    
+    sub = await reddit.subreddit("rule34+nhentai")
+    posts = [post async for post in sub.hot(limit=50)]
+    
+    image_posts = [post for post in posts if post.url.endswith(('.jpg', '.jpeg', '.png'))]
+    
+    if not image_posts:
+        await ctx.respond("No suitable images found in the subreddit.")
+        return
+    
+    random_post = choice(image_posts)
+    
+    embed = hikari.Embed(
+        title=random_post.title,
+        description="",
+        url="https://www.reddit.com" + random_post.permalink,
+        color=0x2f3136
+    )
+    embed.set_image(random_post.url)
+    embed.set_footer("This content is served by the Reddit API and Anicord has no control over it.")
+    await ctx.respond(embed=embed)
+
+#----------------------------------------------------------------------------------------
+#misc
+@bot.command
+@lightbulb.add_cooldown(length=20, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.command("misc", "Overview of all role-play commands.")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def misc(ctx):
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    if any(word in str(ctx.author.id) for word in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+    embed = hikari.Embed(
+        title="__****__",
+        description=(
             "**/invite:** Get the bot's invite link.\n"
             "**/vote:** Get the link to vote at top.gg.\n"
             "**/support:** Invite to join the support server.\n"
@@ -421,23 +575,16 @@ async def help(ctx):
     )
     embed.set_footer("Anicord is under development. Join the support server if you need help :)")
     await ctx.respond(embed=embed)
-    await ctx.respond(
-        embed=hikari.Embed(
-            description=(
-                "**Thank you!**\n"
-                "If you like using Anicord, consider [voting](https://top.gg/bot/1003247499911376956/vote) or leaving a [review](https://top.gg/bot/1003247499911376956).\n"
-                "To help keep Anicord online, consider becoming a [member](https://buymeacoffee.com/azael/membership)."
-            ),
-            color=0x2f3136
-        )
-    )
 
 #invite command
 @bot.command
+@lightbulb.add_cooldown(length=20, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.command("invite", "Get the bot's invite link.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def invite(ctx):
     await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    if any(word in str(ctx.author.id) for word in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
         title="Invite:",
 		description="Get the bot's invite link [here](https://discord.com/api/oauth2/authorize?client_id=1003247499911376956&permissions=414464723008&scope=bot%20applications.commands).",
@@ -453,10 +600,13 @@ async def invite(ctx):
 
 #vote command
 @bot.command
+@lightbulb.add_cooldown(length=20, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.command("vote", "Get the link to vote at top.gg.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def vote(ctx):
     await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    if any(word in str(ctx.author.id) for word in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
 		title="Vote:",
 		description="Click [here](https://top.gg/bot/1003247499911376956/vote) to vote on top.gg. Thank you!",
@@ -472,13 +622,16 @@ async def vote(ctx):
 
 #support command
 @bot.command
+@lightbulb.add_cooldown(length=20, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.command("support", "Invite to join the support server.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def support(ctx):
     await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    if any(word in str(ctx.author.id) for word in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
         title="Support:",
-		description="Click [here](https://discord.com/invite/xNb8mpySK8) to join the support server.",
+		description="Click [here](https://discord.com/invite/CvpujuXmEf) to join the support server.",
 		color=0x2f3136
 	)
     await ctx.respond(embed=embed)
@@ -491,10 +644,13 @@ async def support(ctx):
 
 #donate command
 @bot.command
+@lightbulb.add_cooldown(length=20, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.command("donate", "Donate to support Anicord.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def donate(ctx):
     await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    if any(word in str(ctx.author.id) for word in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
         title="Donate:",
         description="[Buy me a coffee](https://www.buymeacoffee.com/azael) to keep Anicord alive. Thank you! :)",
@@ -510,10 +666,13 @@ async def donate(ctx):
 
 #more command
 @bot.command
+@lightbulb.add_cooldown(length=20, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.command("more", "Check out more bots from me.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def more(ctx):
     await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    if any(word in str(ctx.author.id) for word in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
         title="More:",
         description="Click [here](https://top.gg/user/67067136345571328) to check out more bots from me.",
@@ -527,11 +686,12 @@ async def more(ctx):
 		)
     await ctx.respond(embed=embed)
 
+#----------------------------------------------------------------------------------------
 #error handling
 @bot.listen(lightbulb.CommandErrorEvent)
 async def on_error(event: lightbulb.CommandErrorEvent) -> None:
     if isinstance(event.exception, lightbulb.CommandInvocationError):
-        await event.context.respond("Something went wrong, please try again.😔")
+        await event.context.respond("Something went wrong, please try again. 😔")
         raise event.exception
 
     exception = event.exception.__cause__ or event.exception
