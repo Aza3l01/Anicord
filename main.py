@@ -189,9 +189,6 @@ async def character(ctx: lightbulb.Context) -> None:
         embed.set_image(image_url)
 
     embed.description = details_description if details_description else "No specific details available."
-
-    embed.set_footer("Anicord has no control over any content.")
-
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     
