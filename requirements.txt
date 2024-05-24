@@ -12,12 +12,14 @@ greenlet==3.0.3
 hikari==2.0.0.dev125
 hikari-lightbulb==2.3.5
 idna==3.6
+jikanpy==4.3.2
 mal-api==0.5.3
 miru==0.2.0
 multidict==6.0.4
 praw==7.7.1
 prawcore==2.4.0
 requests==2.31.0
+simplejson==3.19.2
 soupsieve==2.5
 SQLAlchemy==2.0.30
 typing_extensions==4.11.0
