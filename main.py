@@ -29,7 +29,7 @@ async def on_starting(_: hikari.StartedEvent) -> None:
         )
     )
 
-prem_users = ["32"]
+prem_users = ["364400063281102852"]
 
 #help command
 @bot.command
@@ -449,11 +449,13 @@ async def nsfw(ctx):
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
-        title="__**Other NSFW Commands**__",
+        title="__**NSFW Commands**__",
         description=(
             "**/hmeme:** Get a hentai meme.\n"
             "**/hgif:** Get a hentai gif.\n"
+            "**/hgif3d:** Get a 3D hentai gif.\n"
             "**/himage:** Get a hentai image.\n"
+            "**/himage3d:** Get a 3D hentai image.\n"
             "More Commands In Development."
         ),
         color=0x2f3136
@@ -517,13 +519,13 @@ async def hgif(ctx: lightbulb.Context) -> None:
     embed.set_footer("This content is served by the Reddit API and Anicord has no control over it.")
     await ctx.respond(embed=embed)
 
-#himage
-@bot.command
+#hgif3d
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.command("himage", "Get a hentai image.")
+@lightbulb.command("hgif3d", "Get a 3D hentai gif.")
 @lightbulb.implements(lightbulb.SlashCommand)
-async def himage(ctx: lightbulb.Context) -> None:
+async def hgif3d(ctx: lightbulb.Context) -> None:
     await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    
     if not ctx.get_channel().is_nsfw:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
@@ -531,16 +533,14 @@ async def himage(ctx: lightbulb.Context) -> None:
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     
-    sub = await reddit.subreddit("rule34+nhentai")
-    posts = [post async for post in sub.hot(limit=50)]
+    sub = await reddit.subreddit("3DPorncraft+3DHentai")
+    posts = [post for post in await sub.hot(limit=50) if post.url.endswith('.gif')]
     
-    image_posts = [post for post in posts if post.url.endswith(('.jpg', '.jpeg', '.png'))]
-    
-    if not image_posts:
-        await ctx.respond("No suitable images found in the subreddit.")
+    if not posts:
+        await ctx.respond("No GIFs found.")
         return
-    
-    random_post = choice(image_posts)
+
+    random_post = choice(posts)
     
     embed = hikari.Embed(
         title=random_post.title,
@@ -550,6 +550,93 @@ async def himage(ctx: lightbulb.Context) -> None:
     )
     embed.set_image(random_post.url)
     embed.set_footer("This content is served by the Reddit API and Anicord has no control over it.")
+    
+    await ctx.respond(embed=embed)
+
+#himage
+@bot.command
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.command("himage", "Get an image.")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def himage(ctx: lightbulb.Context) -> None:
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    
+    # Check if the channel is NSFW
+    if not ctx.get_channel().is_nsfw:
+        await ctx.respond("This command can only be used in NSFW channels.")
+        return
+
+    # Reset cooldown for premium users
+    if any(str(ctx.author.id) == user_id for user_id in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+    
+    # Fetch subreddit posts
+    sub = reddit.subreddit("hentai+nhentai")
+    posts = list(sub.hot(limit=50))
+
+    # Filter image posts
+    image_posts = [post for post in posts if post.url.endswith(('.jpg', '.jpeg', '.png'))]
+    
+    if not image_posts:
+        await ctx.respond("No suitable images found in the subreddit.")
+        return
+    
+    # Select a random post from the filtered image posts
+    random_post = choice(image_posts)
+    
+    # Create an embed with the post details
+    embed = hikari.Embed(
+        title=random_post.title,
+        description="",
+        url=f"https://www.reddit.com{random_post.permalink}",
+        color=0x2f3136
+    )
+    embed.set_image(random_post.url)
+    embed.set_footer("This content is served by the Reddit API and Anicord has no control over it.")
+    
+    await ctx.respond(embed=embed)
+
+#himage3d
+@bot.command
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.command("himage3d", "Get an image.")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def himage3d(ctx: lightbulb.Context) -> None:
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    
+    # Check if the channel is NSFW
+    if not ctx.get_channel().is_nsfw:
+        await ctx.respond("This command can only be used in NSFW channels.")
+        return
+
+    # Reset cooldown for premium users
+    if any(str(ctx.author.id) == user_id for user_id in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+    
+    # Fetch subreddit posts
+    sub = reddit.subreddit("3DPorncraft")
+    posts = list(sub.hot(limit=50))
+
+    # Filter image posts
+    image_posts = [post for post in posts if post.url.endswith(('.jpg', '.jpeg', '.png'))]
+    
+    if not image_posts:
+        await ctx.respond("No suitable images found in the subreddit.")
+        return
+    
+    # Select a random post from the filtered image posts
+    random_post = choice(image_posts)
+    
+    # Create an embed with the post details
+    embed = hikari.Embed(
+        title=random_post.title,
+        description="",
+        url=f"https://www.reddit.com{random_post.permalink}",
+        color=0x2f3136
+    )
+    embed.set_image(random_post.url)
+    embed.set_footer("This content is served by the Reddit API and Anicord has no control over it.")
+    
     await ctx.respond(embed=embed)
 
 #----------------------------------------------------------------------------------------
@@ -563,7 +650,7 @@ async def misc(ctx):
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
-        title="__****__",
+        title="__**Miscellaneous**__",
         description=(
             "**/invite:** Get the bot's invite link.\n"
             "**/vote:** Get the link to vote at top.gg.\n"
