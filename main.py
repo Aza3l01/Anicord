@@ -352,14 +352,11 @@ async def random(ctx: lightbulb.Context) -> None:
 @lightbulb.implements(lightbulb.SlashCommand)
 async def roleplay(ctx):
     await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
-    if not ctx.get_channel().is_nsfw:
-        await ctx.respond("This command can only be used in NSFW channels.")
-        return
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
 
     embed = hikari.Embed(
-        title="__**NSFW Role-play Reactions**__",
+        title="__**Role-play Reactions**__",
         color=0x2f3136
     )
     embed.add_field(
@@ -816,7 +813,7 @@ async def lick(ctx: lightbulb.Context) -> None:
     ]
     random_gif = choice(gif)
     embed = hikari.Embed(
-        description=f"**{ctx.author.mention} is killing {ctx.options.user.mention}**",
+        description=f"**{ctx.author.mention} is licking {ctx.options.user.mention}**",
         color=0x2f3136
     )
     embed.set_image(random_gif)
