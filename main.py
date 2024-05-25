@@ -199,7 +199,7 @@ async def mangasearch(ctx: lightbulb.Context) -> None:
     
     await ctx.respond(embed=embed)
 
-#aniextended
+#extended
 @bot.command
 @lightbulb.add_cooldown(length=1, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.command("extended", "Receive search queries for a more detailed experience.", auto_defer=True)
@@ -352,25 +352,64 @@ async def random(ctx: lightbulb.Context) -> None:
 @lightbulb.implements(lightbulb.SlashCommand)
 async def roleplay(ctx):
     await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    if not ctx.get_channel().is_nsfw:
+        await ctx.respond("This command can only be used in NSFW channels.")
+        return
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
+
     embed = hikari.Embed(
-        title="__**Role-play Reactions**__",
-        description=(
-            "**/happy:** Emote as happy.\n"
-            "**/cry:** Emote as crying.\n"
-            "More Commands In Development."
-        ),
+        title="__**NSFW Role-play Reactions**__",
         color=0x2f3136
     )
+    embed.add_field(
+        name="Self Reactions",
+        value=(
+            "/happy\n"
+            "/cry\n"
+            "/beg\n"
+            "/blush\n"
+            "/facepalm\n"
+            "/nosebleed\n"
+            "/pout\n"
+            "/run\n"
+            "/shrug\n"
+            "/smirk"
+        ),
+        inline=True
+    )
+    embed.add_field(
+        name="Interactive Reactions",
+        value=(
+            "/wave\n"
+            "/bite\n"
+            "/bonk\n"
+            "/cuddle\n"
+            "/hug\n"
+            "/kiss\n"
+            "/lick\n"
+            "/love\n"
+            "/pat\n"
+            "/slap"
+        ),
+        inline=True
+    )
+    embed.add_field(
+        name="\u200B",
+        value=(
+            "More commands in development."
+        ),
+        inline=False
+    )
     embed.set_footer("Anicord is under development. Join the support server if you need help :)")
+
     await ctx.respond(embed=embed)
 
 #Self
 #happy
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.command("happy", "Emote as happy.", auto_defer=True)
+@lightbulb.command("happy", "Emote as happy.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def happy(ctx: lightbulb.Context) -> None:
     await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
@@ -384,7 +423,7 @@ async def happy(ctx: lightbulb.Context) -> None:
     ]
     random_gif = choice(gif)
     embed = hikari.Embed(
-        title=f"{ctx.author.username} is happy!",
+        title=f"{ctx.author.username} is happy. 😊",
         color=0x2f3136
     )
     embed.set_image(random_gif)
@@ -395,7 +434,7 @@ async def happy(ctx: lightbulb.Context) -> None:
 #cry
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.command("cry", "Emote as crying.", auto_defer=True)
+@lightbulb.command("cry", "Emote as crying.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def cry(ctx: lightbulb.Context) -> None:
     await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
@@ -406,7 +445,7 @@ async def cry(ctx: lightbulb.Context) -> None:
     ]
     random_gif = choice(gif)
     embed = hikari.Embed(
-        title=f"{ctx.author.username} is crying :(",
+        title=f"{ctx.author.username} is crying. 😭",
         color=0x2f3136
     )
     embed.set_image(random_gif)
@@ -414,7 +453,544 @@ async def cry(ctx: lightbulb.Context) -> None:
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
 
-#interactive
+#beg
+@bot.command
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.command("beg", "Emote as begging.")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def beg(ctx: lightbulb.Context) -> None:
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    gif = [
+        "https://media1.tenor.com/m/rt-b5wrDLisAAAAC/bocchi-the-rock-bocchi.gif",
+        "https://media1.tenor.com/m/o9V-PmmNGiwAAAAC/konosuba-aqua.gif",
+        "https://media1.tenor.com/m/htjbZhCEDEoAAAAC/yui-cry.gif",
+        "https://media1.tenor.com/m/c5NREl_bty0AAAAC/apologies-anime.gif",
+        "https://media1.tenor.com/m/UL40uQSnBUsAAAAC/puppy-dog.gif"
+    ]
+    random_gif = choice(gif)
+    embed = hikari.Embed(
+        title=f"{ctx.author.username} is begging you. 🥺",
+        color=0x2f3136
+    )
+    embed.set_image(random_gif)
+    await ctx.respond(embed=embed)
+    if any(word in str(ctx.author.id) for word in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+    
+#blush
+@bot.command
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.command("blush", "Emote as crying.")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def blush(ctx: lightbulb.Context) -> None:
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    gif = [
+        "https://media1.tenor.com/m/NMiID29TUvIAAAAC/hunter-x-hunter-gon-freecs.gif",
+        "https://media1.tenor.com/m/0qj0aqZ0nucAAAAC/anya-spy-x-family-anime-anya-crying.gif",
+        "https://media1.tenor.com/m/IHVd7sXB66YAAAAC/anime-cry-hinagiku.gif"
+    ]
+    random_gif = choice(gif)
+    embed = hikari.Embed(
+        title=f"{ctx.author.username} is blushing. 😳",
+        color=0x2f3136
+    )
+    embed.set_image(random_gif)
+    await ctx.respond(embed=embed)
+    if any(word in str(ctx.author.id) for word in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+
+#facepalm
+@bot.command
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.command("facepalm", "Emote as crying.")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def facepalm(ctx: lightbulb.Context) -> None:
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    gif = [
+        "https://media1.tenor.com/m/NMiID29TUvIAAAAC/hunter-x-hunter-gon-freecs.gif",
+        "https://media1.tenor.com/m/0qj0aqZ0nucAAAAC/anya-spy-x-family-anime-anya-crying.gif",
+        "https://media1.tenor.com/m/IHVd7sXB66YAAAAC/anime-cry-hinagiku.gif"
+    ]
+    random_gif = choice(gif)
+    embed = hikari.Embed(
+        title=f"{ctx.author.username} is facepalming. 🤦",
+        color=0x2f3136
+    )
+    embed.set_image(random_gif)
+    await ctx.respond(embed=embed)
+    if any(word in str(ctx.author.id) for word in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+
+#nosebleed
+@bot.command
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.command("nosebleed", "Emote as crying.")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def nosebleed(ctx: lightbulb.Context) -> None:
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    gif = [
+        "https://media1.tenor.com/m/NMiID29TUvIAAAAC/hunter-x-hunter-gon-freecs.gif",
+        "https://media1.tenor.com/m/0qj0aqZ0nucAAAAC/anya-spy-x-family-anime-anya-crying.gif",
+        "https://media1.tenor.com/m/IHVd7sXB66YAAAAC/anime-cry-hinagiku.gif"
+    ]
+    random_gif = choice(gif)
+    embed = hikari.Embed(
+        title=f"{ctx.author.username} is bleeding from their nose. 🩸",
+        color=0x2f3136
+    )
+    embed.set_image(random_gif)
+    await ctx.respond(embed=embed)
+    if any(word in str(ctx.author.id) for word in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+
+#pout
+@bot.command
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.command("pout", "Emote as crying.")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def pout(ctx: lightbulb.Context) -> None:
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    gif = [
+        "https://media1.tenor.com/m/NMiID29TUvIAAAAC/hunter-x-hunter-gon-freecs.gif",
+        "https://media1.tenor.com/m/0qj0aqZ0nucAAAAC/anya-spy-x-family-anime-anya-crying.gif",
+        "https://media1.tenor.com/m/IHVd7sXB66YAAAAC/anime-cry-hinagiku.gif"
+    ]
+    random_gif = choice(gif)
+    embed = hikari.Embed(
+        title=f"{ctx.author.username} is pouting. 😾",
+        color=0x2f3136
+    )
+    embed.set_image(random_gif)
+    await ctx.respond(embed=embed)
+    if any(word in str(ctx.author.id) for word in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+
+#run
+@bot.command
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.command("run", "Emote as crying.")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def run(ctx: lightbulb.Context) -> None:
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    gif = [
+        "https://media1.tenor.com/m/NMiID29TUvIAAAAC/hunter-x-hunter-gon-freecs.gif",
+        "https://media1.tenor.com/m/0qj0aqZ0nucAAAAC/anya-spy-x-family-anime-anya-crying.gif",
+        "https://media1.tenor.com/m/IHVd7sXB66YAAAAC/anime-cry-hinagiku.gif"
+    ]
+    random_gif = choice(gif)
+    embed = hikari.Embed(
+        title=f"{ctx.author.username} is running. 🏃",
+        color=0x2f3136
+    )
+    embed.set_image(random_gif)
+    await ctx.respond(embed=embed)
+    if any(word in str(ctx.author.id) for word in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+
+#shrug
+@bot.command
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.command("shrug", "Emote as crying.")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def shrug(ctx: lightbulb.Context) -> None:
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    gif = [
+        "https://media1.tenor.com/m/NMiID29TUvIAAAAC/hunter-x-hunter-gon-freecs.gif",
+        "https://media1.tenor.com/m/0qj0aqZ0nucAAAAC/anya-spy-x-family-anime-anya-crying.gif",
+        "https://media1.tenor.com/m/IHVd7sXB66YAAAAC/anime-cry-hinagiku.gif"
+    ]
+    random_gif = choice(gif)
+    embed = hikari.Embed(
+        title=f"{ctx.author.username} is shrugging. 🤷",
+        color=0x2f3136
+    )
+    embed.set_image(random_gif)
+    await ctx.respond(embed=embed)
+    if any(word in str(ctx.author.id) for word in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+
+#smirk
+@bot.command
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.command("smirk", "Emote as crying.")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def smirk(ctx: lightbulb.Context) -> None:
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    gif = [
+        "https://media1.tenor.com/m/NMiID29TUvIAAAAC/hunter-x-hunter-gon-freecs.gif",
+        "https://media1.tenor.com/m/0qj0aqZ0nucAAAAC/anya-spy-x-family-anime-anya-crying.gif",
+        "https://media1.tenor.com/m/IHVd7sXB66YAAAAC/anime-cry-hinagiku.gif"
+    ]
+    random_gif = choice(gif)
+    embed = hikari.Embed(
+        title=f"{ctx.author.username} is smirking. 😏",
+        color=0x2f3136
+    )
+    embed.set_image(random_gif)
+    await ctx.respond(embed=embed)
+    if any(word in str(ctx.author.id) for word in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+
+#Interactive
+#wave
+@bot.command
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.option("user", "The user to tag", hikari.User, required=False)
+@lightbulb.command("wave", "Wave at someone.")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def wave(ctx: lightbulb.Context, user: hikari.User = None) -> None:
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    
+    gif = [
+        "https://media1.tenor.com/m/ZQndYO4NwBcAAAAC/gojo-satoru.gif",
+        "https://media1.tenor.com/m/uXIogZmtfiYAAAAC/haru-yoshida-tonari-no-kaibutsu-kun.gif",
+        "https://media1.tenor.com/m/myCsjxxbtXAAAAAC/anime-happy.gif",
+        "https://media1.tenor.com/m/3fAZZncIHDQAAAAC/smile-anime.gif",
+        "https://media1.tenor.com/m/ssO9d-jnRYIAAAAd/chika-fujiwara-spinning.gif",
+        "https://media1.tenor.com/m/4fjOL2wLihcAAAAC/yum-anime.gif"
+    ]
+    
+    random_gif = choice(gif)
+    
+    embed = hikari.Embed(
+        title=f"{ctx.author.username} is happy!",
+        color=0x2f3136
+    )
+    embed.set_image(random_gif)
+    
+    if user:
+        content = f"{user.mention}, {ctx.author.username} is happy!"
+    else:
+        content = f"{ctx.author.username} is happy!"
+    
+    await ctx.respond(content=content, embed=embed)
+    
+    if any(str(ctx.author.id) == str(prem_user) for prem_user in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+
+#bite
+@bot.command
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.option("user", "The user to tag", hikari.User, required=False)
+@lightbulb.command("bite", "Wave at someone.")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def bite(ctx: lightbulb.Context, user: hikari.User = None) -> None:
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    
+    gif = [
+        "https://media1.tenor.com/m/ZQndYO4NwBcAAAAC/gojo-satoru.gif",
+        "https://media1.tenor.com/m/uXIogZmtfiYAAAAC/haru-yoshida-tonari-no-kaibutsu-kun.gif",
+        "https://media1.tenor.com/m/myCsjxxbtXAAAAAC/anime-happy.gif",
+        "https://media1.tenor.com/m/3fAZZncIHDQAAAAC/smile-anime.gif",
+        "https://media1.tenor.com/m/ssO9d-jnRYIAAAAd/chika-fujiwara-spinning.gif",
+        "https://media1.tenor.com/m/4fjOL2wLihcAAAAC/yum-anime.gif"
+    ]
+    
+    random_gif = choice(gif)
+    
+    embed = hikari.Embed(
+        title=f"{ctx.author.username} is happy!",
+        color=0x2f3136
+    )
+    embed.set_image(random_gif)
+    
+    if user:
+        content = f"{user.mention}, {ctx.author.username} is happy!"
+    else:
+        content = f"{ctx.author.username} is happy!"
+    
+    await ctx.respond(content=content, embed=embed)
+    
+    if any(str(ctx.author.id) == str(prem_user) for prem_user in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+
+#bonk
+@bot.command
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.option("user", "The user to tag", hikari.User, required=False)
+@lightbulb.command("bonk", "Wave at someone.")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def bonk(ctx: lightbulb.Context, user: hikari.User = None) -> None:
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    
+    gif = [
+        "https://media1.tenor.com/m/ZQndYO4NwBcAAAAC/gojo-satoru.gif",
+        "https://media1.tenor.com/m/uXIogZmtfiYAAAAC/haru-yoshida-tonari-no-kaibutsu-kun.gif",
+        "https://media1.tenor.com/m/myCsjxxbtXAAAAAC/anime-happy.gif",
+        "https://media1.tenor.com/m/3fAZZncIHDQAAAAC/smile-anime.gif",
+        "https://media1.tenor.com/m/ssO9d-jnRYIAAAAd/chika-fujiwara-spinning.gif",
+        "https://media1.tenor.com/m/4fjOL2wLihcAAAAC/yum-anime.gif"
+    ]
+    
+    random_gif = choice(gif)
+    
+    embed = hikari.Embed(
+        title=f"{ctx.author.username} is happy!",
+        color=0x2f3136
+    )
+    embed.set_image(random_gif)
+    
+    if user:
+        content = f"{user.mention}, {ctx.author.username} is happy!"
+    else:
+        content = f"{ctx.author.username} is happy!"
+    
+    await ctx.respond(content=content, embed=embed)
+    
+    if any(str(ctx.author.id) == str(prem_user) for prem_user in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+    
+#cuddle
+@bot.command
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.option("user", "The user to tag", hikari.User, required=False)
+@lightbulb.command("cuddle", "Wave at someone.")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def cuddle(ctx: lightbulb.Context, user: hikari.User = None) -> None:
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    
+    gif = [
+        "https://media1.tenor.com/m/ZQndYO4NwBcAAAAC/gojo-satoru.gif",
+        "https://media1.tenor.com/m/uXIogZmtfiYAAAAC/haru-yoshida-tonari-no-kaibutsu-kun.gif",
+        "https://media1.tenor.com/m/myCsjxxbtXAAAAAC/anime-happy.gif",
+        "https://media1.tenor.com/m/3fAZZncIHDQAAAAC/smile-anime.gif",
+        "https://media1.tenor.com/m/ssO9d-jnRYIAAAAd/chika-fujiwara-spinning.gif",
+        "https://media1.tenor.com/m/4fjOL2wLihcAAAAC/yum-anime.gif"
+    ]
+    
+    random_gif = choice(gif)
+    
+    embed = hikari.Embed(
+        title=f"{ctx.author.username} is happy!",
+        color=0x2f3136
+    )
+    embed.set_image(random_gif)
+    
+    if user:
+        content = f"{user.mention}, {ctx.author.username} is happy!"
+    else:
+        content = f"{ctx.author.username} is happy!"
+    
+    await ctx.respond(content=content, embed=embed)
+    
+    if any(str(ctx.author.id) == str(prem_user) for prem_user in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+
+#hug
+@bot.command
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.option("user", "The user to tag", hikari.User, required=False)
+@lightbulb.command("hug", "Wave at someone.")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def hug(ctx: lightbulb.Context, user: hikari.User = None) -> None:
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    
+    gif = [
+        "https://media1.tenor.com/m/ZQndYO4NwBcAAAAC/gojo-satoru.gif",
+        "https://media1.tenor.com/m/uXIogZmtfiYAAAAC/haru-yoshida-tonari-no-kaibutsu-kun.gif",
+        "https://media1.tenor.com/m/myCsjxxbtXAAAAAC/anime-happy.gif",
+        "https://media1.tenor.com/m/3fAZZncIHDQAAAAC/smile-anime.gif",
+        "https://media1.tenor.com/m/ssO9d-jnRYIAAAAd/chika-fujiwara-spinning.gif",
+        "https://media1.tenor.com/m/4fjOL2wLihcAAAAC/yum-anime.gif"
+    ]
+    
+    random_gif = choice(gif)
+    
+    embed = hikari.Embed(
+        title=f"{ctx.author.username} is happy!",
+        color=0x2f3136
+    )
+    embed.set_image(random_gif)
+    
+    if user:
+        content = f"{user.mention}, {ctx.author.username} is happy!"
+    else:
+        content = f"{ctx.author.username} is happy!"
+    
+    await ctx.respond(content=content, embed=embed)
+    
+    if any(str(ctx.author.id) == str(prem_user) for prem_user in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+
+#kiss
+@bot.command
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.option("user", "The user to tag", hikari.User, required=False)
+@lightbulb.command("kiss", "Wave at someone.")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def kiss(ctx: lightbulb.Context, user: hikari.User = None) -> None:
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    
+    gif = [
+        "https://media1.tenor.com/m/ZQndYO4NwBcAAAAC/gojo-satoru.gif",
+        "https://media1.tenor.com/m/uXIogZmtfiYAAAAC/haru-yoshida-tonari-no-kaibutsu-kun.gif",
+        "https://media1.tenor.com/m/myCsjxxbtXAAAAAC/anime-happy.gif",
+        "https://media1.tenor.com/m/3fAZZncIHDQAAAAC/smile-anime.gif",
+        "https://media1.tenor.com/m/ssO9d-jnRYIAAAAd/chika-fujiwara-spinning.gif",
+        "https://media1.tenor.com/m/4fjOL2wLihcAAAAC/yum-anime.gif"
+    ]
+    
+    random_gif = choice(gif)
+    
+    embed = hikari.Embed(
+        title=f"{ctx.author.username} is happy!",
+        color=0x2f3136
+    )
+    embed.set_image(random_gif)
+    
+    if user:
+        content = f"{user.mention}, {ctx.author.username} is happy!"
+    else:
+        content = f"{ctx.author.username} is happy!"
+    
+    await ctx.respond(content=content, embed=embed)
+    
+    if any(str(ctx.author.id) == str(prem_user) for prem_user in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+
+#lick
+@bot.command
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.option("user", "The user to tag", hikari.User, required=False)
+@lightbulb.command("lick", "Wave at someone.")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def lick(ctx: lightbulb.Context, user: hikari.User = None) -> None:
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    
+    gif = [
+        "https://media1.tenor.com/m/ZQndYO4NwBcAAAAC/gojo-satoru.gif",
+        "https://media1.tenor.com/m/uXIogZmtfiYAAAAC/haru-yoshida-tonari-no-kaibutsu-kun.gif",
+        "https://media1.tenor.com/m/myCsjxxbtXAAAAAC/anime-happy.gif",
+        "https://media1.tenor.com/m/3fAZZncIHDQAAAAC/smile-anime.gif",
+        "https://media1.tenor.com/m/ssO9d-jnRYIAAAAd/chika-fujiwara-spinning.gif",
+        "https://media1.tenor.com/m/4fjOL2wLihcAAAAC/yum-anime.gif"
+    ]
+    
+    random_gif = choice(gif)
+    
+    embed = hikari.Embed(
+        title=f"{ctx.author.username} is happy!",
+        color=0x2f3136
+    )
+    embed.set_image(random_gif)
+    
+    if user:
+        content = f"{user.mention}, {ctx.author.username} is happy!"
+    else:
+        content = f"{ctx.author.username} is happy!"
+    
+    await ctx.respond(content=content, embed=embed)
+    
+    if any(str(ctx.author.id) == str(prem_user) for prem_user in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+
+#love
+@bot.command
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.option("user", "The user to tag", hikari.User, required=False)
+@lightbulb.command("love", "Wave at someone.")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def love(ctx: lightbulb.Context, user: hikari.User = None) -> None:
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    
+    gif = [
+        "https://media1.tenor.com/m/ZQndYO4NwBcAAAAC/gojo-satoru.gif",
+        "https://media1.tenor.com/m/uXIogZmtfiYAAAAC/haru-yoshida-tonari-no-kaibutsu-kun.gif",
+        "https://media1.tenor.com/m/myCsjxxbtXAAAAAC/anime-happy.gif",
+        "https://media1.tenor.com/m/3fAZZncIHDQAAAAC/smile-anime.gif",
+        "https://media1.tenor.com/m/ssO9d-jnRYIAAAAd/chika-fujiwara-spinning.gif",
+        "https://media1.tenor.com/m/4fjOL2wLihcAAAAC/yum-anime.gif"
+    ]
+    
+    random_gif = choice(gif)
+    
+    embed = hikari.Embed(
+        title=f"{ctx.author.username} is happy!",
+        color=0x2f3136
+    )
+    embed.set_image(random_gif)
+    
+    if user:
+        content = f"{user.mention}, {ctx.author.username} is happy!"
+    else:
+        content = f"{ctx.author.username} is happy!"
+    
+    await ctx.respond(content=content, embed=embed)
+    
+    if any(str(ctx.author.id) == str(prem_user) for prem_user in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+
+#pat
+@bot.command
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.option("user", "The user to tag", hikari.User, required=False)
+@lightbulb.command("pat", "Wave at someone.")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def pat(ctx: lightbulb.Context, user: hikari.User = None) -> None:
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    
+    gif = [
+        "https://media1.tenor.com/m/ZQndYO4NwBcAAAAC/gojo-satoru.gif",
+        "https://media1.tenor.com/m/uXIogZmtfiYAAAAC/haru-yoshida-tonari-no-kaibutsu-kun.gif",
+        "https://media1.tenor.com/m/myCsjxxbtXAAAAAC/anime-happy.gif",
+        "https://media1.tenor.com/m/3fAZZncIHDQAAAAC/smile-anime.gif",
+        "https://media1.tenor.com/m/ssO9d-jnRYIAAAAd/chika-fujiwara-spinning.gif",
+        "https://media1.tenor.com/m/4fjOL2wLihcAAAAC/yum-anime.gif"
+    ]
+    
+    random_gif = choice(gif)
+    
+    embed = hikari.Embed(
+        title=f"{ctx.author.username} is happy!",
+        color=0x2f3136
+    )
+    embed.set_image(random_gif)
+    
+    if user:
+        content = f"{user.mention}, {ctx.author.username} is happy!"
+    else:
+        content = f"{ctx.author.username} is happy!"
+    
+    await ctx.respond(content=content, embed=embed)
+    
+    if any(str(ctx.author.id) == str(prem_user) for prem_user in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+
+#slap
+@bot.command
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.option("user", "The user to tag", hikari.User, required=False)
+@lightbulb.command("slap", "Wave at someone.")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def slap(ctx: lightbulb.Context, user: hikari.User = None) -> None:
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    
+    gif = [
+        "https://media1.tenor.com/m/ZQndYO4NwBcAAAAC/gojo-satoru.gif",
+        "https://media1.tenor.com/m/uXIogZmtfiYAAAAC/haru-yoshida-tonari-no-kaibutsu-kun.gif",
+        "https://media1.tenor.com/m/myCsjxxbtXAAAAAC/anime-happy.gif",
+        "https://media1.tenor.com/m/3fAZZncIHDQAAAAC/smile-anime.gif",
+        "https://media1.tenor.com/m/ssO9d-jnRYIAAAAd/chika-fujiwara-spinning.gif",
+        "https://media1.tenor.com/m/4fjOL2wLihcAAAAC/yum-anime.gif"
+    ]
+    
+    random_gif = choice(gif)
+    
+    embed = hikari.Embed(
+        title=f"{ctx.author.username} is happy!",
+        color=0x2f3136
+    )
+    embed.set_image(random_gif)
+    
+    if user:
+        content = f"{user.mention}, {ctx.author.username} is happy!"
+    else:
+        content = f"{ctx.author.username} is happy!"
+    
+    await ctx.respond(content=content, embed=embed)
+    
+    if any(str(ctx.author.id) == str(prem_user) for prem_user in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
 
 #----------------------------------------------------------------------------------------
 #hroleplay
@@ -424,19 +1000,451 @@ async def cry(ctx: lightbulb.Context) -> None:
 @lightbulb.implements(lightbulb.SlashCommand)
 async def hroleplay(ctx):
     await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    if not ctx.get_channel().is_nsfw:
+        await ctx.respond("This command can only be used in NSFW channels.")
+        return
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
+
     embed = hikari.Embed(
         title="__**NSFW Role-play Reactions**__",
-        description=(
-            "**/:** .\n"
-            "**/:** .\n"
-            "More Commands In Development."
-        ),
         color=0x2f3136
     )
+    embed.add_field(
+        name="Available",
+        value=(
+            "/fuck\n"
+            "/anal\n"
+            "/blowjob\n"
+            "/boobjob\n"
+            "/handjob"
+        ),
+        inline=True
+    )
+    embed.add_field(
+        name="Premium",
+        value=(
+            "/69\n"
+            "/cum\n"
+            "/ride\n"
+            "/fingering\n"
+            "/boobsuck"
+        ),
+        inline=True
+    )
+    embed.add_field(
+        name="\u200B",
+        value=(
+            "To use premium commands, become a [member](https://buymeacoffee.com/azael/membership).\n"
+            "More commands in development."
+        ),
+        inline=False
+    )
     embed.set_footer("Anicord is under development. Join the support server if you need help :)")
+
     await ctx.respond(embed=embed)
+
+#free
+#fuck
+@bot.command
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.option("user", "The user to tag", hikari.User, required=False)
+@lightbulb.command("fuck", "Fuck someone")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def fuck(ctx: lightbulb.Context, user: hikari.User = None) -> None:
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    if not ctx.get_channel().is_nsfw:
+        await ctx.respond("This command can only be used in NSFW channels.")
+        return
+    
+    gif = [
+        "https://media1.tenor.com/m/ZQndYO4NwBcAAAAC/gojo-satoru.gif",
+        "https://media1.tenor.com/m/uXIogZmtfiYAAAAC/haru-yoshida-tonari-no-kaibutsu-kun.gif",
+        "https://media1.tenor.com/m/myCsjxxbtXAAAAAC/anime-happy.gif",
+        "https://media1.tenor.com/m/3fAZZncIHDQAAAAC/smile-anime.gif",
+        "https://media1.tenor.com/m/ssO9d-jnRYIAAAAd/chika-fujiwara-spinning.gif",
+        "https://media1.tenor.com/m/4fjOL2wLihcAAAAC/yum-anime.gif"
+    ]
+    
+    random_gif = choice(gif)
+    
+    embed = hikari.Embed(
+        title=f"{ctx.author.username} is happy!",
+        color=0x2f3136
+    )
+    embed.set_image(random_gif)
+    
+    if user:
+        content = f"{user.mention}, {ctx.author.username} is happy!"
+    else:
+        content = f"{ctx.author.username} is happy!"
+    
+    await ctx.respond(content=content, embed=embed)
+    
+    if any(str(ctx.author.id) == str(prem_user) for prem_user in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+
+#anal
+@bot.command
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.option("user", "The user to tag", hikari.User, required=False)
+@lightbulb.command("anal", "Fuck someone in the ass.")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def anal(ctx: lightbulb.Context, user: hikari.User = None) -> None:
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    if not ctx.get_channel().is_nsfw:
+        await ctx.respond("This command can only be used in NSFW channels.")
+        return
+    
+    gif = [
+        "https://media1.tenor.com/m/ZQndYO4NwBcAAAAC/gojo-satoru.gif",
+        "https://media1.tenor.com/m/uXIogZmtfiYAAAAC/haru-yoshida-tonari-no-kaibutsu-kun.gif",
+        "https://media1.tenor.com/m/myCsjxxbtXAAAAAC/anime-happy.gif",
+        "https://media1.tenor.com/m/3fAZZncIHDQAAAAC/smile-anime.gif",
+        "https://media1.tenor.com/m/ssO9d-jnRYIAAAAd/chika-fujiwara-spinning.gif",
+        "https://media1.tenor.com/m/4fjOL2wLihcAAAAC/yum-anime.gif"
+    ]
+    
+    random_gif = choice(gif)
+    
+    embed = hikari.Embed(
+        title=f"{ctx.author.username} is happy!",
+        color=0x2f3136
+    )
+    embed.set_image(random_gif)
+    
+    if user:
+        content = f"{user.mention}, {ctx.author.username} is happy!"
+    else:
+        content = f"{ctx.author.username} is happy!"
+    
+    await ctx.respond(content=content, embed=embed)
+    
+    if any(str(ctx.author.id) == str(prem_user) for prem_user in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+
+#blowjob
+@bot.command
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.option("user", "The user to tag", hikari.User, required=False)
+@lightbulb.command("blowjob", "Receive a blowjob from someone.")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def blowjob(ctx: lightbulb.Context, user: hikari.User = None) -> None:
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    if not ctx.get_channel().is_nsfw:
+        await ctx.respond("This command can only be used in NSFW channels.")
+        return
+    
+    gif = [
+        "https://media1.tenor.com/m/ZQndYO4NwBcAAAAC/gojo-satoru.gif",
+        "https://media1.tenor.com/m/uXIogZmtfiYAAAAC/haru-yoshida-tonari-no-kaibutsu-kun.gif",
+        "https://media1.tenor.com/m/myCsjxxbtXAAAAAC/anime-happy.gif",
+        "https://media1.tenor.com/m/3fAZZncIHDQAAAAC/smile-anime.gif",
+        "https://media1.tenor.com/m/ssO9d-jnRYIAAAAd/chika-fujiwara-spinning.gif",
+        "https://media1.tenor.com/m/4fjOL2wLihcAAAAC/yum-anime.gif"
+    ]
+    
+    random_gif = choice(gif)
+    
+    embed = hikari.Embed(
+        title=f"{ctx.author.username} is happy!",
+        color=0x2f3136
+    )
+    embed.set_image(random_gif)
+    
+    if user:
+        content = f"{user.mention}, {ctx.author.username} is happy!"
+    else:
+        content = f"{ctx.author.username} is happy!"
+    
+    await ctx.respond(content=content, embed=embed)
+    
+    if any(str(ctx.author.id) == str(prem_user) for prem_user in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+
+#boobjob
+@bot.command
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.option("user", "The user to tag", hikari.User, required=False)
+@lightbulb.command("boobjob", "Receive a boobjob from someone")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def boobjob(ctx: lightbulb.Context, user: hikari.User = None) -> None:
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    if not ctx.get_channel().is_nsfw:
+        await ctx.respond("This command can only be used in NSFW channels.")
+        return
+    
+    gif = [
+        "https://media1.tenor.com/m/ZQndYO4NwBcAAAAC/gojo-satoru.gif",
+        "https://media1.tenor.com/m/uXIogZmtfiYAAAAC/haru-yoshida-tonari-no-kaibutsu-kun.gif",
+        "https://media1.tenor.com/m/myCsjxxbtXAAAAAC/anime-happy.gif",
+        "https://media1.tenor.com/m/3fAZZncIHDQAAAAC/smile-anime.gif",
+        "https://media1.tenor.com/m/ssO9d-jnRYIAAAAd/chika-fujiwara-spinning.gif",
+        "https://media1.tenor.com/m/4fjOL2wLihcAAAAC/yum-anime.gif"
+    ]
+    
+    random_gif = choice(gif)
+    
+    embed = hikari.Embed(
+        title=f"{ctx.author.username} is happy!",
+        color=0x2f3136
+    )
+    embed.set_image(random_gif)
+    
+    if user:
+        content = f"{user.mention}, {ctx.author.username} is happy!"
+    else:
+        content = f"{ctx.author.username} is happy!"
+    
+    await ctx.respond(content=content, embed=embed)
+    
+    if any(str(ctx.author.id) == str(prem_user) for prem_user in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+
+#handjob
+@bot.command
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.option("user", "The user to tag", hikari.User, required=False)
+@lightbulb.command("handjob", "Receive a handjob from someone")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def handjob(ctx: lightbulb.Context, user: hikari.User = None) -> None:
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    if not ctx.get_channel().is_nsfw:
+        await ctx.respond("This command can only be used in NSFW channels.")
+        return
+    
+    gif = [
+        "https://media1.tenor.com/m/ZQndYO4NwBcAAAAC/gojo-satoru.gif",
+        "https://media1.tenor.com/m/uXIogZmtfiYAAAAC/haru-yoshida-tonari-no-kaibutsu-kun.gif",
+        "https://media1.tenor.com/m/myCsjxxbtXAAAAAC/anime-happy.gif",
+        "https://media1.tenor.com/m/3fAZZncIHDQAAAAC/smile-anime.gif",
+        "https://media1.tenor.com/m/ssO9d-jnRYIAAAAd/chika-fujiwara-spinning.gif",
+        "https://media1.tenor.com/m/4fjOL2wLihcAAAAC/yum-anime.gif"
+    ]
+    
+    random_gif = choice(gif)
+    
+    embed = hikari.Embed(
+        title=f"{ctx.author.username} is happy!",
+        color=0x2f3136
+    )
+    embed.set_image(random_gif)
+    
+    if user:
+        content = f"{user.mention}, {ctx.author.username} is happy!"
+    else:
+        content = f"{ctx.author.username} is happy!"
+    
+    await ctx.respond(content=content, embed=embed)
+    
+    if any(str(ctx.author.id) == str(prem_user) for prem_user in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+
+#premium
+#69
+@bot.command
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.option("user", "The user to tag", hikari.User, required=False)
+@lightbulb.command("69", "someone")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def happy(ctx: lightbulb.Context, user: hikari.User = None) -> None:
+    if str(ctx.author.id) not in prem_users:
+        await ctx.respond("This is a premium command.")
+        return
+
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    
+    if not ctx.get_channel().is_nsfw:
+        await ctx.respond("This command can only be used in NSFW channels.")
+        return
+
+    gif = [
+        "https://media1.tenor.com/m/ZQndYO4NwBcAAAAC/gojo-satoru.gif",
+        "https://media1.tenor.com/m/uXIogZmtfiYAAAAC/haru-yoshida-tonari-no-kaibutsu-kun.gif",
+        "https://media1.tenor.com/m/myCsjxxbtXAAAAAC/anime-happy.gif",
+        "https://media1.tenor.com/m/3fAZZncIHDQAAAAC/smile-anime.gif",
+        "https://media1.tenor.com/m/ssO9d-jnRYIAAAAd/chika-fujiwara-spinning.gif",
+        "https://media1.tenor.com/m/4fjOL2wLihcAAAAC/yum-anime.gif"
+    ]
+
+    random_gif = choice(gif)
+
+    embed = hikari.Embed(
+        title=f"{ctx.author.username} is happy!",
+        color=0x2f3136
+    )
+    embed.set_image(random_gif)
+
+    if user:
+        content = f"{user.mention}, {ctx.author.username} is happy!"
+    else:
+        content = f"{ctx.author.username} is happy!"
+
+    await ctx.respond(content=content, embed=embed)
+
+#cum
+@bot.command
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.option("user", "The user to tag", hikari.User, required=False)
+@lightbulb.command("cum", "someone")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def cum(ctx: lightbulb.Context, user: hikari.User = None) -> None:
+    if str(ctx.author.id) not in prem_users:
+        await ctx.respond("This is a premium command.")
+        return
+
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    
+    if not ctx.get_channel().is_nsfw:
+        await ctx.respond("This command can only be used in NSFW channels.")
+        return
+
+    gif = [
+        "https://media1.tenor.com/m/ZQndYO4NwBcAAAAC/gojo-satoru.gif",
+        "https://media1.tenor.com/m/uXIogZmtfiYAAAAC/haru-yoshida-tonari-no-kaibutsu-kun.gif",
+        "https://media1.tenor.com/m/myCsjxxbtXAAAAAC/anime-happy.gif",
+        "https://media1.tenor.com/m/3fAZZncIHDQAAAAC/smile-anime.gif",
+        "https://media1.tenor.com/m/ssO9d-jnRYIAAAAd/chika-fujiwara-spinning.gif",
+        "https://media1.tenor.com/m/4fjOL2wLihcAAAAC/yum-anime.gif"
+    ]
+
+    random_gif = choice(gif)
+
+    embed = hikari.Embed(
+        title=f"{ctx.author.username} is happy!",
+        color=0x2f3136
+    )
+    embed.set_image(random_gif)
+
+    if user:
+        content = f"{user.mention}, {ctx.author.username} is happy!"
+    else:
+        content = f"{ctx.author.username} is happy!"
+
+    await ctx.respond(content=content, embed=embed)
+
+#ride
+@bot.command
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.option("user", "The user to tag", hikari.User, required=False)
+@lightbulb.command("ride", "someone")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def ride(ctx: lightbulb.Context, user: hikari.User = None) -> None:
+    if str(ctx.author.id) not in prem_users:
+        await ctx.respond("This is a premium command.")
+        return
+
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    
+    if not ctx.get_channel().is_nsfw:
+        await ctx.respond("This command can only be used in NSFW channels.")
+        return
+
+    gif = [
+        "https://media1.tenor.com/m/ZQndYO4NwBcAAAAC/gojo-satoru.gif",
+        "https://media1.tenor.com/m/uXIogZmtfiYAAAAC/haru-yoshida-tonari-no-kaibutsu-kun.gif",
+        "https://media1.tenor.com/m/myCsjxxbtXAAAAAC/anime-happy.gif",
+        "https://media1.tenor.com/m/3fAZZncIHDQAAAAC/smile-anime.gif",
+        "https://media1.tenor.com/m/ssO9d-jnRYIAAAAd/chika-fujiwara-spinning.gif",
+        "https://media1.tenor.com/m/4fjOL2wLihcAAAAC/yum-anime.gif"
+    ]
+
+    random_gif = choice(gif)
+
+    embed = hikari.Embed(
+        title=f"{ctx.author.username} is happy!",
+        color=0x2f3136
+    )
+    embed.set_image(random_gif)
+
+    if user:
+        content = f"{user.mention}, {ctx.author.username} is happy!"
+    else:
+        content = f"{ctx.author.username} is happy!"
+
+    await ctx.respond(content=content, embed=embed)
+
+#fingering
+@bot.command
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.option("user", "The user to tag", hikari.User, required=False)
+@lightbulb.command("fingering", "someone")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def fingering(ctx: lightbulb.Context, user: hikari.User = None) -> None:
+    if str(ctx.author.id) not in prem_users:
+        await ctx.respond("This is a premium command.")
+        return
+
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    
+    if not ctx.get_channel().is_nsfw:
+        await ctx.respond("This command can only be used in NSFW channels.")
+        return
+
+    gif = [
+        "https://media1.tenor.com/m/ZQndYO4NwBcAAAAC/gojo-satoru.gif",
+        "https://media1.tenor.com/m/uXIogZmtfiYAAAAC/haru-yoshida-tonari-no-kaibutsu-kun.gif",
+        "https://media1.tenor.com/m/myCsjxxbtXAAAAAC/anime-happy.gif",
+        "https://media1.tenor.com/m/3fAZZncIHDQAAAAC/smile-anime.gif",
+        "https://media1.tenor.com/m/ssO9d-jnRYIAAAAd/chika-fujiwara-spinning.gif",
+        "https://media1.tenor.com/m/4fjOL2wLihcAAAAC/yum-anime.gif"
+    ]
+
+    random_gif = choice(gif)
+
+    embed = hikari.Embed(
+        title=f"{ctx.author.username} is happy!",
+        color=0x2f3136
+    )
+    embed.set_image(random_gif)
+
+    if user:
+        content = f"{user.mention}, {ctx.author.username} is happy!"
+    else:
+        content = f"{ctx.author.username} is happy!"
+
+    await ctx.respond(content=content, embed=embed)
+
+#boobsuck
+@bot.command
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.option("user", "The user to tag", hikari.User, required=False)
+@lightbulb.command("boobsuck", "someone")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def boobsuck(ctx: lightbulb.Context, user: hikari.User = None) -> None:
+    if str(ctx.author.id) not in prem_users:
+        await ctx.respond("This is a premium command.")
+        return
+
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    
+    if not ctx.get_channel().is_nsfw:
+        await ctx.respond("This command can only be used in NSFW channels.")
+        return
+
+    gif = [
+        "https://media1.tenor.com/m/ZQndYO4NwBcAAAAC/gojo-satoru.gif",
+        "https://media1.tenor.com/m/uXIogZmtfiYAAAAC/haru-yoshida-tonari-no-kaibutsu-kun.gif",
+        "https://media1.tenor.com/m/myCsjxxbtXAAAAAC/anime-happy.gif",
+        "https://media1.tenor.com/m/3fAZZncIHDQAAAAC/smile-anime.gif",
+        "https://media1.tenor.com/m/ssO9d-jnRYIAAAAd/chika-fujiwara-spinning.gif",
+        "https://media1.tenor.com/m/4fjOL2wLihcAAAAC/yum-anime.gif"
+    ]
+
+    random_gif = choice(gif)
+
+    embed = hikari.Embed(
+        title=f"{ctx.author.username} is happy!",
+        color=0x2f3136
+    )
+    embed.set_image(random_gif)
+
+    if user:
+        content = f"{user.mention}, {ctx.author.username} is happy!"
+    else:
+        content = f"{ctx.author.username} is happy!"
+
+    await ctx.respond(content=content, embed=embed)
 
 #----------------------------------------------------------------------------------------
 #nsfw
@@ -446,6 +1454,9 @@ async def hroleplay(ctx):
 @lightbulb.implements(lightbulb.SlashCommand)
 async def nsfw(ctx):
     await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    if not ctx.get_channel().is_nsfw:
+        await ctx.respond("This command can only be used in NSFW channels.")
+        return
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
@@ -494,7 +1505,7 @@ async def hmeme(ctx: lightbulb.Context) -> None:
 #hgif
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.command("hgif", "Get a hentai gif.")
+@lightbulb.command("hgif", "Get a hentai gif.", auto_defer=True)
 @lightbulb.implements(lightbulb.SlashCommand)
 async def hgif(ctx: lightbulb.Context) -> None:
     await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
@@ -521,9 +1532,9 @@ async def hgif(ctx: lightbulb.Context) -> None:
 
 #hgif3d
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.command("hgif3d", "Get a 3D hentai gif.")
+@lightbulb.command("hgif3dtesting", "Get a 3D hentai gif.", auto_defer=True)
 @lightbulb.implements(lightbulb.SlashCommand)
-async def hgif3d(ctx: lightbulb.Context) -> None:
+async def hgif3dtesting(ctx: lightbulb.Context) -> None:
     await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
     
     if not ctx.get_channel().is_nsfw:
@@ -550,13 +1561,12 @@ async def hgif3d(ctx: lightbulb.Context) -> None:
     )
     embed.set_image(random_post.url)
     embed.set_footer("This content is served by the Reddit API and Anicord has no control over it.")
-    
     await ctx.respond(embed=embed)
 
 #himage
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.command("himage", "Get an image.")
+@lightbulb.command("himage", "Get an image.", auto_defer=True)
 @lightbulb.implements(lightbulb.SlashCommand)
 async def himage(ctx: lightbulb.Context) -> None:
     await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
@@ -599,9 +1609,9 @@ async def himage(ctx: lightbulb.Context) -> None:
 #himage3d
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.command("himage3d", "Get an image.")
+@lightbulb.command("himage3dtesting", "Get an image.", auto_defer=True)
 @lightbulb.implements(lightbulb.SlashCommand)
-async def himage3d(ctx: lightbulb.Context) -> None:
+async def himage3dtesting(ctx: lightbulb.Context) -> None:
     await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
     
     # Check if the channel is NSFW
@@ -656,7 +1666,8 @@ async def misc(ctx):
             "**/vote:** Get the link to vote at top.gg.\n"
             "**/support:** Invite to join the support server.\n"
             "**/donate:** Donate to support Anicord.\n"
-            "**/more:** Check out more bots from me."
+            "**/more:** Check out more bots from me.\n"
+            "**/privacy:** View our privacy policy."
         ),
         color=0x2f3136
     )
@@ -771,6 +1782,20 @@ async def more(ctx):
 			description = '**Thank you!** \n If you like using Anicord, consider [voting](https://top.gg/bot/1003247499911376956/vote) or leaving a [review](https://top.gg/bot/1003247499911376956).\nIf you want to help keep Anicord online, consider becoming a [member](https://buymeacoffee.com/azael/membership).',
 			color = 0x2f3136
 		)
+    await ctx.respond(embed=embed)
+
+#privacy command
+@bot.command
+@lightbulb.command("privacy", "View our privacy policy statement.")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def privacy(ctx):
+    if any(word in str(ctx.author.id) for word in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+    embed = hikari.Embed(
+		title="",
+		description="**Privacy Policy:** \n The personal information of any user, including the message content it replies to, is not tracked by Anicord.",
+		color=0x2f3136
+	)
     await ctx.respond(embed=embed)
 
 #----------------------------------------------------------------------------------------
