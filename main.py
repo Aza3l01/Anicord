@@ -5,6 +5,7 @@ from mal import *
 import praw
 import jikanpy
 from random import randint, choice
+import asyncio
 
 jikan = jikanpy.Jikan()
 
@@ -30,6 +31,42 @@ async def on_starting(_: hikari.StartedEvent) -> None:
     )
 
 prem_users = ["364400063281102852"]
+
+#join
+@bot.listen(hikari.GuildJoinEvent)
+async def on_guild_join(event):
+    guild = event.get_guild()
+    if guild is not None:
+        await bot.rest.create_message(1013474210242375741, f"Joined `{guild.name}`.")
+    else:
+        await bot.rest.create_message(1013474210242375741, f"Joined unknown server.")
+    guild = event.guild
+    for channel in guild.get_channels().values():
+        if isinstance(channel, hikari.TextableChannel):
+            embed = hikari.Embed(
+                title="Thank you for inviting me here! 🫶",
+                description=(
+                    "**Please use the commands below to get an overview of all the commands.**\n\n"
+                    "**Core Commands:**\n"
+                    "**/core:** Overview of all core commands.\n\n"
+                    "**Role-play Reactions:**\n"
+                    "**/roleplay:** Overview of all role-play commands.\n\n"
+                    "**NSFW Role-play Reactions:**\n"
+                    "**/hroleplay:** Overview of NSFW all role-play commands.\n\n"
+                    "**Other NSFW Commands:**\n"
+                    "**/nsfw:** Overview of NSFW commands like hentai memes and gifs.\n\n"
+                    "**Miscellaneous:**\n"
+                    "**/misc:** Overview of miscellaneous commands.\n\n"
+                    "All NSFW commands are only accessible in NSFW channels.\n"
+                    "This message will be deleted in 5 minutes."
+                    ),
+                color=0x2f3136
+            )
+            embed.set_footer("Anicord is under development. Join the support server if you need help :)")
+            message = await channel.send(embed=embed)
+            await asyncio.sleep(300)
+            await message.delete()
+            break
 
 #help command
 @bot.command
