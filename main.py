@@ -1144,7 +1144,7 @@ async def fuck(ctx: lightbulb.Context) -> None:
 @lightbulb.option("user", "The user to tag", hikari.User, required=False)
 @lightbulb.command("anal", "Fuck someone in the ass.")
 @lightbulb.implements(lightbulb.SlashCommand)
-async def anal(ctx: lightbulb.Context, user: hikari.User = None) -> None:
+async def anal(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
         await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
@@ -1153,33 +1153,20 @@ async def anal(ctx: lightbulb.Context, user: hikari.User = None) -> None:
     if not ctx.get_channel().is_nsfw:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
-    
     gif = [
-        "https://media1.tenor.com/m/ZQndYO4NwBcAAAAC/gojo-satoru.gif",
-        "https://media1.tenor.com/m/uXIogZmtfiYAAAAC/haru-yoshida-tonari-no-kaibutsu-kun.gif",
-        "https://media1.tenor.com/m/myCsjxxbtXAAAAAC/anime-happy.gif",
-        "https://media1.tenor.com/m/3fAZZncIHDQAAAAC/smile-anime.gif",
-        "https://media1.tenor.com/m/ssO9d-jnRYIAAAAd/chika-fujiwara-spinning.gif",
-        "https://media1.tenor.com/m/4fjOL2wLihcAAAAC/yum-anime.gif"
+        "",
+        "",
+        "",
+        "",
+        ""
     ]
-    
     random_gif = choice(gif)
-    
     embed = hikari.Embed(
-        title=f"{ctx.author.username} is happy!",
+        description=f"**{ctx.author.mention} is fucking {ctx.options.user.mention} in the ass**",
         color=0x2f3136
     )
     embed.set_image(random_gif)
-    
-    if user:
-        content = f"{user.mention}, {ctx.author.username} is happy!"
-    else:
-        content = f"{ctx.author.username} is happy!"
-    
-    await ctx.respond(content=content, embed=embed)
-    
-    if any(str(ctx.author.id) == str(prem_user) for prem_user in prem_users):
-        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+    await ctx.respond(embed=embed)
 
 #blowjob
 @bot.command
@@ -1187,7 +1174,7 @@ async def anal(ctx: lightbulb.Context, user: hikari.User = None) -> None:
 @lightbulb.option("user", "The user to tag", hikari.User, required=False)
 @lightbulb.command("blowjob", "Receive a blowjob from someone.")
 @lightbulb.implements(lightbulb.SlashCommand)
-async def blowjob(ctx: lightbulb.Context, user: hikari.User = None) -> None:
+async def blowjob(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
         await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
@@ -1196,33 +1183,20 @@ async def blowjob(ctx: lightbulb.Context, user: hikari.User = None) -> None:
     if not ctx.get_channel().is_nsfw:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
-    
     gif = [
-        "https://media1.tenor.com/m/ZQndYO4NwBcAAAAC/gojo-satoru.gif",
-        "https://media1.tenor.com/m/uXIogZmtfiYAAAAC/haru-yoshida-tonari-no-kaibutsu-kun.gif",
-        "https://media1.tenor.com/m/myCsjxxbtXAAAAAC/anime-happy.gif",
-        "https://media1.tenor.com/m/3fAZZncIHDQAAAAC/smile-anime.gif",
-        "https://media1.tenor.com/m/ssO9d-jnRYIAAAAd/chika-fujiwara-spinning.gif",
-        "https://media1.tenor.com/m/4fjOL2wLihcAAAAC/yum-anime.gif"
+        "",
+        "",
+        "",
+        "",
+        ""
     ]
-    
     random_gif = choice(gif)
-    
     embed = hikari.Embed(
-        title=f"{ctx.author.username} is happy!",
+        description=f"**{ctx.author.mention} is fucking {ctx.options.user.mention} in the ass**",
         color=0x2f3136
     )
     embed.set_image(random_gif)
-    
-    if user:
-        content = f"{user.mention}, {ctx.author.username} is happy!"
-    else:
-        content = f"{ctx.author.username} is happy!"
-    
-    await ctx.respond(content=content, embed=embed)
-    
-    if any(str(ctx.author.id) == str(prem_user) for prem_user in prem_users):
-        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+    await ctx.respond(embed=embed)
 
 #boobjob
 @bot.command
@@ -1230,7 +1204,7 @@ async def blowjob(ctx: lightbulb.Context, user: hikari.User = None) -> None:
 @lightbulb.option("user", "The user to tag", hikari.User, required=False)
 @lightbulb.command("boobjob", "Receive a boobjob from someone")
 @lightbulb.implements(lightbulb.SlashCommand)
-async def boobjob(ctx: lightbulb.Context, user: hikari.User = None) -> None:
+async def boobjob(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
         await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
@@ -1239,33 +1213,20 @@ async def boobjob(ctx: lightbulb.Context, user: hikari.User = None) -> None:
     if not ctx.get_channel().is_nsfw:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
-    
     gif = [
-        "https://media1.tenor.com/m/ZQndYO4NwBcAAAAC/gojo-satoru.gif",
-        "https://media1.tenor.com/m/uXIogZmtfiYAAAAC/haru-yoshida-tonari-no-kaibutsu-kun.gif",
-        "https://media1.tenor.com/m/myCsjxxbtXAAAAAC/anime-happy.gif",
-        "https://media1.tenor.com/m/3fAZZncIHDQAAAAC/smile-anime.gif",
-        "https://media1.tenor.com/m/ssO9d-jnRYIAAAAd/chika-fujiwara-spinning.gif",
-        "https://media1.tenor.com/m/4fjOL2wLihcAAAAC/yum-anime.gif"
+        "",
+        "",
+        "",
+        "",
+        ""
     ]
-    
     random_gif = choice(gif)
-    
     embed = hikari.Embed(
-        title=f"{ctx.author.username} is happy!",
+        description=f"**{ctx.author.mention} is fucking {ctx.options.user.mention} in the ass**",
         color=0x2f3136
     )
     embed.set_image(random_gif)
-    
-    if user:
-        content = f"{user.mention}, {ctx.author.username} is happy!"
-    else:
-        content = f"{ctx.author.username} is happy!"
-    
-    await ctx.respond(content=content, embed=embed)
-    
-    if any(str(ctx.author.id) == str(prem_user) for prem_user in prem_users):
-        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+    await ctx.respond(embed=embed)
 
 #handjob
 @bot.command
@@ -1273,7 +1234,7 @@ async def boobjob(ctx: lightbulb.Context, user: hikari.User = None) -> None:
 @lightbulb.option("user", "The user to tag", hikari.User, required=False)
 @lightbulb.command("handjob", "Receive a handjob from someone")
 @lightbulb.implements(lightbulb.SlashCommand)
-async def handjob(ctx: lightbulb.Context, user: hikari.User = None) -> None:
+async def handjob(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
         await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
@@ -1282,33 +1243,20 @@ async def handjob(ctx: lightbulb.Context, user: hikari.User = None) -> None:
     if not ctx.get_channel().is_nsfw:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
-    
     gif = [
-        "https://media1.tenor.com/m/ZQndYO4NwBcAAAAC/gojo-satoru.gif",
-        "https://media1.tenor.com/m/uXIogZmtfiYAAAAC/haru-yoshida-tonari-no-kaibutsu-kun.gif",
-        "https://media1.tenor.com/m/myCsjxxbtXAAAAAC/anime-happy.gif",
-        "https://media1.tenor.com/m/3fAZZncIHDQAAAAC/smile-anime.gif",
-        "https://media1.tenor.com/m/ssO9d-jnRYIAAAAd/chika-fujiwara-spinning.gif",
-        "https://media1.tenor.com/m/4fjOL2wLihcAAAAC/yum-anime.gif"
+        "",
+        "",
+        "",
+        "",
+        ""
     ]
-    
     random_gif = choice(gif)
-    
     embed = hikari.Embed(
-        title=f"{ctx.author.username} is happy!",
+        description=f"**{ctx.author.mention} is fucking {ctx.options.user.mention} in the ass**",
         color=0x2f3136
     )
     embed.set_image(random_gif)
-    
-    if user:
-        content = f"{user.mention}, {ctx.author.username} is happy!"
-    else:
-        content = f"{ctx.author.username} is happy!"
-    
-    await ctx.respond(content=content, embed=embed)
-    
-    if any(str(ctx.author.id) == str(prem_user) for prem_user in prem_users):
-        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+    await ctx.respond(embed=embed)
 
 #premium
 #69
@@ -1317,44 +1265,29 @@ async def handjob(ctx: lightbulb.Context, user: hikari.User = None) -> None:
 @lightbulb.option("user", "The user to tag", hikari.User, required=False)
 @lightbulb.command("69", "someone")
 @lightbulb.implements(lightbulb.SlashCommand)
-async def happy(ctx: lightbulb.Context, user: hikari.User = None) -> None:
-    if str(ctx.author.id) not in prem_users:
-        await ctx.respond("This is a premium command.")
-        return
-
+async def _69(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
         await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
         await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
-    
     if not ctx.get_channel().is_nsfw:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
-
     gif = [
-        "https://media1.tenor.com/m/ZQndYO4NwBcAAAAC/gojo-satoru.gif",
-        "https://media1.tenor.com/m/uXIogZmtfiYAAAAC/haru-yoshida-tonari-no-kaibutsu-kun.gif",
-        "https://media1.tenor.com/m/myCsjxxbtXAAAAAC/anime-happy.gif",
-        "https://media1.tenor.com/m/3fAZZncIHDQAAAAC/smile-anime.gif",
-        "https://media1.tenor.com/m/ssO9d-jnRYIAAAAd/chika-fujiwara-spinning.gif",
-        "https://media1.tenor.com/m/4fjOL2wLihcAAAAC/yum-anime.gif"
+        "",
+        "",
+        "",
+        "",
+        ""
     ]
-
     random_gif = choice(gif)
-
     embed = hikari.Embed(
-        title=f"{ctx.author.username} is happy!",
+        description=f"**{ctx.author.mention} is fucking {ctx.options.user.mention} in the ass**",
         color=0x2f3136
     )
     embed.set_image(random_gif)
-
-    if user:
-        content = f"{user.mention}, {ctx.author.username} is happy!"
-    else:
-        content = f"{ctx.author.username} is happy!"
-
-    await ctx.respond(content=content, embed=embed)
+    await ctx.respond(embed=embed)
 
 #cum
 @bot.command
@@ -1362,44 +1295,29 @@ async def happy(ctx: lightbulb.Context, user: hikari.User = None) -> None:
 @lightbulb.option("user", "The user to tag", hikari.User, required=False)
 @lightbulb.command("cum", "someone")
 @lightbulb.implements(lightbulb.SlashCommand)
-async def cum(ctx: lightbulb.Context, user: hikari.User = None) -> None:
-    if str(ctx.author.id) not in prem_users:
-        await ctx.respond("This is a premium command.")
-        return
-
+async def cum(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
         await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
         await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
-    
     if not ctx.get_channel().is_nsfw:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
-
     gif = [
-        "https://media1.tenor.com/m/ZQndYO4NwBcAAAAC/gojo-satoru.gif",
-        "https://media1.tenor.com/m/uXIogZmtfiYAAAAC/haru-yoshida-tonari-no-kaibutsu-kun.gif",
-        "https://media1.tenor.com/m/myCsjxxbtXAAAAAC/anime-happy.gif",
-        "https://media1.tenor.com/m/3fAZZncIHDQAAAAC/smile-anime.gif",
-        "https://media1.tenor.com/m/ssO9d-jnRYIAAAAd/chika-fujiwara-spinning.gif",
-        "https://media1.tenor.com/m/4fjOL2wLihcAAAAC/yum-anime.gif"
+        "",
+        "",
+        "",
+        "",
+        ""
     ]
-
     random_gif = choice(gif)
-
     embed = hikari.Embed(
-        title=f"{ctx.author.username} is happy!",
+        description=f"**{ctx.author.mention} is fucking {ctx.options.user.mention} in the ass**",
         color=0x2f3136
     )
     embed.set_image(random_gif)
-
-    if user:
-        content = f"{user.mention}, {ctx.author.username} is happy!"
-    else:
-        content = f"{ctx.author.username} is happy!"
-
-    await ctx.respond(content=content, embed=embed)
+    await ctx.respond(embed=embed)
 
 #ride
 @bot.command
@@ -1407,44 +1325,29 @@ async def cum(ctx: lightbulb.Context, user: hikari.User = None) -> None:
 @lightbulb.option("user", "The user to tag", hikari.User, required=False)
 @lightbulb.command("ride", "someone")
 @lightbulb.implements(lightbulb.SlashCommand)
-async def ride(ctx: lightbulb.Context, user: hikari.User = None) -> None:
-    if str(ctx.author.id) not in prem_users:
-        await ctx.respond("This is a premium command.")
-        return
-
+async def ride(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
         await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
         await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
-    
     if not ctx.get_channel().is_nsfw:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
-
     gif = [
-        "https://media1.tenor.com/m/ZQndYO4NwBcAAAAC/gojo-satoru.gif",
-        "https://media1.tenor.com/m/uXIogZmtfiYAAAAC/haru-yoshida-tonari-no-kaibutsu-kun.gif",
-        "https://media1.tenor.com/m/myCsjxxbtXAAAAAC/anime-happy.gif",
-        "https://media1.tenor.com/m/3fAZZncIHDQAAAAC/smile-anime.gif",
-        "https://media1.tenor.com/m/ssO9d-jnRYIAAAAd/chika-fujiwara-spinning.gif",
-        "https://media1.tenor.com/m/4fjOL2wLihcAAAAC/yum-anime.gif"
+        "",
+        "",
+        "",
+        "",
+        ""
     ]
-
     random_gif = choice(gif)
-
     embed = hikari.Embed(
-        title=f"{ctx.author.username} is happy!",
+        description=f"**{ctx.author.mention} is fucking {ctx.options.user.mention} in the ass**",
         color=0x2f3136
     )
     embed.set_image(random_gif)
-
-    if user:
-        content = f"{user.mention}, {ctx.author.username} is happy!"
-    else:
-        content = f"{ctx.author.username} is happy!"
-
-    await ctx.respond(content=content, embed=embed)
+    await ctx.respond(embed=embed)
 
 #fingering
 @bot.command
@@ -1452,44 +1355,29 @@ async def ride(ctx: lightbulb.Context, user: hikari.User = None) -> None:
 @lightbulb.option("user", "The user to tag", hikari.User, required=False)
 @lightbulb.command("fingering", "someone")
 @lightbulb.implements(lightbulb.SlashCommand)
-async def fingering(ctx: lightbulb.Context, user: hikari.User = None) -> None:
-    if str(ctx.author.id) not in prem_users:
-        await ctx.respond("This is a premium command.")
-        return
-
+async def fingering(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
         await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
         await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
-    
     if not ctx.get_channel().is_nsfw:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
-
     gif = [
-        "https://media1.tenor.com/m/ZQndYO4NwBcAAAAC/gojo-satoru.gif",
-        "https://media1.tenor.com/m/uXIogZmtfiYAAAAC/haru-yoshida-tonari-no-kaibutsu-kun.gif",
-        "https://media1.tenor.com/m/myCsjxxbtXAAAAAC/anime-happy.gif",
-        "https://media1.tenor.com/m/3fAZZncIHDQAAAAC/smile-anime.gif",
-        "https://media1.tenor.com/m/ssO9d-jnRYIAAAAd/chika-fujiwara-spinning.gif",
-        "https://media1.tenor.com/m/4fjOL2wLihcAAAAC/yum-anime.gif"
+        "",
+        "",
+        "",
+        "",
+        ""
     ]
-
     random_gif = choice(gif)
-
     embed = hikari.Embed(
-        title=f"{ctx.author.username} is happy!",
+        description=f"**{ctx.author.mention} is fucking {ctx.options.user.mention} in the ass**",
         color=0x2f3136
     )
     embed.set_image(random_gif)
-
-    if user:
-        content = f"{user.mention}, {ctx.author.username} is happy!"
-    else:
-        content = f"{ctx.author.username} is happy!"
-
-    await ctx.respond(content=content, embed=embed)
+    await ctx.respond(embed=embed)
 
 #boobsuck
 @bot.command
@@ -1497,44 +1385,29 @@ async def fingering(ctx: lightbulb.Context, user: hikari.User = None) -> None:
 @lightbulb.option("user", "The user to tag", hikari.User, required=False)
 @lightbulb.command("boobsuck", "someone")
 @lightbulb.implements(lightbulb.SlashCommand)
-async def boobsuck(ctx: lightbulb.Context, user: hikari.User = None) -> None:
-    if str(ctx.author.id) not in prem_users:
-        await ctx.respond("This is a premium command. To use this command, become a [member](https://buymeacoffee.com/azael/membership). Memberships help keep the bot online.")
-        return
-
+async def boobsuck(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
         await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
         await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
-    
     if not ctx.get_channel().is_nsfw:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
-
     gif = [
-        "https://media1.tenor.com/m/ZQndYO4NwBcAAAAC/gojo-satoru.gif",
-        "https://media1.tenor.com/m/uXIogZmtfiYAAAAC/haru-yoshida-tonari-no-kaibutsu-kun.gif",
-        "https://media1.tenor.com/m/myCsjxxbtXAAAAAC/anime-happy.gif",
-        "https://media1.tenor.com/m/3fAZZncIHDQAAAAC/smile-anime.gif",
-        "https://media1.tenor.com/m/ssO9d-jnRYIAAAAd/chika-fujiwara-spinning.gif",
-        "https://media1.tenor.com/m/4fjOL2wLihcAAAAC/yum-anime.gif"
+        "",
+        "",
+        "",
+        "",
+        ""
     ]
-
     random_gif = choice(gif)
-
     embed = hikari.Embed(
-        title=f"{ctx.author.username} is happy!",
+        description=f"**{ctx.author.mention} is fucking {ctx.options.user.mention} in the ass**",
         color=0x2f3136
     )
     embed.set_image(random_gif)
-
-    if user:
-        content = f"{user.mention}, {ctx.author.username} is happy!"
-    else:
-        content = f"{ctx.author.username} is happy!"
-
-    await ctx.respond(content=content, embed=embed)
+    await ctx.respond(embed=embed)
 
 #----------------------------------------------------------------------------------------
 #nsfw
