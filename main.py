@@ -760,7 +760,7 @@ async def smirk(ctx: lightbulb.Context) -> None:
 #wave
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "user to tag", type=hikari.User, required=True)
+@lightbulb.option("user", "user to tag", type=hikari.User)
 @lightbulb.command("wave", "Wave at someone.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def wave(ctx: lightbulb.Context) -> None:
@@ -789,7 +789,7 @@ async def wave(ctx: lightbulb.Context) -> None:
 #bite
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "user to tag", hikari.User, required=False)
+@lightbulb.option("user", "user to tag", hikari.User)
 @lightbulb.command("bite", "Bite someone.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def bite(ctx: lightbulb.Context) -> None:
@@ -818,7 +818,7 @@ async def bite(ctx: lightbulb.Context) -> None:
 #bonk
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "user to tag", hikari.User, required=False)
+@lightbulb.option("user", "user to tag", hikari.User)
 @lightbulb.command("bonk", "Bonk someone.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def bonk(ctx: lightbulb.Context) -> None:
@@ -847,7 +847,7 @@ async def bonk(ctx: lightbulb.Context) -> None:
 #hug
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "user to tag", hikari.User, required=False)
+@lightbulb.option("user", "user to tag", hikari.User)
 @lightbulb.command("hug", "Hug someone.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def hug(ctx: lightbulb.Context) -> None:
@@ -876,7 +876,7 @@ async def hug(ctx: lightbulb.Context) -> None:
 #marry
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "user to tag", hikari.User, required=False)
+@lightbulb.option("user", "user to tag", hikari.User)
 @lightbulb.command("marry", "Marry someone.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def marry(ctx: lightbulb.Context) -> None:
@@ -906,7 +906,7 @@ async def marry(ctx: lightbulb.Context) -> None:
 #kiss
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "user to tag", hikari.User, required=False)
+@lightbulb.option("user", "user to tag", hikari.User)
 @lightbulb.command("kiss", "Kiss someone.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def kiss(ctx: lightbulb.Context) -> None:
@@ -936,7 +936,7 @@ async def kiss(ctx: lightbulb.Context) -> None:
 #lick
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "user to tag", hikari.User, required=False)
+@lightbulb.option("user", "user to tag", hikari.User)
 @lightbulb.command("lick", "Lick someone.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def lick(ctx: lightbulb.Context) -> None:
@@ -966,7 +966,7 @@ async def lick(ctx: lightbulb.Context) -> None:
 #love
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "user to tag", hikari.User, required=False)
+@lightbulb.option("user", "user to tag", hikari.User)
 @lightbulb.command("love", "Show your love to someone.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def love(ctx: lightbulb.Context) -> None:
@@ -995,7 +995,7 @@ async def love(ctx: lightbulb.Context) -> None:
 #pat
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "user to tag", hikari.User, required=False)
+@lightbulb.option("user", "user to tag", hikari.User)
 @lightbulb.command("pat", "Pat someone.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def pat(ctx: lightbulb.Context) -> None:
@@ -1024,7 +1024,7 @@ async def pat(ctx: lightbulb.Context) -> None:
 #slap
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "user to tag", hikari.User, required=False)
+@lightbulb.option("user", "user to tag", hikari.User)
 @lightbulb.command("slap", "Slap someone.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def slap(ctx: lightbulb.Context) -> None:
@@ -1110,10 +1110,10 @@ async def hroleplay(ctx):
 #fuck
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "The user to tag", hikari.User, required=False)
+@lightbulb.option("user", "user to tag", hikari.User)
 @lightbulb.command("fuck", "Fuck someone")
 @lightbulb.implements(lightbulb.SlashCommand)
-async def fuck(ctx: lightbulb.Context, user: hikari.User = None) -> None:
+async def fuck(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
         await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
@@ -1122,35 +1122,23 @@ async def fuck(ctx: lightbulb.Context, user: hikari.User = None) -> None:
     if not ctx.get_channel().is_nsfw:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
-    
     gif = [
-        "https://media1.tenor.com/m/ZQndYO4NwBcAAAAC/gojo-satoru.gif",
-        "https://media1.tenor.com/m/uXIogZmtfiYAAAAC/haru-yoshida-tonari-no-kaibutsu-kun.gif",
-        "https://media1.tenor.com/m/myCsjxxbtXAAAAAC/anime-happy.gif",
-        "https://media1.tenor.com/m/3fAZZncIHDQAAAAC/smile-anime.gif",
-        "https://media1.tenor.com/m/ssO9d-jnRYIAAAAd/chika-fujiwara-spinning.gif",
-        "https://media1.tenor.com/m/4fjOL2wLihcAAAAC/yum-anime.gif"
+        "https://cdn.discordapp.com/attachments/1243845586910838834/1244389164007559168/fucking1.gif?ex=6654ef38&is=66539db8&hm=8d0c85f5d38fe9005c2abb35204debf5431d17fcdd75d37cdea7b24b4512e40f&",
+        "https://cdn.discordapp.com/attachments/1243845586910838834/1244389195997384724/fucking2.gif?ex=6654ef3f&is=66539dbf&hm=a51ca33ce38b389cbbd25705f9032c2e3373525ac8c0d742a5e02a3ab1578141&",
+        "https://cdn.discordapp.com/attachments/1243845586910838834/1244389219372371998/fucking3.gif?ex=6654ef45&is=66539dc5&hm=5f2c0602a6f23078e059342e8bcce5f84f5b3f5b9e45bc7bf2b94ae3afe0637a&",
+        "https://cdn.discordapp.com/attachments/1243845586910838834/1244389242474463393/fucking4.gif?ex=6654ef4b&is=66539dcb&hm=03478effce2b7101cc83fc198042e03803ca22d5458ae8c5dd67e22de7730918&",
+        "https://cdn.discordapp.com/attachments/1243845586910838834/1244389267464126534/fucking5.gif?ex=6654ef50&is=66539dd0&hm=406e2124f83a9eaa4a07a45a84a3744d1ac00b564fa8b08fe1f707da5a0b274f&",
+        "https://cdn.discordapp.com/attachments/1243845586910838834/1244389280655212604/fucking6.gif?ex=6654ef54&is=66539dd4&hm=4cfbb483e7f2ccb4227e3b7e1367f4027dd521741b9341aadab4c93f91d43ba1&"
     ]
-    
     random_gif = choice(gif)
-    
     embed = hikari.Embed(
-        title=f"{ctx.author.username} is happy!",
+        description=f"**{ctx.author.mention} is fucking {ctx.options.user.mention}**",
         color=0x2f3136
     )
     embed.set_image(random_gif)
-    
-    if user:
-        content = f"{user.mention}, {ctx.author.username} is happy!"
-    else:
-        content = f"{ctx.author.username} is happy!"
-    
-    await ctx.respond(content=content, embed=embed)
-    
-    if any(str(ctx.author.id) == str(prem_user) for prem_user in prem_users):
-        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+    await ctx.respond(embed=embed)
 
-#anal
+#anal start from here
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.option("user", "The user to tag", hikari.User, required=False)
