@@ -20,17 +20,43 @@ reddit = praw.Reddit(
     check_for_async=False
 )
 
-#server count
-@bot.listen()
-async def on_starting(_: hikari.StartedEvent) -> None:
+class TopGGClient:
+    def __init__(self, bot, token):
+        self.bot = bot
+        self.token = token
+        self.session = aiohttp.ClientSession()
+    async def post_guild_count(self, count):
+        url = f"https://top.gg/api/bots/{self.bot.get_me().id}/stats"
+        headers = {
+            "Authorization": self.token
+        }
+        payload = {
+            "server_count": count
+        }
+        async with self.session.post(url, json=payload, headers=headers) as response:
+            if response.status != 200:
+                print(f"Failed to post guild count to Top.gg: {response.status}")
+            else:
+                print("Posted server count to Top.gg")
+    async def close(self):
+        await self.session.close()
+
+topgg_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEwMDMyNDc0OTk5MTEzNzY5NTYiLCJib3QiOnRydWUsImlhdCI6MTY1OTYwMjk3Mn0.-TxpE4GNZSkgBPYQHQJ9vCD20_3lN_D-jImpcVIz928"
+topgg_client = TopGGClient(bot, topgg_token)
+
+@bot.listen(hikari.StartedEvent)
+async def on_starting(event: hikari.StartedEvent) -> None:
+    guilds = await bot.rest.fetch_my_guilds()
+    server_count = len(guilds)
     await bot.update_presence(
         activity=hikari.Activity(
-            name=f"{len([*await bot.rest.fetch_my_guilds()])} servers! | /help",
+            name=f"{server_count} servers! | /help",
             type=hikari.ActivityType.WATCHING,
         )
     )
+    await topgg_client.post_guild_count(server_count)
 
-prem_users = ["364400063281102852"]
+prem_users = ["364400063281102852", "982029598600613949"]
 
 #join
 @bot.listen(hikari.GuildJoinEvent)
@@ -41,32 +67,40 @@ async def on_guild_join(event):
     else:
         await bot.rest.create_message(1013474210242375741, f"Joined unknown server.")
     guild = event.guild
+    general_channel = None
     for channel in guild.get_channels().values():
-        if isinstance(channel, hikari.TextableChannel):
-            embed = hikari.Embed(
-                title="Thank you for inviting me here! 🫶",
-                description=(
-                    "**Please use the commands below to get an overview of all the commands.**\n\n"
-                    "**Core Commands:**\n"
-                    "**/core:** Overview of all core commands.\n\n"
-                    "**Role-play Reactions:**\n"
-                    "**/roleplay:** Overview of all role-play commands.\n\n"
-                    "**NSFW Role-play Reactions:**\n"
-                    "**/hroleplay:** Overview of NSFW all role-play commands.\n\n"
-                    "**Other NSFW Commands:**\n"
-                    "**/nsfw:** Overview of NSFW commands like hentai memes and gifs.\n\n"
-                    "**Miscellaneous:**\n"
-                    "**/misc:** Overview of miscellaneous commands.\n\n"
-                    "All NSFW commands are only accessible in NSFW channels.\n"
-                    "This message will be deleted in 5 minutes."
-                    ),
-                color=0x2f3136
-            )
-            embed.set_footer("Anicord is under development. Join the support server if you need help :)")
-            message = await channel.send(embed=embed)
-            await asyncio.sleep(300)
-            await message.delete()
+        if isinstance(channel, hikari.TextableChannel) and "general" in channel.name.lower():
+            general_channel = channel
             break
+    if general_channel is None:
+        for channel in guild.get_channels().values():
+            if isinstance(channel, hikari.TextableChannel):
+                general_channel = channel
+                break
+    if general_channel is not None:
+        embed = hikari.Embed(
+            title="Thank you for inviting me here! 🫶",
+            description=(
+                "**Please use the commands below to get an overview of all the commands.**\n\n"
+                "**Core Commands:**\n"
+                "**/core:** Overview of all core commands.\n\n"
+                "**Role-play Reactions:**\n"
+                "**/roleplay:** Overview of all role-play commands.\n\n"
+                "**NSFW Role-play Reactions:**\n"
+                "**/hroleplay:** Overview of NSFW all role-play commands.\n\n"
+                "**Other NSFW Commands:**\n"
+                "**/nsfw:** Overview of NSFW commands like hentai memes and gifs.\n\n"
+                "**Miscellaneous:**\n"
+                "**/misc:** Overview of miscellaneous commands.\n\n"
+                "All NSFW commands are only accessible in NSFW channels.\n"
+                "This message will be deleted in 5 minutes."
+            ),
+            color=0x2f3136
+        )
+        embed.set_footer("Anicord is under development. Join the support server if you need help :)")
+        message = await general_channel.send(embed=embed)
+        await asyncio.sleep(300)
+        await message.delete()
 
 #help command
 @bot.command
@@ -100,16 +134,6 @@ async def help(ctx):
     )
     embed.set_footer("Anicord is under development. Join the support server if you need help :)")
     await ctx.respond(embed=embed)
-    await ctx.respond(
-        embed=hikari.Embed(
-            description=(
-                "**Thank you!**\n"
-                "If you like using Anicord, consider [voting](https://top.gg/bot/1003247499911376956/vote) or leaving a [review](https://top.gg/bot/1003247499911376956).\n"
-                "To help keep Anicord online, consider becoming a [member](https://buymeacoffee.com/azael/membership)."
-            ),
-            color=0x2f3136
-        )
-    )
 
 #----------------------------------------------------------------------------------------
 #core
@@ -139,6 +163,16 @@ async def core(ctx):
     )
     embed.set_footer("Anicord is under development. Join the support server if you need help :)")
     await ctx.respond(embed=embed)
+    await ctx.respond(
+        embed=hikari.Embed(
+            description=(
+                "**Thank you!**\n"
+                "If you like using Anicord, consider [voting](https://top.gg/bot/1003247499911376956/vote) or leaving a [review](https://top.gg/bot/1003247499911376956).\n"
+                "To help keep Anicord online, consider becoming a [member](https://buymeacoffee.com/azael/membership)."
+            ),
+            color=0x2f3136
+        )
+    )
 
 #anime
 @bot.command
@@ -254,18 +288,69 @@ async def mangasearch(ctx: lightbulb.Context) -> None:
 
 #extended
 @bot.command
-@lightbulb.add_cooldown(length=1, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.command("extended", "Receive search queries for a more detailed experience.", auto_defer=True)
+@lightbulb.add_cooldown(length=30, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.option("name", "Anime")
+@lightbulb.command("extended", "Receive search queries to choose for a more detailed experience.", auto_defer=True)
 @lightbulb.implements(lightbulb.SlashCommand)
-async def aniextended(ctx: lightbulb.Context) -> None:
-    guild = ctx.get_guild()
-    if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
-    else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
-    await ctx.respond("/extended is currently unavailable but will be updated soon. Visit the [support server](https://discord.com/invite/CvpujuXmEf) for updates.")
-    if any(word in str(ctx.author.id) for word in prem_users):
+async def extended(ctx: lightbulb.Context) -> None:
+    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    if str(ctx.author.id) in prem_users:
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
+        name = ctx.options.name
+        search = AnimeSearch(name)
+        if len(search.results) < 4:
+            await ctx.respond("Not enough search results found.", flags=hikari.MessageFlag.EPHEMERAL)
+            return
+        anime_options = [Anime(result.mal_id) for result in search.results[:4]]
+        components = []
+        action_row = hikari.ActionRowBuilder()
+        for i in range(4):
+            button = hikari.ButtonBuilder(style=hikari.ButtonStyle.PRIMARY, custom_id=f"button_{i}", emoji=f"{i+1}️⃣")
+            action_row.add_component(button)
+        components.append(action_row.build())
+        embed = hikari.Embed(
+            title="Choose a show:",
+            description="\n".join([f"{i+1}️⃣ {anime.title}" for i, anime in enumerate(anime_options)]),
+            color=0x2f3136
+        )
+        await ctx.respond(embed=embed, component=components)
+        @bot.listen(hikari.InteractionCreateEvent)
+        async def on_button_click(event: hikari.InteractionCreateEvent) -> None:
+            if event.interaction.user.id != ctx.author.id:
+                return  # Ensure only the command user can interact
+            if event.interaction.component_type != hikari.ComponentType.BUTTON:
+                return
+            button_id = event.interaction.custom_id
+            if button_id.startswith("button_"):
+                index = int(button_id.split("_")[1])
+                anime = anime_options[index]
+                embed = hikari.Embed(
+                    title=f"{anime.title_english or 'N/A'} | {anime.title_japanese or 'N/A'}",
+                    description=anime.synopsis or 'No synopsis available.',
+                    url=anime.url,
+                    color=0x2f3136
+                )
+                embed.set_thumbnail(anime.image_url)
+                if anime.premiered:
+                    embed.add_field(name="Premiered", value=anime.premiered, inline=True)
+                if anime.status:
+                    embed.add_field(name="Status", value=anime.status, inline=True)
+                if anime.type:
+                    embed.add_field(name="Type", value=anime.type, inline=True)
+                if anime.score is not None:
+                    embed.add_field(name="Score", value=str(anime.score), inline=True)
+                if anime.episodes is not None:
+                    embed.add_field(name="Episodes", value=str(anime.episodes), inline=True)
+                if anime.broadcast:
+                    embed.add_field(name="Broadcast Time", value=anime.broadcast, inline=True)
+                if anime.rank is not None:
+                    embed.add_field(name="Ranking", value=str(anime.rank), inline=True)
+                if anime.popularity is not None:
+                    embed.add_field(name="Popularity", value=str(anime.popularity), inline=True)
+                if anime.rating:
+                    embed.add_field(name="Rating", value=anime.rating, inline=True)
+                embed.set_footer("Queries are served by an unofficial MAL API and Anicord has no control over the content.")
+                await event.interaction.create_initial_response(hikari.ResponseType.MESSAGE_UPDATE, embed=embed, component=None)
 
 #character
 async def fetch_character_info(name, limit=5):
@@ -333,7 +418,7 @@ async def character(ctx: lightbulb.Context) -> None:
 #animeme
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.command("animeme", "Get an anime meme.")
+@lightbulb.command("animeme", "Get an anime meme.", auto_defer=True)
 @lightbulb.implements(lightbulb.SlashCommand)
 async def animeme(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
@@ -474,6 +559,16 @@ async def roleplay(ctx):
     embed.set_footer("Anicord is under development. Join the support server if you need help :)")
 
     await ctx.respond(embed=embed)
+    await ctx.respond(
+        embed=hikari.Embed(
+            description=(
+                "**Thank you!**\n"
+                "If you like using Anicord, consider [voting](https://top.gg/bot/1003247499911376956/vote) or leaving a [review](https://top.gg/bot/1003247499911376956).\n"
+                "To help keep Anicord online, consider becoming a [member](https://buymeacoffee.com/azael/membership)."
+            ),
+            color=0x2f3136
+        )
+    )
 
 #Self
 #happy
@@ -1067,7 +1162,6 @@ async def hroleplay(ctx):
         return
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
-
     embed = hikari.Embed(
         title="__**NSFW Role-play Reactions**__",
         color=0x2f3136
@@ -1105,6 +1199,16 @@ async def hroleplay(ctx):
     embed.set_footer("Anicord is under development. Join the support server if you need help :)")
 
     await ctx.respond(embed=embed)
+    await ctx.respond(
+        embed=hikari.Embed(
+            description=(
+                "**Thank you!**\n"
+                "If you like using Anicord, consider [voting](https://top.gg/bot/1003247499911376956/vote) or leaving a [review](https://top.gg/bot/1003247499911376956).\n"
+                "To help keep Anicord online, consider becoming a [member](https://buymeacoffee.com/azael/membership)."
+            ),
+            color=0x2f3136
+        )
+    )
 
 #free
 #fuck
@@ -1123,7 +1227,6 @@ async def fuck(ctx: lightbulb.Context) -> None:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
     gif = [
-        "https://cdn.discordapp.com/attachments/1243845586910838834/1244389164007559168/fucking1.gif?ex=6654ef38&is=66539db8&hm=8d0c85f5d38fe9005c2abb35204debf5431d17fcdd75d37cdea7b24b4512e40f&",
         "https://cdn.discordapp.com/attachments/1243845586910838834/1244389195997384724/fucking2.gif?ex=6654ef3f&is=66539dbf&hm=a51ca33ce38b389cbbd25705f9032c2e3373525ac8c0d742a5e02a3ab1578141&",
         "https://cdn.discordapp.com/attachments/1243845586910838834/1244389219372371998/fucking3.gif?ex=6654ef45&is=66539dc5&hm=5f2c0602a6f23078e059342e8bcce5f84f5b3f5b9e45bc7bf2b94ae3afe0637a&",
         "https://cdn.discordapp.com/attachments/1243845586910838834/1244389242474463393/fucking4.gif?ex=6654ef4b&is=66539dcb&hm=03478effce2b7101cc83fc198042e03803ca22d5458ae8c5dd67e22de7730918&",
@@ -1137,11 +1240,13 @@ async def fuck(ctx: lightbulb.Context) -> None:
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
+    if any(word in str(ctx.author.id) for word in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
 
-#anal start from here
+#anal
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "The user to tag", hikari.User, required=False)
+@lightbulb.option("user", "The user to tag", hikari.User)
 @lightbulb.command("anal", "Fuck someone in the ass.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def anal(ctx: lightbulb.Context) -> None:
@@ -1154,11 +1259,14 @@ async def anal(ctx: lightbulb.Context) -> None:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
     gif = [
-        "",
-        "",
-        "",
-        "",
-        ""
+        "https://cdn.discordapp.com/attachments/1243886094278459422/1244588808150847539/anal1.gif?ex=6655a927&is=665457a7&hm=d12d086a95f8d548f4843af7505c8cd32980f15095e6ff9df16c6c8b573c2b49&",
+        "https://cdn.discordapp.com/attachments/1243886094278459422/1244588827696168970/anal2.gif?ex=6655a92b&is=665457ab&hm=a95d536ff7275de6c6ab7fb78c4131ffbdb59fd7a95e4102374106ce37afeb4e&",
+        "https://cdn.discordapp.com/attachments/1243886094278459422/1244588836520988712/anal3.gif?ex=6655a92d&is=665457ad&hm=dcbaa85738f1f0f81dd56b26bc196803048a7b4e9ec27890693d8ceb1feda903&",
+        "https://cdn.discordapp.com/attachments/1243886094278459422/1244588853902184469/anal4.gif?ex=6655a932&is=665457b2&hm=1640d7d4729c9aed4a279a8573278f8a1340d831179f75c1c1a092c883240081&",
+        "https://cdn.discordapp.com/attachments/1243886094278459422/1244588864044273664/anal5.gif?ex=6655a934&is=665457b4&hm=0f5303f58c5f095f319aca42fa9e6ea22d719294d018b1d673fcd07b30ee34d7&",
+        "https://cdn.discordapp.com/attachments/1243886094278459422/1244588878912815164/anal6.gif?ex=6655a938&is=665457b8&hm=e16e3d25a875ba396d48745ebe2eddc5e53f36624937219765a1f75459e3df07&",
+        "https://cdn.discordapp.com/attachments/1243886094278459422/1244588890325520414/anal7.gif?ex=6655a93a&is=665457ba&hm=a07189af810bf9833d6b9a7d3b443a6c85d6bc07a8cbaaaf3b78b4a1e37a5a50&",
+        "https://cdn.discordapp.com/attachments/1243886094278459422/1244588900614279290/anal8.gif?ex=6655a93d&is=665457bd&hm=8dd32362da8c621222ccd35f6542255e417f2ac96eee8fc02d3d4732e86d522c&"
     ]
     random_gif = choice(gif)
     embed = hikari.Embed(
@@ -1167,11 +1275,13 @@ async def anal(ctx: lightbulb.Context) -> None:
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
+    if any(word in str(ctx.author.id) for word in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
 
 #blowjob
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "The user to tag", hikari.User, required=False)
+@lightbulb.option("user", "The user to tag", hikari.User)
 @lightbulb.command("blowjob", "Receive a blowjob from someone.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def blowjob(ctx: lightbulb.Context) -> None:
@@ -1184,24 +1294,27 @@ async def blowjob(ctx: lightbulb.Context) -> None:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
     gif = [
-        "",
-        "",
-        "",
-        "",
-        ""
+        "https://cdn.discordapp.com/attachments/1243886126117290054/1244591246287310909/1.gif?ex=6655ab6c&is=665459ec&hm=693c621746fea96df63d88fff0562e2433cefad28aac18c0ec9c230439374237&",
+        "https://cdn.discordapp.com/attachments/1243886126117290054/1244591257641160704/2.gif?ex=6655ab6f&is=665459ef&hm=358b2fe0aacf4381a0ab591287dd31ccc3459678499d302af2f8268e642e59f4&",
+        "https://cdn.discordapp.com/attachments/1243886126117290054/1244591279749468210/3.gif?ex=6655ab74&is=665459f4&hm=a0db81aeb5c028e01b67db89b29fb96c9a2ce1030cd7066ced66a9c0e59e644d&",
+        "https://cdn.discordapp.com/attachments/1243886126117290054/1244591295008210965/4.gif?ex=6655ab78&is=665459f8&hm=0f844958a133552682fec05c170c7e97a3f1b9faebaa672a73b60f70f021c2e2&",
+        "https://cdn.discordapp.com/attachments/1243886126117290054/1244591311777042554/5.gif?ex=6655ab7c&is=665459fc&hm=f21370c0c28e1c6b2b4330f148206ad2c6a31207b173a4517f6dab881a234614&",
+        "https://cdn.discordapp.com/attachments/1243886126117290054/1244591323567095859/6.gif?ex=6655ab7e&is=665459fe&hm=7f68c4d7192257df87dd86cda647b145ac36969e419074a2e6df65703d5dbdbc&"
     ]
     random_gif = choice(gif)
     embed = hikari.Embed(
-        description=f"**{ctx.author.mention} is fucking {ctx.options.user.mention} in the ass**",
+        description=f"**{ctx.author.mention} is getting a blowjob from {ctx.options.user.mention}**",
         color=0x2f3136
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
+    if any(word in str(ctx.author.id) for word in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
 
 #boobjob
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "The user to tag", hikari.User, required=False)
+@lightbulb.option("user", "The user to tag", hikari.User)
 @lightbulb.command("boobjob", "Receive a boobjob from someone")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def boobjob(ctx: lightbulb.Context) -> None:
@@ -1214,24 +1327,26 @@ async def boobjob(ctx: lightbulb.Context) -> None:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
     gif = [
-        "",
-        "",
-        "",
-        "",
-        ""
+        "https://cdn.discordapp.com/attachments/1243886173810856007/1244593956545630279/1.gif?ex=6655adf2&is=66545c72&hm=da398791b74e52bf5fbd2aaae1254b11a202b5fb4d9d4a40cd42b15e98dde35b&",
+        "https://cdn.discordapp.com/attachments/1243886173810856007/1244593967174127646/2.gif?ex=6655adf5&is=66545c75&hm=9ad8cb0e38da72be5011a530933d6e9fd7fe78d94e2ee56013c0a3e8e0c14a06&",
+        "https://cdn.discordapp.com/attachments/1243886173810856007/1244594265422565416/3.gif?ex=6655ae3c&is=66545cbc&hm=10ec90489275fb0cc964fd438ab68251833f8cb13297ec39e365156cfbb0f5ee&",
+        "https://cdn.discordapp.com/attachments/1243886173810856007/1244593999923249203/4.gif?ex=6655adfd&is=66545c7d&hm=08f1a0a1b6b290d8a4cc8235f2b00d3f85ee96a0d6e279202c688c39c022eb3f&",
+        "https://cdn.discordapp.com/attachments/1243886173810856007/1244594018856468500/5.gif?ex=6655ae01&is=66545c81&hm=ad0ed2af1433413b36f5cce75a58ad4fac6afa837dbe444e47e0c9b61eefc7ff&"
     ]
     random_gif = choice(gif)
     embed = hikari.Embed(
-        description=f"**{ctx.author.mention} is fucking {ctx.options.user.mention} in the ass**",
+        description=f"**{ctx.author.mention} is getting a boobjob from {ctx.options.user.mention}**",
         color=0x2f3136
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
+    if any(word in str(ctx.author.id) for word in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
 
 #handjob
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "The user to tag", hikari.User, required=False)
+@lightbulb.option("user", "The user to tag", hikari.User)
 @lightbulb.command("handjob", "Receive a handjob from someone")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def handjob(ctx: lightbulb.Context) -> None:
@@ -1244,46 +1359,50 @@ async def handjob(ctx: lightbulb.Context) -> None:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
     gif = [
-        "",
-        "",
-        "",
-        "",
-        ""
+        "https://cdn.discordapp.com/attachments/1243886203103875182/1244595894100168704/1.gif?ex=6655afc0&is=66545e40&hm=02450e97aa38728448fec8d71aead0a76ca2623a0018eb595aa4245e632dd20b&",
+        "https://cdn.discordapp.com/attachments/1243886203103875182/1244595938874363935/2.gif?ex=6655afcb&is=66545e4b&hm=6e4d0fa3bc1e953615ba312764dc5af462576378a751c2ec2ec7b19785325cc7&",
+        "https://cdn.discordapp.com/attachments/1243886203103875182/1244596020923469924/3.gif?ex=6655afde&is=66545e5e&hm=2c36b17fd1b4841e0929bca4a8327a3ac34af9cd98f71e0b79581c6223def0e4&",
+        "https://cdn.discordapp.com/attachments/1243886203103875182/1244596065102073856/4.gif?ex=6655afe9&is=66545e69&hm=e2bd01ad925a702797c8c21508a3ee83b26958702fbab72bc6032637be8df7e6&",
+        "https://cdn.discordapp.com/attachments/1243886203103875182/1244596086018932748/5.gif?ex=6655afee&is=66545e6e&hm=3527de2655e8118bd0d8581904a5a111ce8b608b21b33b2c32691536e07a82c7&",
+        "https://cdn.discordapp.com/attachments/1243886203103875182/1244596066368753684/6.gif?ex=6655afe9&is=66545e69&hm=e11c2b1eb2f8e2b6e6ba1b34237a0e12694bf9c71e171d6cf61d6b949f806325&"
     ]
     random_gif = choice(gif)
     embed = hikari.Embed(
-        description=f"**{ctx.author.mention} is fucking {ctx.options.user.mention} in the ass**",
+        description=f"**{ctx.author.mention} is getting a handjob from {ctx.options.user.mention}**",
         color=0x2f3136
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
+    if any(word in str(ctx.author.id) for word in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
 
 #premium
 #69
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "The user to tag", hikari.User, required=False)
+@lightbulb.option("user", "The user to tag", hikari.User)
 @lightbulb.command("69", "someone")
 @lightbulb.implements(lightbulb.SlashCommand)
-async def _69(ctx: lightbulb.Context) -> None:
+async def sixtynine(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
         await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
         await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    if str(ctx.author.id) not in prem_users:
+        await ctx.respond("This is a premium command. To use this command, become a [member](https://buymeacoffee.com/azael/membership). Memberships help keep the bot online.")
+        return
     if not ctx.get_channel().is_nsfw:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
     gif = [
-        "",
-        "",
-        "",
-        "",
-        ""
+        "https://cdn.discordapp.com/attachments/1243886239955025932/1244708659481804891/3.gif?ex=665618c5&is=6654c745&hm=2ed041d2f3b691880b72e09f85ed6dd95611e388575e73b7c8b0c0592fe4df68&",
+        "https://cdn.discordapp.com/attachments/1243886239955025932/1244708680650199170/1.gif?ex=665618cb&is=6654c74b&hm=a4abe30ae028f41c0e12846af3ad50a321c30da4264ccade6c3a79ba79653344&",
+        "https://cdn.discordapp.com/attachments/1243886239955025932/1244708690439835761/2.gif?ex=665618cd&is=6654c74d&hm=c7eef81d264c0b1b79f9c1d01299f7b4340378e3f49727d5431c14970636b262&"
     ]
     random_gif = choice(gif)
     embed = hikari.Embed(
-        description=f"**{ctx.author.mention} is fucking {ctx.options.user.mention} in the ass**",
+        description=f"**{ctx.author.mention} is doing 69 with {ctx.options.user.mention}**",
         color=0x2f3136
     )
     embed.set_image(random_gif)
@@ -1292,28 +1411,32 @@ async def _69(ctx: lightbulb.Context) -> None:
 #cum
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "The user to tag", hikari.User, required=False)
+@lightbulb.option("user", "The user to tag", hikari.User)
 @lightbulb.command("cum", "someone")
 @lightbulb.implements(lightbulb.SlashCommand)
-async def cum(ctx: lightbulb.Context) -> None:
+async def sixtynine(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
         await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
         await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    if str(ctx.author.id) not in prem_users:
+        await ctx.respond("This is a premium command. To use this command, become a [member](https://buymeacoffee.com/azael/membership). Memberships help keep the bot online.")
+        return
     if not ctx.get_channel().is_nsfw:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
     gif = [
-        "",
-        "",
-        "",
-        "",
-        ""
+        "https://cdn.discordapp.com/attachments/1243886267767459871/1244710926880473119/1.gif?ex=66561ae2&is=6654c962&hm=36e77cfac89bcf2672476b8ce0710d6b2121439cdc6dcddcf0c32f45540ba2bb&",
+        "https://cdn.discordapp.com/attachments/1243886267767459871/1244710926880473119/1.gif?ex=66561ae2&is=6654c962&hm=36e77cfac89bcf2672476b8ce0710d6b2121439cdc6dcddcf0c32f45540ba2bb&",
+        "https://cdn.discordapp.com/attachments/1243886267767459871/1244710926880473119/1.gif?ex=66561ae2&is=6654c962&hm=36e77cfac89bcf2672476b8ce0710d6b2121439cdc6dcddcf0c32f45540ba2bb&",
+        "https://cdn.discordapp.com/attachments/1243886267767459871/1244710926880473119/1.gif?ex=66561ae2&is=6654c962&hm=36e77cfac89bcf2672476b8ce0710d6b2121439cdc6dcddcf0c32f45540ba2bb&",
+        "https://cdn.discordapp.com/attachments/1243886267767459871/1244710926880473119/1.gif?ex=66561ae2&is=6654c962&hm=36e77cfac89bcf2672476b8ce0710d6b2121439cdc6dcddcf0c32f45540ba2bb&",
+        "https://cdn.discordapp.com/attachments/1243886267767459871/1244710926880473119/1.gif?ex=66561ae2&is=6654c962&hm=36e77cfac89bcf2672476b8ce0710d6b2121439cdc6dcddcf0c32f45540ba2bb&"
     ]
     random_gif = choice(gif)
     embed = hikari.Embed(
-        description=f"**{ctx.author.mention} is fucking {ctx.options.user.mention} in the ass**",
+        description=f"**{ctx.author.mention} is cumming on {ctx.options.user.mention}**",
         color=0x2f3136
     )
     embed.set_image(random_gif)
@@ -1322,28 +1445,33 @@ async def cum(ctx: lightbulb.Context) -> None:
 #ride
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "The user to tag", hikari.User, required=False)
+@lightbulb.option("user", "The user to tag", hikari.User)
 @lightbulb.command("ride", "someone")
 @lightbulb.implements(lightbulb.SlashCommand)
-async def ride(ctx: lightbulb.Context) -> None:
+async def sixtynine(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
         await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
         await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    if str(ctx.author.id) not in prem_users:
+        await ctx.respond("This is a premium command. To use this command, become a [member](https://buymeacoffee.com/azael/membership). Memberships help keep the bot online.")
+        return
     if not ctx.get_channel().is_nsfw:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
     gif = [
-        "",
-        "",
-        "",
-        "",
-        ""
+        "https://cdn.discordapp.com/attachments/1243886309068767354/1244713699269283870/1.gif?ex=66561d77&is=6654cbf7&hm=4b119beb0a5f504c8db3f23d3818721105af8fd325036fc29ce8c933f7f133fb&",
+        "https://cdn.discordapp.com/attachments/1243886309068767354/1244713776272375849/2.gif?ex=66561d89&is=6654cc09&hm=dfba715860c550517735022236ff17aac410247ad121fc112e6647be72b3dc84&",
+        "https://cdn.discordapp.com/attachments/1243886309068767354/1244713762880098344/3.gif?ex=66561d86&is=6654cc06&hm=459fe081b9beb4c6a6fdd007b46a946d0bc1f65cac04bcc9fec4e963441ac0dd&",
+        "https://cdn.discordapp.com/attachments/1243886309068767354/1244713759696490536/4.gif?ex=66561d85&is=6654cc05&hm=04e565991b6562837846998dda3201670e950ef5bb1001304c622a1862ab92c1&",
+        "https://cdn.discordapp.com/attachments/1243886309068767354/1244713789589553252/5.gif?ex=66561d8d&is=6654cc0d&hm=b458de2e69aed45e887834bcc8abbed84b6d0ed6db3026ad9b108f31c8d1c06b&",
+        "https://cdn.discordapp.com/attachments/1243886309068767354/1244713810443632680/6.gif?ex=66561d92&is=6654cc12&hm=f220b177f0d270fe321998ea4dcc8719aace5b4661c0da54379ff7c9f8c26ca5&",
+        "https://cdn.discordapp.com/attachments/1243886309068767354/1244713788004106330/7.gif?ex=66561d8c&is=6654cc0c&hm=038a5ea64ee47f25565acef0325f7bbe7cb0bb98729567af999aea7c6b35f264&"
     ]
     random_gif = choice(gif)
     embed = hikari.Embed(
-        description=f"**{ctx.author.mention} is fucking {ctx.options.user.mention} in the ass**",
+        description=f"**{ctx.author.mention} is riding {ctx.options.user.mention}**",
         color=0x2f3136
     )
     embed.set_image(random_gif)
@@ -1352,28 +1480,32 @@ async def ride(ctx: lightbulb.Context) -> None:
 #fingering
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "The user to tag", hikari.User, required=False)
+@lightbulb.option("user", "The user to tag", hikari.User)
 @lightbulb.command("fingering", "someone")
 @lightbulb.implements(lightbulb.SlashCommand)
-async def fingering(ctx: lightbulb.Context) -> None:
+async def sixtynine(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
         await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
         await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    if str(ctx.author.id) not in prem_users:
+        await ctx.respond("This is a premium command. To use this command, become a [member](https://buymeacoffee.com/azael/membership). Memberships help keep the bot online.")
+        return
     if not ctx.get_channel().is_nsfw:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
     gif = [
-        "",
-        "",
-        "",
-        "",
-        ""
+        "https://cdn.discordapp.com/attachments/1243886356879511602/1244716343274639360/1.gif?ex=66561fed&is=6654ce6d&hm=b55d1c3d927f835ca0aead2fc6dad7d9f8d43be7abfd4f12577a56d184fa396b&",
+        "https://cdn.discordapp.com/attachments/1243886356879511602/1244716354309984257/2.gif?ex=66561ff0&is=6654ce70&hm=4b670ef46fdb70548a105ff37d07cdee399dc59cb1ad4799d268be0e88a04e0d&",
+        "https://cdn.discordapp.com/attachments/1243886356879511602/1244716369577119764/3.gif?ex=66561ff4&is=6654ce74&hm=70b3df09a635fe0723b0088b1eac5eaf487bd66edf65d66d64d911c4e6023d27&",
+        "https://cdn.discordapp.com/attachments/1243886356879511602/1244716380515995698/4.gif?ex=66561ff6&is=6654ce76&hm=eeb4293b9c2e927dc1ec4a732695f04772d78121b5d614ad05ed1a8fcb91ef10&",
+        "https://cdn.discordapp.com/attachments/1243886356879511602/1244716422211309721/7.gif?ex=66562000&is=6654ce80&hm=1af15cf1f3dbf271f54772017a74bdd87272463b38d2a32f2ed6d923597d4c8c&",
+        "https://cdn.discordapp.com/attachments/1243886356879511602/1244716428892835850/8.gif?ex=66562002&is=6654ce82&hm=fd43eb8bccbd29db36ae78a5a88937a248ed8e9a6cd800cdd99a1167dc9a76ed&"
     ]
     random_gif = choice(gif)
     embed = hikari.Embed(
-        description=f"**{ctx.author.mention} is fucking {ctx.options.user.mention} in the ass**",
+        description=f"**{ctx.author.mention} is fingering {ctx.options.user.mention}**",
         color=0x2f3136
     )
     embed.set_image(random_gif)
@@ -1382,28 +1514,31 @@ async def fingering(ctx: lightbulb.Context) -> None:
 #boobsuck
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "The user to tag", hikari.User, required=False)
+@lightbulb.option("user", "The user to tag", hikari.User)
 @lightbulb.command("boobsuck", "someone")
 @lightbulb.implements(lightbulb.SlashCommand)
-async def boobsuck(ctx: lightbulb.Context) -> None:
+async def sixtynine(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
         await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
         await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    if str(ctx.author.id) not in prem_users:
+        await ctx.respond("This is a premium command. To use this command, become a [member](https://buymeacoffee.com/azael/membership). Memberships help keep the bot online.")
+        return
     if not ctx.get_channel().is_nsfw:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
     gif = [
-        "",
-        "",
-        "",
-        "",
-        ""
+        "https://cdn.discordapp.com/attachments/1243886396628930580/1244719521432866912/1.gif?ex=665622e3&is=6654d163&hm=03259432b4f33cbff7ad2de7cf07251540f5cf52b297b434547a02425f8a82e3&",
+        "https://cdn.discordapp.com/attachments/1243886396628930580/1244719554022604800/3.gif?ex=665622eb&is=6654d16b&hm=5f498d6c12cf852aca6816bba0fa56abaa2c99a234b35e0bea451d158cbb7dce&",
+        "https://cdn.discordapp.com/attachments/1243886396628930580/1244719560662450317/4.gif?ex=665622ed&is=6654d16d&hm=a5270fcb4de4becf4ed6628d75c813a82b01a3f908a6121a000f617e6947a3d0&",
+        "https://cdn.discordapp.com/attachments/1243886396628930580/1244719576558731436/2.gif?ex=665622f0&is=6654d170&hm=6259913cb2b0ee834b75b17e12f339b53dd953f6119012f5ee569caa6680108c&",
+        "https://cdn.discordapp.com/attachments/1243886396628930580/1244719613758148628/5.gif?ex=665622f9&is=6654d179&hm=88718abf81e55e047610e512876fdb4769069bd18e698e0961b02d8da4ed9ad5&"
     ]
     random_gif = choice(gif)
     embed = hikari.Embed(
-        description=f"**{ctx.author.mention} is fucking {ctx.options.user.mention} in the ass**",
+        description=f"**{ctx.author.mention} is sucking {ctx.options.user.mention}'s boobs**",
         color=0x2f3136
     )
     embed.set_image(random_gif)
@@ -1440,6 +1575,16 @@ async def nsfw(ctx):
     )
     embed.set_footer("Anicord is under development. Join the support server if you need help :)")
     await ctx.respond(embed=embed)
+    await ctx.respond(
+        embed=hikari.Embed(
+            description=(
+                "**Thank you!**\n"
+                "If you like using Anicord, consider [voting](https://top.gg/bot/1003247499911376956/vote) or leaving a [review](https://top.gg/bot/1003247499911376956).\n"
+                "To help keep Anicord online, consider becoming a [member](https://buymeacoffee.com/azael/membership)."
+            ),
+            color=0x2f3136
+        )
+    )
 
 #hmeme
 @bot.command
@@ -1664,6 +1809,16 @@ async def misc(ctx):
     )
     embed.set_footer("Anicord is under development. Join the support server if you need help :)")
     await ctx.respond(embed=embed)
+    await ctx.respond(
+        embed=hikari.Embed(
+            description=(
+                "**Thank you!**\n"
+                "If you like using Anicord, consider [voting](https://top.gg/bot/1003247499911376956/vote) or leaving a [review](https://top.gg/bot/1003247499911376956).\n"
+                "To help keep Anicord online, consider becoming a [member](https://buymeacoffee.com/azael/membership)."
+            ),
+            color=0x2f3136
+        )
+    )
 
 #invite command
 @bot.command
@@ -1826,5 +1981,9 @@ async def on_error(event: lightbulb.CommandErrorEvent) -> None:
         await event.context.respond(f"`/{event.context.command.name}` is on cooldown. Retry in `{exception.retry_after:.0f}` seconds. ⏱️ \n API commands are ratelimited to prevent spam abuse which could bring the bot down. \n To avoid cooldowns, become a [member](https://buymeacoffee.com/azael/membership).")
     else:
         raise exception
+
+@bot.listen(hikari.StoppedEvent)
+async def on_stopping(event: hikari.StoppedEvent) -> None:
+    await topgg_client.close()
 
 bot.run()
