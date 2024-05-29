@@ -63,44 +63,45 @@ prem_users = ["364400063281102852", "982029598600613949"]
 async def on_guild_join(event):
     guild = event.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"Joined `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"Joined `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"Joined unknown server.")
+        await bot.rest.create_message(1245405333229146219, f"Joined unknown server.")
     guild = event.guild
-    general_channel = None
     for channel in guild.get_channels().values():
-        if isinstance(channel, hikari.TextableChannel) and "general" in channel.name.lower():
-            general_channel = channel
+        if isinstance(channel, hikari.TextableChannel):
+            embed = hikari.Embed(
+                title="Thank you for inviting me here! 🫶",
+                description=(
+                    "**Please use the commands below to get an overview of all the commands.**\n\n"
+                    "**Core Commands:**\n"
+                    "**/core:** Overview of all core commands.\n\n"
+                    "**Role-play Reactions:**\n"
+                    "**/roleplay:** Overview of all role-play commands.\n\n"
+                    "**NSFW Role-play Reactions:**\n"
+                    "**/hroleplay:** Overview of NSFW all role-play commands.\n\n"
+                    "**Other NSFW Commands:**\n"
+                    "**/nsfw:** Overview of NSFW commands like hentai memes and gifs.\n\n"
+                    "**Miscellaneous:**\n"
+                    "**/misc:** Overview of miscellaneous commands.\n\n"
+                    "All NSFW commands are only accessible in NSFW channels.\n"
+                    "This message will be deleted in 5 minutes."
+                    ),
+                color=0x2f3136
+            )
+            embed.set_footer("Anicord is under development. Join the support server if you need help :)")
+            message = await channel.send(embed=embed)
+            await asyncio.sleep(300)
+            await message.delete()
             break
-    if general_channel is None:
-        for channel in guild.get_channels().values():
-            if isinstance(channel, hikari.TextableChannel):
-                general_channel = channel
-                break
-    if general_channel is not None:
-        embed = hikari.Embed(
-            title="Thank you for inviting me here! 🫶",
-            description=(
-                "**Please use the commands below to get an overview of all the commands.**\n\n"
-                "**Core Commands:**\n"
-                "**/core:** Overview of all core commands.\n\n"
-                "**Role-play Reactions:**\n"
-                "**/roleplay:** Overview of all role-play commands.\n\n"
-                "**NSFW Role-play Reactions:**\n"
-                "**/hroleplay:** Overview of NSFW all role-play commands.\n\n"
-                "**Other NSFW Commands:**\n"
-                "**/nsfw:** Overview of NSFW commands like hentai memes and gifs.\n\n"
-                "**Miscellaneous:**\n"
-                "**/misc:** Overview of miscellaneous commands.\n\n"
-                "All NSFW commands are only accessible in NSFW channels.\n"
-                "This message will be deleted in 5 minutes."
-            ),
-            color=0x2f3136
-        )
-        embed.set_footer("Anicord is under development. Join the support server if you need help :)")
-        message = await general_channel.send(embed=embed)
-        await asyncio.sleep(300)
-        await message.delete()
+
+#leave
+@bot.listen(hikari.GuildLeaveEvent)
+async def on_guild_leave(event):
+    guild = event.old_guild
+    if guild is not None:
+        await bot.rest.create_message(1245405333229146219, f"Left `{guild.name}`.")
+    else:
+        await bot.rest.create_message(1245405333229146219, f"Left unknown server.")
 
 #help command
 @bot.command
@@ -110,9 +111,9 @@ async def on_guild_join(event):
 async def help(ctx):
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
@@ -144,9 +145,9 @@ async def help(ctx):
 async def core(ctx):
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
@@ -183,9 +184,9 @@ async def core(ctx):
 async def anisearch(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     name = ctx.options.name
     search = AnimeSearch(name)
     
@@ -242,9 +243,9 @@ async def anisearch(ctx: lightbulb.Context) -> None:
 async def mangasearch(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     name = ctx.options.name
     search = MangaSearch(name)
 
@@ -293,7 +294,7 @@ async def mangasearch(ctx: lightbulb.Context) -> None:
 @lightbulb.command("extended", "Receive search queries to choose for a more detailed experience.", auto_defer=True)
 @lightbulb.implements(lightbulb.SlashCommand)
 async def extended(ctx: lightbulb.Context) -> None:
-    await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+    await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     if str(ctx.author.id) in prem_users:
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
         name = ctx.options.name
@@ -374,9 +375,9 @@ async def fetch_character_info(name, limit=5):
 async def character(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     name = ctx.options.name.strip()
     character_data = await fetch_character_info(name)
     if not character_data or not character_data.get('data'):
@@ -423,9 +424,9 @@ async def character(ctx: lightbulb.Context) -> None:
 async def animeme(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     
@@ -457,9 +458,9 @@ async def animeme(ctx: lightbulb.Context) -> None:
 async def random(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     anime_id = randint(1, 5000)
 
     anime = Anime(anime_id)
@@ -507,9 +508,9 @@ async def random(ctx: lightbulb.Context) -> None:
 async def roleplay(ctx):
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
 
@@ -579,9 +580,9 @@ async def roleplay(ctx):
 async def happy(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     gif = [
         "https://media1.tenor.com/m/ZQndYO4NwBcAAAAC/gojo-satoru.gif",
         "https://media1.tenor.com/m/uXIogZmtfiYAAAAC/haru-yoshida-tonari-no-kaibutsu-kun.gif",
@@ -607,9 +608,9 @@ async def happy(ctx: lightbulb.Context) -> None:
 async def cry(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     gif = [
         "https://media1.tenor.com/m/NMiID29TUvIAAAAC/hunter-x-hunter-gon-freecs.gif",
         "https://media1.tenor.com/m/0qj0aqZ0nucAAAAC/anya-spy-x-family-anime-anya-crying.gif",
@@ -635,9 +636,9 @@ async def cry(ctx: lightbulb.Context) -> None:
 async def beg(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     gif = [
         "https://media1.tenor.com/m/rt-b5wrDLisAAAAC/bocchi-the-rock-bocchi.gif",
         "https://media1.tenor.com/m/o9V-PmmNGiwAAAAC/konosuba-aqua.gif",
@@ -663,9 +664,9 @@ async def beg(ctx: lightbulb.Context) -> None:
 async def blush(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     gif = [
         "https://media1.tenor.com/m/u1RaweQYumcAAAAC/anime-blushing.gif",
         "https://media1.tenor.com/m/yAM097mHhCQAAAAC/1.gif",
@@ -691,9 +692,9 @@ async def blush(ctx: lightbulb.Context) -> None:
 async def facepalm(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     gif = [
         "https://media1.tenor.com/m/ddev3tyfgAoAAAAC/haruhi-kyon.gif",
         "https://media1.tenor.com/m/Ktim6-Sh99oAAAAC/mitsuha.gif",
@@ -719,9 +720,9 @@ async def facepalm(ctx: lightbulb.Context) -> None:
 async def nosebleed(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     gif = [
         "https://media1.tenor.com/m/Us2hPXlsqP8AAAAC/anime-girl.gif",
         "https://media1.tenor.com/m/Qy4yA2TMCmUAAAAC/nosebleed.gif",
@@ -747,9 +748,9 @@ async def nosebleed(ctx: lightbulb.Context) -> None:
 async def pout(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     gif = [
         "https://media1.tenor.com/m/yCR6JOoxS6wAAAAd/anime-angry.gif",
         "https://media1.tenor.com/m/03VCLMyKfL4AAAAC/pout-anime-pout.gif",
@@ -775,15 +776,16 @@ async def pout(ctx: lightbulb.Context) -> None:
 async def run(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     gif = [
         "https://media1.tenor.com/m/mUIXigPWPuYAAAAd/anime-anime-girl-running.gif",
         "https://media1.tenor.com/m/POl8wXpZBH0AAAAC/black-clover-charlotte.gif",
         "https://media1.tenor.com/m/XbfdY2Lx-zwAAAAC/zenitsu-running-away.gif",
         "https://media1.tenor.com/m/j6V8KlvWkzkAAAAC/one-punch-man-running.gif",
-        "https://media1.tenor.com/m/fCb3HkXgHHUAAAAC/lyly-run.gif"
+        "https://media1.tenor.com/m/fCb3HkXgHHUAAAAC/lyly-run.gif",
+        "https://media1.tenor.com/m/MMA6_WvqS60AAAAC/escape-im-out.gif"
     ]
     random_gif = choice(gif)
     embed = hikari.Embed(
@@ -803,9 +805,9 @@ async def run(ctx: lightbulb.Context) -> None:
 async def shrug(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     gif = [
         "https://media1.tenor.com/m/e1uPTuA2toIAAAAC/kana-shrug.gif",
         "https://media1.tenor.com/m/nlSDG33ptOoAAAAC/geto-suguru.gif",
@@ -831,9 +833,9 @@ async def shrug(ctx: lightbulb.Context) -> None:
 async def smirk(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     gif = [
         "https://media1.tenor.com/m/Za14IOIKmioAAAAC/spy-x-family-anya-forger.gif",
         "https://media1.tenor.com/m/kyI_yjIwKE8AAAAC/anime-smirk-anime-perverted-smirk.gif",
@@ -858,12 +860,12 @@ async def smirk(ctx: lightbulb.Context) -> None:
 @lightbulb.option("user", "user to tag", type=hikari.User)
 @lightbulb.command("wave", "Wave at someone.")
 @lightbulb.implements(lightbulb.SlashCommand)
-async def wave(ctx: lightbulb.Context) -> None:
+async def wave(ctx: lightbulb.Context) -> None: 
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     gif = [
         "https://media1.tenor.com/m/nQOSTbcTKZcAAAAC/anime-waves-hi.gif",
         "https://media1.tenor.com/m/tzbVcnK8iGsAAAAC/keai-cute.gif",
@@ -890,9 +892,9 @@ async def wave(ctx: lightbulb.Context) -> None:
 async def bite(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     gif = [
         "https://media1.tenor.com/m/5mVQ3ffWUTgAAAAC/anime-bite.gif",
         "https://media1.tenor.com/m/IKDf1NMrzsIAAAAC/anime-acchi-kocchi.gif",
@@ -919,9 +921,9 @@ async def bite(ctx: lightbulb.Context) -> None:
 async def bonk(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     gif = [
         "https://media1.tenor.com/m/bkXZ1GhsTTsAAAAC/hitoribocchi-bocchi.gif",
         "https://media1.tenor.com/m/mXwNLMSQRN8AAAAC/yuru-yuri-chinatsu-yoshikawa.gif",
@@ -948,9 +950,9 @@ async def bonk(ctx: lightbulb.Context) -> None:
 async def hug(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     gif = [
         "https://media1.tenor.com/m/kCZjTqCKiggAAAAC/hug.gif",
         "https://media1.tenor.com/m/J7eGDvGeP9IAAAAC/enage-kiss-anime-hug.gif",
@@ -977,9 +979,9 @@ async def hug(ctx: lightbulb.Context) -> None:
 async def marry(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     
     gif = [
         "https://media1.tenor.com/m/R4EeoV4R-kUAAAAd/spy-x-family-loid-forger.gif",
@@ -1007,9 +1009,9 @@ async def marry(ctx: lightbulb.Context) -> None:
 async def kiss(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     
     gif = [
         "https://media1.tenor.com/m/PxN2rH6SJuUAAAAC/anime-kiss.gif",
@@ -1037,9 +1039,9 @@ async def kiss(ctx: lightbulb.Context) -> None:
 async def lick(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     
     gif = [
         "https://media1.tenor.com/m/Pb1JPfqXpAIAAAAC/lick-licky.gif",
@@ -1067,9 +1069,9 @@ async def lick(ctx: lightbulb.Context) -> None:
 async def love(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     gif = [
         "https://media1.tenor.com/m/fMMWtnu9g0oAAAAC/juvia-juvia-lockser.gif",
         "https://media1.tenor.com/m/PGXshKPAUh4AAAAC/my-dress-up-darling-anime-love.gif",
@@ -1096,9 +1098,9 @@ async def love(ctx: lightbulb.Context) -> None:
 async def pat(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     gif = [
         "https://media1.tenor.com/m/oGbO8vW_eqgAAAAC/spy-x-family-anya.gif",
         "https://media1.tenor.com/m/3PjRNS8paykAAAAC/pat-pat-head.gif",
@@ -1125,9 +1127,9 @@ async def pat(ctx: lightbulb.Context) -> None:
 async def slap(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     gif = [
         "https://media1.tenor.com/m/XiYuU9h44-AAAAAC/anime-slap-mad.gif",
         "https://media1.tenor.com/m/eU5H6GbVjrcAAAAC/slap-jjk.gif",
@@ -1154,9 +1156,9 @@ async def slap(ctx: lightbulb.Context) -> None:
 async def hroleplay(ctx):
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     if not ctx.get_channel().is_nsfw:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
@@ -1220,9 +1222,9 @@ async def hroleplay(ctx):
 async def fuck(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     if not ctx.get_channel().is_nsfw:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
@@ -1252,9 +1254,9 @@ async def fuck(ctx: lightbulb.Context) -> None:
 async def anal(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     if not ctx.get_channel().is_nsfw:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
@@ -1287,9 +1289,9 @@ async def anal(ctx: lightbulb.Context) -> None:
 async def blowjob(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     if not ctx.get_channel().is_nsfw:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
@@ -1320,9 +1322,9 @@ async def blowjob(ctx: lightbulb.Context) -> None:
 async def boobjob(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     if not ctx.get_channel().is_nsfw:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
@@ -1352,9 +1354,9 @@ async def boobjob(ctx: lightbulb.Context) -> None:
 async def handjob(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     if not ctx.get_channel().is_nsfw:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
@@ -1386,12 +1388,12 @@ async def handjob(ctx: lightbulb.Context) -> None:
 async def sixtynine(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
-    if str(ctx.author.id) not in prem_users:
-        await ctx.respond("This is a premium command. To use this command, become a [member](https://buymeacoffee.com/azael/membership). Memberships help keep the bot online.")
-        return
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
+    #if str(ctx.author.id) not in prem_users:
+        #await ctx.respond("This is a premium command. To use this command, become a [member](https://buymeacoffee.com/azael/membership). Memberships help keep the bot online.")
+        #return
     if not ctx.get_channel().is_nsfw:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
@@ -1417,12 +1419,12 @@ async def sixtynine(ctx: lightbulb.Context) -> None:
 async def sixtynine(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
-    if str(ctx.author.id) not in prem_users:
-        await ctx.respond("This is a premium command. To use this command, become a [member](https://buymeacoffee.com/azael/membership). Memberships help keep the bot online.")
-        return
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
+    #if str(ctx.author.id) not in prem_users:
+        #await ctx.respond("This is a premium command. To use this command, become a [member](https://buymeacoffee.com/azael/membership). Memberships help keep the bot online.")
+        #return
     if not ctx.get_channel().is_nsfw:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
@@ -1451,12 +1453,12 @@ async def sixtynine(ctx: lightbulb.Context) -> None:
 async def sixtynine(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
-    if str(ctx.author.id) not in prem_users:
-        await ctx.respond("This is a premium command. To use this command, become a [member](https://buymeacoffee.com/azael/membership). Memberships help keep the bot online.")
-        return
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
+    #if str(ctx.author.id) not in prem_users:
+        #await ctx.respond("This is a premium command. To use this command, become a [member](https://buymeacoffee.com/azael/membership). Memberships help keep the bot online.")
+        #return
     if not ctx.get_channel().is_nsfw:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
@@ -1486,12 +1488,12 @@ async def sixtynine(ctx: lightbulb.Context) -> None:
 async def sixtynine(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
-    if str(ctx.author.id) not in prem_users:
-        await ctx.respond("This is a premium command. To use this command, become a [member](https://buymeacoffee.com/azael/membership). Memberships help keep the bot online.")
-        return
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
+    #if str(ctx.author.id) not in prem_users:
+        #await ctx.respond("This is a premium command. To use this command, become a [member](https://buymeacoffee.com/azael/membership). Memberships help keep the bot online.")
+        #return
     if not ctx.get_channel().is_nsfw:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
@@ -1520,12 +1522,12 @@ async def sixtynine(ctx: lightbulb.Context) -> None:
 async def sixtynine(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
-    if str(ctx.author.id) not in prem_users:
-        await ctx.respond("This is a premium command. To use this command, become a [member](https://buymeacoffee.com/azael/membership). Memberships help keep the bot online.")
-        return
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
+    #if str(ctx.author.id) not in prem_users:
+        #await ctx.respond("This is a premium command. To use this command, become a [member](https://buymeacoffee.com/azael/membership). Memberships help keep the bot online.")
+        #return
     if not ctx.get_channel().is_nsfw:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
@@ -1553,9 +1555,9 @@ async def sixtynine(ctx: lightbulb.Context) -> None:
 async def nsfw(ctx):
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     if not ctx.get_channel().is_nsfw:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
@@ -1594,9 +1596,9 @@ async def nsfw(ctx):
 async def hmeme(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     if not ctx.get_channel().is_nsfw:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
@@ -1626,9 +1628,9 @@ async def hmeme(ctx: lightbulb.Context) -> None:
 async def hgif(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     if not ctx.get_channel().is_nsfw:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
@@ -1652,14 +1654,14 @@ async def hgif(ctx: lightbulb.Context) -> None:
 
 #hgif3d
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.command("hgif3d", "Get a 3D hentai gif.", auto_defer=True)
+@lightbulb.command("htesting", "Get a 3D hentai gif.", auto_defer=True)
 @lightbulb.implements(lightbulb.SlashCommand)
-async def hgif3d(ctx: lightbulb.Context) -> None:
+async def htesting(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     
     if not ctx.get_channel().is_nsfw:
         await ctx.respond("This command can only be used in NSFW channels.")
@@ -1695,9 +1697,9 @@ async def hgif3d(ctx: lightbulb.Context) -> None:
 async def himage(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     
     # Check if the channel is NSFW
     if not ctx.get_channel().is_nsfw:
@@ -1742,9 +1744,9 @@ async def himage(ctx: lightbulb.Context) -> None:
 async def himage3d(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     
     # Check if the channel is NSFW
     if not ctx.get_channel().is_nsfw:
@@ -1781,6 +1783,40 @@ async def himage3d(ctx: lightbulb.Context) -> None:
     
     await ctx.respond(embed=embed)
 
+@bot.command
+@lightbulb.add_cooldown(length=5, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.option("user", "The user to tag", hikari.User)
+@lightbulb.command("howhorny", "Find out how horny someone is.")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def howhorny(ctx: lightbulb.Context) -> None:
+    if any(word in str(ctx.author.id) for word in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+    guild = ctx.get_guild()
+    if guild is not None:
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
+    else:
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
+    
+    horny_level = randint(0, 100)
+    await ctx.respond(f"{ctx.options.user.mention} is **{horny_level}%** horny.")
+
+@bot.command
+@lightbulb.add_cooldown(length=5, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.option("user", "The user to tag", hikari.User)
+@lightbulb.command("howgay", "Find out how horny someone is.")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def howgay(ctx: lightbulb.Context) -> None:
+    if any(word in str(ctx.author.id) for word in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+    guild = ctx.get_guild()
+    if guild is not None:
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
+    else:
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
+    
+    horny_level = randint(0, 100)
+    await ctx.respond(f"{ctx.options.user.mention} is **{horny_level}%** gay.")
+
 #----------------------------------------------------------------------------------------
 #misc
 @bot.command
@@ -1790,9 +1826,9 @@ async def himage3d(ctx: lightbulb.Context) -> None:
 async def misc(ctx):
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
@@ -1828,9 +1864,9 @@ async def misc(ctx):
 async def invite(ctx):
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
@@ -1838,12 +1874,6 @@ async def invite(ctx):
 		description="Get the bot's invite link [here](https://discord.com/api/oauth2/authorize?client_id=1003247499911376956&permissions=414464723008&scope=bot%20applications.commands).",
 		color=0x2f3136
 	)
-    await ctx.respond(embed=embed)
-    embed = embed = hikari.Embed(
-		title = '',
-			description = '**Thank you!** \n If you like using Anicord, consider [voting](https://top.gg/bot/1003247499911376956/vote) or leaving a [review](https://top.gg/bot/1003247499911376956).\nIf you want to help keep Anicord online, consider becoming a [member](https://buymeacoffee.com/azael/membership).',
-			color = 0x2f3136
-		)
     await ctx.respond(embed=embed)
 
 #vote command
@@ -1854,9 +1884,9 @@ async def invite(ctx):
 async def vote(ctx):
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
@@ -1864,12 +1894,6 @@ async def vote(ctx):
 		description="Click [here](https://top.gg/bot/1003247499911376956/vote) to vote on top.gg. Thank you!",
 		color=0x2f3136
     )
-    await ctx.respond(embed=embed)
-    embed = embed = hikari.Embed(
-		title = '',
-			description = '**Thank you!** \n If you like using Anicord, consider [voting](https://top.gg/bot/1003247499911376956/vote) or leaving a [review](https://top.gg/bot/1003247499911376956).\nIf you want to help keep Anicord online, consider becoming a [member](https://buymeacoffee.com/azael/membership).',
-			color = 0x2f3136
-		)
     await ctx.respond(embed=embed)
 
 #support command
@@ -1880,9 +1904,9 @@ async def vote(ctx):
 async def support(ctx):
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
@@ -1890,12 +1914,6 @@ async def support(ctx):
 		description="Click [here](https://discord.com/invite/CvpujuXmEf) to join the support server.",
 		color=0x2f3136
 	)
-    await ctx.respond(embed=embed)
-    embed = embed = hikari.Embed(
-		title = '',
-			description = '**Thank you!** \n If you like using Anicord, consider [voting](https://top.gg/bot/1003247499911376956/vote) or leaving a [review](https://top.gg/bot/1003247499911376956).\nIf you want to help keep Anicord online, consider becoming a [member](https://buymeacoffee.com/azael/membership).',
-			color = 0x2f3136
-		)
     await ctx.respond(embed=embed)
 
 #donate command
@@ -1906,9 +1924,9 @@ async def support(ctx):
 async def donate(ctx):
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
@@ -1916,12 +1934,6 @@ async def donate(ctx):
         description="[Buy me a coffee](https://www.buymeacoffee.com/azael) to keep Anicord alive. Thank you! :)",
 		color=0x2f3136
 	)
-    await ctx.respond(embed=embed)
-    embed = embed = hikari.Embed(
-		title = '',
-			description = '**Thank you!** \n If you like using Anicord, consider [voting](https://top.gg/bot/1003247499911376956/vote) or leaving a [review](https://top.gg/bot/1003247499911376956).\nIf you want to help keep Anicord online, consider becoming a [member](https://buymeacoffee.com/azael/membership).',
-			color = 0x2f3136
-		)
     await ctx.respond(embed=embed)
 
 #more command
@@ -1932,9 +1944,9 @@ async def donate(ctx):
 async def more(ctx):
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
@@ -1943,28 +1955,23 @@ async def more(ctx):
         color=0x2f3136
     )
     await ctx.respond(embed=embed)
-    embed = embed = hikari.Embed(
-		title = '',
-			description = '**Thank you!** \n If you like using Anicord, consider [voting](https://top.gg/bot/1003247499911376956/vote) or leaving a [review](https://top.gg/bot/1003247499911376956).\nIf you want to help keep Anicord online, consider becoming a [member](https://buymeacoffee.com/azael/membership).',
-			color = 0x2f3136
-		)
-    await ctx.respond(embed=embed)
 
 #privacy command
 @bot.command
+@lightbulb.add_cooldown(length=20, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.command("privacy", "View our privacy policy statement.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def privacy(ctx):
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1013474210242375741, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
 		title="",
-		description="**Privacy Policy:** \n The personal information of any user, including the message content it replies to, is not tracked by Anicord.",
+		description="**Privacy Policy:** \n The personal information of any user, including the username or the command, is not tracked by Anicord.\n[Click to view the full privacy policy statement.](https://gist.github.com/Aza3l01/4374050bc9749c6588a6291629f08f39)",
 		color=0x2f3136
 	)
     await ctx.respond(embed=embed)
