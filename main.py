@@ -83,14 +83,14 @@ async def on_guild_join(event):
                     "**/nsfw:** Overview of NSFW commands like hentai memes and gifs.\n\n"
                     "**Miscellaneous:**\n"
                     "**/misc:** Overview of miscellaneous commands.\n\n"
-                    "All NSFW commands are only accessible in NSFW channels.\n"
-                    "This message will be deleted in 5 minutes."
+                    "NSFW commands are LOCKED from normal channels and are ONLY available in NSFW channels.\n"
+                    "This message will be deleted in `3 minutes`."
                     ),
                 color=0x2f3136
             )
             embed.set_footer("Anicord is under development. Join the support server if you need help :)")
             message = await channel.send(embed=embed)
-            await asyncio.sleep(300)
+            await asyncio.sleep(180)
             await message.delete()
             break
 
@@ -129,7 +129,7 @@ async def help(ctx):
             "**/nsfw:** Overview of NSFW commands like hentai memes and gifs.\n\n"
             "**Miscellaneous:**\n"
             "**/misc:** Overview of miscellaneous commands.\n\n"
-            "All NSFW commands are only accessible in NSFW channels."
+            "NSFW commands are LOCKED from normal channels and are ONLY available in NSFW channels.."
         ),
         color=0x2f3136
     )
@@ -1166,6 +1166,7 @@ async def hroleplay(ctx):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
         title="__**NSFW Role-play Reactions**__",
+        description="NSFW commands are LOCKED from normal channels and are ONLY available in NSFW channels.",
         color=0x2f3136
     )
     embed.add_field(
@@ -1566,11 +1567,12 @@ async def nsfw(ctx):
     embed = hikari.Embed(
         title="__**NSFW Commands**__",
         description=(
+            "NSFW commands are LOCKED from normal channels and are ONLY available in NSFW channels.\n\n"
             "**/hmeme:** Get a hentai meme.\n"
             "**/hgif:** Get a hentai gif.\n"
             "**/hgif3d:** Get a 3D hentai gif.\n"
             "**/himage:** Get a hentai image.\n"
-            "**/himage3d:** Get a 3D hentai image.\n"
+            "**/himage3d:** Get a 3D hentai image.\n\n"
             "More Commands In Development."
         ),
         color=0x2f3136
