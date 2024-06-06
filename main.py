@@ -10,18 +10,17 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-bot_token = os.getenv('BOT_TOKEN')
 channel = os.getenv('CHANNEL_ID')
 prem_users_string = os.getenv("PREM_USERS_LIST")
 prem_users = prem_users_string.split(",")
 
 jikan = jikanpy.Jikan()
 
-bot = lightbulb.BotApp(token=bot_token)
+bot = lightbulb.BotApp(token=os.getenv('BOT_TOKEN'))
 
 reddit = praw.Reddit(
-    client_id="ab7VFLYLR38dL3NwruCWhw",
-    client_secret="VEYILiZE2EaH_sO8e8SyfSCfXzEJ7w",
+    client_id=os.getenv("CLIENT_ID"),
+    client_secret=os.getenv("CLIENT_SECRET"),
     user_agent="reddit app to pull posts to discord app by /u/licensed_",
     check_for_async=False
 )
