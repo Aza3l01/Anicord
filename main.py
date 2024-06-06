@@ -6,12 +6,18 @@ import praw
 import jikanpy
 from random import randint, choice
 import asyncio
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+bot_token = os.getenv('BOT_TOKEN')
+channel = os.getenv('CHANNEL_ID')
+prem_users_string = os.getenv("PREM_USERS_LIST")
+prem_users = prem_users_string.split(",")
 
 jikan = jikanpy.Jikan()
 
-bot = lightbulb.BotApp(
-    token="MTAwMzI0NzQ5OTkxMTM3Njk1Ng.GbxSQg.HK-XlFjM7JGel8p7pwKZhwrwRJbfghgpReVJZQ"
-)
+bot = lightbulb.BotApp(token=bot_token)
 
 reddit = praw.Reddit(
     client_id="ab7VFLYLR38dL3NwruCWhw",
@@ -41,9 +47,10 @@ class TopGGClient:
     async def close(self):
         await self.session.close()
 
-topgg_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEwMDMyNDc0OTk5MTEzNzY5NTYiLCJib3QiOnRydWUsImlhdCI6MTY1OTYwMjk3Mn0.-TxpE4GNZSkgBPYQHQJ9vCD20_3lN_D-jImpcVIz928"
+topgg_token = os.getenv("TOPGG_TOKEN")
 topgg_client = TopGGClient(bot, topgg_token)
 
+#starting count update
 @bot.listen(hikari.StartedEvent)
 async def on_starting(event: hikari.StartedEvent) -> None:
     guilds = await bot.rest.fetch_my_guilds()
@@ -55,8 +62,6 @@ async def on_starting(event: hikari.StartedEvent) -> None:
         )
     )
     await topgg_client.post_guild_count(server_count)
-
-prem_users = ["364400063281102852", "982029598600613949"]
 
 #join
 @bot.listen(hikari.GuildJoinEvent)
@@ -187,45 +192,46 @@ async def anisearch(ctx: lightbulb.Context) -> None:
         await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
         await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
+    
     name = ctx.options.name
-    search = AnimeSearch(name)
+    search = jikan.search('anime', name)
     
     anime_result = None
-    if search.results[0] is not None:
-        anime_result = search.results[0]
-    elif len(search.results) > 1 and search.results[1] is not None:
-        anime_result = search.results[1]
+    if search['results'][0] is not None:
+        anime_result = search['results'][0]
+    elif len(search['results']) > 1 and search['results'][1] is not None:
+        anime_result = search['results'][1]
     else:
         await ctx.respond("No valid anime found.")
         return
 
-    anime = Anime(anime_result.mal_id)
+    anime = jikan.anime(anime_result['mal_id'])
     embed = hikari.Embed(
-        title=f"{anime.title_english or 'N/A'} | {anime.title_japanese or 'N/A'}",
-        description=anime.synopsis or 'No synopsis available.',
-        url=anime.url,
+        title=f"{anime.get('title_english') or 'N/A'} | {anime.get('title_japanese') or 'N/A'}",
+        description=anime.get('synopsis') or 'No synopsis available.',
+        url=anime['url'],
         color=0x2f3136
     )
-    embed.set_thumbnail(anime.image_url)
+    embed.set_thumbnail(anime['image_url'])
 
-    if anime.premiered:
-        embed.add_field(name="Premiered", value=anime.premiered, inline=True)
-    if anime.status:
-        embed.add_field(name="Status", value=anime.status, inline=True)
-    if anime.type:
-        embed.add_field(name="Type", value=anime.type, inline=True)
-    if anime.score is not None:
-        embed.add_field(name="Score", value=str(anime.score), inline=True)
-    if anime.episodes is not None:
-        embed.add_field(name="Episodes", value=str(anime.episodes), inline=True)
-    if anime.broadcast:
-        embed.add_field(name="Broadcast Time", value=anime.broadcast, inline=True)
-    if anime.rank is not None:
-        embed.add_field(name="Ranking", value=str(anime.rank), inline=True)
-    if anime.popularity is not None:
-        embed.add_field(name="Popularity", value=str(anime.popularity), inline=True)
-    if anime.rating:
-        embed.add_field(name="Rating", value=anime.rating, inline=True)
+    if anime.get('premiered'):
+        embed.add_field(name="Premiered", value=anime['premiered'], inline=True)
+    if anime.get('status'):
+        embed.add_field(name="Status", value=anime['status'], inline=True)
+    if anime.get('type'):
+        embed.add_field(name="Type", value=anime['type'], inline=True)
+    if anime.get('score') is not None:
+        embed.add_field(name="Score", value=str(anime['score']), inline=True)
+    if anime.get('episodes') is not None:
+        embed.add_field(name="Episodes", value=str(anime['episodes']), inline=True)
+    if anime.get('broadcast'):
+        embed.add_field(name="Broadcast Time", value=anime['broadcast'], inline=True)
+    if anime.get('rank') is not None:
+        embed.add_field(name="Ranking", value=str(anime['rank']), inline=True)
+    if anime.get('popularity') is not None:
+        embed.add_field(name="Popularity", value=str(anime['popularity']), inline=True)
+    if anime.get('rating'):
+        embed.add_field(name="Rating", value=anime['rating'], inline=True)
 
     embed.set_footer("Queries are served by an unofficial MAL API and Anicord has no control over the content.")
     
@@ -287,7 +293,7 @@ async def mangasearch(ctx: lightbulb.Context) -> None:
     
     await ctx.respond(embed=embed)
 
-#extended
+#animeextended
 @bot.command
 @lightbulb.add_cooldown(length=30, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.option("name", "Anime")
@@ -298,23 +304,24 @@ async def extended(ctx: lightbulb.Context) -> None:
     if str(ctx.author.id) in prem_users:
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
         name = ctx.options.name
-        search = AnimeSearch(name)
-        if len(search.results) < 4:
+        search = await jikan.search("anime", name)
+        if len(search["results"]) < 4:
             await ctx.respond("Not enough search results found.", flags=hikari.MessageFlag.EPHEMERAL)
             return
-        anime_options = [Anime(result.mal_id) for result in search.results[:4]]
+        anime_options = search["results"][:4]
         components = []
         action_row = hikari.ActionRowBuilder()
-        for i in range(4):
+        for i, anime in enumerate(anime_options):
             button = hikari.ButtonBuilder(style=hikari.ButtonStyle.PRIMARY, custom_id=f"button_{i}", emoji=f"{i+1}️⃣")
             action_row.add_component(button)
         components.append(action_row.build())
         embed = hikari.Embed(
             title="Choose a show:",
-            description="\n".join([f"{i+1}️⃣ {anime.title}" for i, anime in enumerate(anime_options)]),
+            description="\n".join([f"{i+1}️⃣ {anime['title']}" for i, anime in enumerate(anime_options)]),
             color=0x2f3136
         )
         await ctx.respond(embed=embed, component=components)
+
         @bot.listen(hikari.InteractionCreateEvent)
         async def on_button_click(event: hikari.InteractionCreateEvent) -> None:
             if event.interaction.user.id != ctx.author.id:
@@ -325,32 +332,33 @@ async def extended(ctx: lightbulb.Context) -> None:
             if button_id.startswith("button_"):
                 index = int(button_id.split("_")[1])
                 anime = anime_options[index]
+                anime_details = await jikan.anime(anime["mal_id"])
                 embed = hikari.Embed(
-                    title=f"{anime.title_english or 'N/A'} | {anime.title_japanese or 'N/A'}",
-                    description=anime.synopsis or 'No synopsis available.',
-                    url=anime.url,
+                    title=f"{anime_details['title']} | {anime_details['title_japanese']}",
+                    description=anime_details['synopsis'] or 'No synopsis available.',
+                    url=anime_details['url'],
                     color=0x2f3136
                 )
-                embed.set_thumbnail(anime.image_url)
-                if anime.premiered:
-                    embed.add_field(name="Premiered", value=anime.premiered, inline=True)
-                if anime.status:
-                    embed.add_field(name="Status", value=anime.status, inline=True)
-                if anime.type:
-                    embed.add_field(name="Type", value=anime.type, inline=True)
-                if anime.score is not None:
-                    embed.add_field(name="Score", value=str(anime.score), inline=True)
-                if anime.episodes is not None:
-                    embed.add_field(name="Episodes", value=str(anime.episodes), inline=True)
-                if anime.broadcast:
-                    embed.add_field(name="Broadcast Time", value=anime.broadcast, inline=True)
-                if anime.rank is not None:
-                    embed.add_field(name="Ranking", value=str(anime.rank), inline=True)
-                if anime.popularity is not None:
-                    embed.add_field(name="Popularity", value=str(anime.popularity), inline=True)
-                if anime.rating:
-                    embed.add_field(name="Rating", value=anime.rating, inline=True)
-                embed.set_footer("Queries are served by an unofficial MAL API and Anicord has no control over the content.")
+                embed.set_thumbnail(anime_details['image_url'])
+                if anime_details['premiered']:
+                    embed.add_field(name="Premiered", value=anime_details['premiered'], inline=True)
+                if anime_details['status']:
+                    embed.add_field(name="Status", value=anime_details['status'], inline=True)
+                if anime_details['type']:
+                    embed.add_field(name="Type", value=anime_details['type'], inline=True)
+                if anime_details['score'] is not None:
+                    embed.add_field(name="Score", value=str(anime_details['score']), inline=True)
+                if anime_details['episodes'] is not None:
+                    embed.add_field(name="Episodes", value=str(anime_details['episodes']), inline=True)
+                if anime_details['broadcast']:
+                    embed.add_field(name="Broadcast Time", value=anime_details['broadcast'], inline=True)
+                if anime_details['rank']:
+                    embed.add_field(name="Ranking", value=str(anime_details['rank']), inline=True)
+                if anime_details['popularity']:
+                    embed.add_field(name="Popularity", value=str(anime_details['popularity']), inline=True)
+                if anime_details['rating']:
+                    embed.add_field(name="Rating", value=anime_details['rating'], inline=True)
+                embed.set_footer("Queries are served by the Jikan API.")
                 await event.interaction.create_initial_response(hikari.ResponseType.MESSAGE_UPDATE, embed=embed, component=None)
 
 #character
@@ -1173,7 +1181,6 @@ async def hroleplay(ctx):
         name="Available",
         value=(
             "/fuck\n"
-            "/anal\n"
             "/blowjob\n"
             "/boobjob\n"
             "/handjob"
@@ -1183,7 +1190,6 @@ async def hroleplay(ctx):
     embed.add_field(
         name="Premium",
         value=(
-            "/69\n"
             "/cum\n"
             "/ride\n"
             "/fingering\n"
@@ -1239,41 +1245,6 @@ async def fuck(ctx: lightbulb.Context) -> None:
     random_gif = choice(gif)
     embed = hikari.Embed(
         description=f"**{ctx.author.mention} is fucking {ctx.options.user.mention}**",
-        color=0x2f3136
-    )
-    embed.set_image(random_gif)
-    await ctx.respond(embed=embed)
-    if any(word in str(ctx.author.id) for word in prem_users):
-        await ctx.command.cooldown_manager.reset_cooldown(ctx)
-
-#anal
-@bot.command
-@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "The user to tag", hikari.User)
-@lightbulb.command("anal", "Fuck someone in the ass.")
-@lightbulb.implements(lightbulb.SlashCommand)
-async def anal(ctx: lightbulb.Context) -> None:
-    guild = ctx.get_guild()
-    if guild is not None:
-        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
-    else:
-        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
-    if not ctx.get_channel().is_nsfw:
-        await ctx.respond("This command can only be used in NSFW channels.")
-        return
-    gif = [
-        "https://cdn.discordapp.com/attachments/1243886094278459422/1244588808150847539/anal1.gif?ex=6655a927&is=665457a7&hm=d12d086a95f8d548f4843af7505c8cd32980f15095e6ff9df16c6c8b573c2b49&",
-        "https://cdn.discordapp.com/attachments/1243886094278459422/1244588827696168970/anal2.gif?ex=6655a92b&is=665457ab&hm=a95d536ff7275de6c6ab7fb78c4131ffbdb59fd7a95e4102374106ce37afeb4e&",
-        "https://cdn.discordapp.com/attachments/1243886094278459422/1244588836520988712/anal3.gif?ex=6655a92d&is=665457ad&hm=dcbaa85738f1f0f81dd56b26bc196803048a7b4e9ec27890693d8ceb1feda903&",
-        "https://cdn.discordapp.com/attachments/1243886094278459422/1244588853902184469/anal4.gif?ex=6655a932&is=665457b2&hm=1640d7d4729c9aed4a279a8573278f8a1340d831179f75c1c1a092c883240081&",
-        "https://cdn.discordapp.com/attachments/1243886094278459422/1244588864044273664/anal5.gif?ex=6655a934&is=665457b4&hm=0f5303f58c5f095f319aca42fa9e6ea22d719294d018b1d673fcd07b30ee34d7&",
-        "https://cdn.discordapp.com/attachments/1243886094278459422/1244588878912815164/anal6.gif?ex=6655a938&is=665457b8&hm=e16e3d25a875ba396d48745ebe2eddc5e53f36624937219765a1f75459e3df07&",
-        "https://cdn.discordapp.com/attachments/1243886094278459422/1244588890325520414/anal7.gif?ex=6655a93a&is=665457ba&hm=a07189af810bf9833d6b9a7d3b443a6c85d6bc07a8cbaaaf3b78b4a1e37a5a50&",
-        "https://cdn.discordapp.com/attachments/1243886094278459422/1244588900614279290/anal8.gif?ex=6655a93d&is=665457bd&hm=8dd32362da8c621222ccd35f6542255e417f2ac96eee8fc02d3d4732e86d522c&"
-    ]
-    random_gif = choice(gif)
-    embed = hikari.Embed(
-        description=f"**{ctx.author.mention} is fucking {ctx.options.user.mention} in the ass**",
         color=0x2f3136
     )
     embed.set_image(random_gif)
@@ -1380,37 +1351,6 @@ async def handjob(ctx: lightbulb.Context) -> None:
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
 
 #premium
-#69
-@bot.command
-@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "The user to tag", hikari.User)
-@lightbulb.command("69", "someone")
-@lightbulb.implements(lightbulb.SlashCommand)
-async def sixtynine(ctx: lightbulb.Context) -> None:
-    guild = ctx.get_guild()
-    if guild is not None:
-        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
-    else:
-        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
-    #if str(ctx.author.id) not in prem_users:
-        #await ctx.respond("This is a premium command. To use this command, become a [member](https://buymeacoffee.com/azael/membership). Memberships help keep the bot online.")
-        #return
-    if not ctx.get_channel().is_nsfw:
-        await ctx.respond("This command can only be used in NSFW channels.")
-        return
-    gif = [
-        "https://cdn.discordapp.com/attachments/1243886239955025932/1244708659481804891/3.gif?ex=665618c5&is=6654c745&hm=2ed041d2f3b691880b72e09f85ed6dd95611e388575e73b7c8b0c0592fe4df68&",
-        "https://cdn.discordapp.com/attachments/1243886239955025932/1244708680650199170/1.gif?ex=665618cb&is=6654c74b&hm=a4abe30ae028f41c0e12846af3ad50a321c30da4264ccade6c3a79ba79653344&",
-        "https://cdn.discordapp.com/attachments/1243886239955025932/1244708690439835761/2.gif?ex=665618cd&is=6654c74d&hm=c7eef81d264c0b1b79f9c1d01299f7b4340378e3f49727d5431c14970636b262&"
-    ]
-    random_gif = choice(gif)
-    embed = hikari.Embed(
-        description=f"**{ctx.author.mention} is doing 69 with {ctx.options.user.mention}**",
-        color=0x2f3136
-    )
-    embed.set_image(random_gif)
-    await ctx.respond(embed=embed)
-
 #cum
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
@@ -1451,7 +1391,7 @@ async def sixtynine(ctx: lightbulb.Context) -> None:
 @lightbulb.option("user", "The user to tag", hikari.User)
 @lightbulb.command("ride", "someone")
 @lightbulb.implements(lightbulb.SlashCommand)
-async def sixtynine(ctx: lightbulb.Context) -> None:
+async def ride(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
         await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
@@ -1486,7 +1426,7 @@ async def sixtynine(ctx: lightbulb.Context) -> None:
 @lightbulb.option("user", "The user to tag", hikari.User)
 @lightbulb.command("fingering", "someone")
 @lightbulb.implements(lightbulb.SlashCommand)
-async def sixtynine(ctx: lightbulb.Context) -> None:
+async def fingering(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
         await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
@@ -1520,7 +1460,7 @@ async def sixtynine(ctx: lightbulb.Context) -> None:
 @lightbulb.option("user", "The user to tag", hikari.User)
 @lightbulb.command("boobsuck", "someone")
 @lightbulb.implements(lightbulb.SlashCommand)
-async def sixtynine(ctx: lightbulb.Context) -> None:
+async def boobsuck(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
         await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
@@ -1570,9 +1510,7 @@ async def nsfw(ctx):
             "NSFW commands are LOCKED from normal channels and are ONLY available in NSFW channels.\n\n"
             "**/hmeme:** Get a hentai meme.\n"
             "**/hgif:** Get a hentai gif.\n"
-            "**/hgif3d:** Get a 3D hentai gif.\n"
             "**/himage:** Get a hentai image.\n"
-            "**/himage3d:** Get a 3D hentai image.\n\n"
             "More Commands In Development."
         ),
         color=0x2f3136
@@ -1636,51 +1574,11 @@ async def hgif(ctx: lightbulb.Context) -> None:
     if not ctx.get_channel().is_nsfw:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
-
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
-    
     sub = reddit.subreddit("HENTAI_GIF")
     posts = [post for post in sub.hot(limit=50)]
     random_post = choice(posts)
-    
-    embed = hikari.Embed(
-        title=random_post.title,
-        description="",
-        url="https://www.reddit.com" + random_post.permalink,
-        color=0x2f3136
-    )
-    embed.set_image(random_post.url)
-    embed.set_footer("This content is served by the Reddit API and Anicord has no control over it.")
-    await ctx.respond(embed=embed)
-
-#hgif3d
-@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.command("htesting", "Get a 3D hentai gif.", auto_defer=True)
-@lightbulb.implements(lightbulb.SlashCommand)
-async def htesting(ctx: lightbulb.Context) -> None:
-    guild = ctx.get_guild()
-    if guild is not None:
-        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
-    else:
-        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
-    
-    if not ctx.get_channel().is_nsfw:
-        await ctx.respond("This command can only be used in NSFW channels.")
-        return
-
-    if any(word in str(ctx.author.id) for word in prem_users):
-        await ctx.command.cooldown_manager.reset_cooldown(ctx)
-    
-    sub = await reddit.subreddit("3DPorncraft+3DHentai")
-    posts = [post for post in await sub.hot(limit=50) if post.url.endswith('.gif')]
-    
-    if not posts:
-        await ctx.respond("No GIFs found.")
-        return
-
-    random_post = choice(posts)
-    
     embed = hikari.Embed(
         title=random_post.title,
         description="",
@@ -1702,31 +1600,18 @@ async def himage(ctx: lightbulb.Context) -> None:
         await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
         await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
-    
-    # Check if the channel is NSFW
     if not ctx.get_channel().is_nsfw:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
-
-    # Reset cooldown for premium users
     if any(str(ctx.author.id) == user_id for user_id in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
-    
-    # Fetch subreddit posts
-    sub = reddit.subreddit("hentai+nhentai")
+    sub = reddit.subreddit("hentai+nhentai+3DPorncraft")
     posts = list(sub.hot(limit=50))
-
-    # Filter image posts
     image_posts = [post for post in posts if post.url.endswith(('.jpg', '.jpeg', '.png'))]
-    
     if not image_posts:
         await ctx.respond("No suitable images found in the subreddit.")
         return
-    
-    # Select a random post from the filtered image posts
     random_post = choice(image_posts)
-    
-    # Create an embed with the post details
     embed = hikari.Embed(
         title=random_post.title,
         description="",
@@ -1738,53 +1623,46 @@ async def himage(ctx: lightbulb.Context) -> None:
     
     await ctx.respond(embed=embed)
 
-#himage3d
+#----------------------------------------------------------------------------------------
+#gimmick
 @bot.command
-@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.command("himage3d", "Get an image.", auto_defer=True)
+@lightbulb.add_cooldown(length=20, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.command("gimmick", "Overview of all gimmick commands.")
 @lightbulb.implements(lightbulb.SlashCommand)
-async def himage3d(ctx: lightbulb.Context) -> None:
+async def gimmick(ctx):
     guild = ctx.get_guild()
     if guild is not None:
         await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
         await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
-    
-    # Check if the channel is NSFW
     if not ctx.get_channel().is_nsfw:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
-
-    # Reset cooldown for premium users
-    if any(str(ctx.author.id) == user_id for user_id in prem_users):
+    if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
-    
-    # Fetch subreddit posts
-    sub = reddit.subreddit("3DPorncraft")
-    posts = list(sub.hot(limit=50))
-
-    # Filter image posts
-    image_posts = [post for post in posts if post.url.endswith(('.jpg', '.jpeg', '.png'))]
-    
-    if not image_posts:
-        await ctx.respond("No suitable images found in the subreddit.")
-        return
-    
-    # Select a random post from the filtered image posts
-    random_post = choice(image_posts)
-    
-    # Create an embed with the post details
     embed = hikari.Embed(
-        title=random_post.title,
-        description="",
-        url=f"https://www.reddit.com{random_post.permalink}",
+        title="__**NSFW Commands**__",
+        description=(
+            "**/howhorny:** Fine out how horny someone is.\n"
+            "**/howgay:** Find out how gay someone is.\n"
+            "More Commands In Development."
+        ),
         color=0x2f3136
     )
-    embed.set_image(random_post.url)
-    embed.set_footer("This content is served by the Reddit API and Anicord has no control over it.")
-    
+    embed.set_footer("Anicord is under development. Join the support server if you need help :)")
     await ctx.respond(embed=embed)
+    await ctx.respond(
+        embed=hikari.Embed(
+            description=(
+                "**Thank you!**\n"
+                "If you like using Anicord, consider [voting](https://top.gg/bot/1003247499911376956/vote) or leaving a [review](https://top.gg/bot/1003247499911376956).\n"
+                "To help keep Anicord online, consider becoming a [member](https://buymeacoffee.com/azael/membership)."
+            ),
+            color=0x2f3136
+        )
+    )
 
+#howhorny
 @bot.command
 @lightbulb.add_cooldown(length=5, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.option("user", "The user to tag", hikari.User)
@@ -1802,10 +1680,11 @@ async def howhorny(ctx: lightbulb.Context) -> None:
     horny_level = randint(0, 100)
     await ctx.respond(f"{ctx.options.user.mention} is **{horny_level}%** horny.")
 
+#howgay
 @bot.command
 @lightbulb.add_cooldown(length=5, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.option("user", "The user to tag", hikari.User)
-@lightbulb.command("howgay", "Find out how horny someone is.")
+@lightbulb.command("howgay", "Find out how gay someone is.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def howgay(ctx: lightbulb.Context) -> None:
     if any(word in str(ctx.author.id) for word in prem_users):
