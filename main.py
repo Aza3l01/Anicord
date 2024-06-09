@@ -5,7 +5,6 @@ from mal import *
 import praw
 import jikanpy
 from random import randint, choice
-import asyncio
 import os
 from dotenv import load_dotenv
 
@@ -70,33 +69,6 @@ async def on_guild_join(event):
         await bot.rest.create_message(1245405333229146219, f"Joined `{guild.name}`.")
     else:
         await bot.rest.create_message(1245405333229146219, f"Joined unknown server.")
-    guild = event.guild
-    for channel in guild.get_channels().values():
-        if isinstance(channel, hikari.TextableChannel):
-            embed = hikari.Embed(
-                title="Thank you for inviting me here! 🫶",
-                description=(
-                    "**Please use the commands below to get an overview of all the commands.**\n\n"
-                    "**Core Commands:**\n"
-                    "**/core:** Overview of all core commands.\n\n"
-                    "**Role-play Reactions:**\n"
-                    "**/roleplay:** Overview of all role-play commands.\n\n"
-                    "**NSFW Role-play Reactions:**\n"
-                    "**/hroleplay:** Overview of NSFW all role-play commands.\n\n"
-                    "**Other NSFW Commands:**\n"
-                    "**/nsfw:** Overview of NSFW commands like hentai memes and gifs.\n\n"
-                    "**Miscellaneous:**\n"
-                    "**/misc:** Overview of miscellaneous commands.\n\n"
-                    "NSFW commands are LOCKED from normal channels and are ONLY available in NSFW channels.\n"
-                    "This message will be deleted in `3 minutes`."
-                    ),
-                color=0x2f3136
-            )
-            embed.set_footer("Anicord is under development. Join the support server if you need help :)")
-            message = await channel.send(embed=embed)
-            await asyncio.sleep(180)
-            await message.delete()
-            break
 
 #leave
 @bot.listen(hikari.GuildLeaveEvent)
@@ -139,6 +111,16 @@ async def help(ctx):
     )
     embed.set_footer("Anicord is under development. Join the support server if you need help :)")
     await ctx.respond(embed=embed)
+    await ctx.respond(
+        embed=hikari.Embed(
+            description=(
+                "**Thank you!**\n"
+                "If you like using Anicord, consider leaving a [review](https://top.gg/bot/1003247499911376956).\n"
+                "Becoming a [member](https://buymeacoffee.com/azael/membership) for $3 to keep Anicord online."
+            ),
+            color=0x2f3136
+        )
+    )
 
 #----------------------------------------------------------------------------------------
 #core
@@ -172,8 +154,8 @@ async def core(ctx):
         embed=hikari.Embed(
             description=(
                 "**Thank you!**\n"
-                "If you like using Anicord, consider [voting](https://top.gg/bot/1003247499911376956/vote) or leaving a [review](https://top.gg/bot/1003247499911376956).\n"
-                "To help keep Anicord online, consider becoming a [member](https://buymeacoffee.com/azael/membership)."
+                "If you like using Anicord, consider leaving a [review](https://top.gg/bot/1003247499911376956).\n"
+                "Becoming a [member](https://buymeacoffee.com/azael/membership) for $3 to keep Anicord online."
             ),
             color=0x2f3136
         )
@@ -191,52 +173,47 @@ async def anisearch(ctx: lightbulb.Context) -> None:
         await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
         await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
-    
     name = ctx.options.name
-    search = jikan.search('anime', name)
-    
+    search = AnimeSearch(name)
+
     anime_result = None
-    if search['results'][0] is not None:
-        anime_result = search['results'][0]
-    elif len(search['results']) > 1 and search['results'][1] is not None:
-        anime_result = search['results'][1]
+    if search.results[0] is not None:
+        anime_result = search.results[0]
+    elif len(search.results) > 1 and search.results[1] is not None:
+        anime_result = search.results[1]
     else:
         await ctx.respond("No valid anime found.")
         return
-
-    anime = jikan.anime(anime_result['mal_id'])
+    anime = Anime(anime_result.mal_id)
     embed = hikari.Embed(
-        title=f"{anime.get('title_english') or 'N/A'} | {anime.get('title_japanese') or 'N/A'}",
-        description=anime.get('synopsis') or 'No synopsis available.',
-        url=anime['url'],
+        title=f"{anime.title_english or 'N/A'} | {anime.title_japanese or 'N/A'}",
+        description=anime.synopsis or 'No synopsis available.',
+        url=anime.url,
         color=0x2f3136
     )
-    embed.set_thumbnail(anime['image_url'])
-
-    if anime.get('premiered'):
-        embed.add_field(name="Premiered", value=anime['premiered'], inline=True)
-    if anime.get('status'):
-        embed.add_field(name="Status", value=anime['status'], inline=True)
-    if anime.get('type'):
-        embed.add_field(name="Type", value=anime['type'], inline=True)
-    if anime.get('score') is not None:
-        embed.add_field(name="Score", value=str(anime['score']), inline=True)
-    if anime.get('episodes') is not None:
-        embed.add_field(name="Episodes", value=str(anime['episodes']), inline=True)
-    if anime.get('broadcast'):
-        embed.add_field(name="Broadcast Time", value=anime['broadcast'], inline=True)
-    if anime.get('rank') is not None:
-        embed.add_field(name="Ranking", value=str(anime['rank']), inline=True)
-    if anime.get('popularity') is not None:
-        embed.add_field(name="Popularity", value=str(anime['popularity']), inline=True)
-    if anime.get('rating'):
-        embed.add_field(name="Rating", value=anime['rating'], inline=True)
-
+    embed.set_thumbnail(anime.image_url)
+    if anime.premiered:
+        embed.add_field(name="Premiered", value=anime.premiered, inline=True)
+    if anime.status:
+        embed.add_field(name="Status", value=anime.status, inline=True)
+    if anime.type:
+        embed.add_field(name="Type", value=anime.type, inline=True)
+    if anime.score is not None:
+        embed.add_field(name="Score", value=str(anime.score), inline=True)
+    if anime.episodes is not None:
+        embed.add_field(name="Episodes", value=str(anime.episodes), inline=True)
+    if anime.broadcast:
+        embed.add_field(name="Broadcast Time", value=anime.broadcast, inline=True)
+    if anime.rank is not None:
+        embed.add_field(name="Ranking", value=str(anime.rank), inline=True)
+    if anime.popularity is not None:
+        embed.add_field(name="Popularity", value=str(anime.popularity), inline=True)
+    if anime.rating:
+        embed.add_field(name="Rating", value=anime.rating, inline=True)
     embed.set_footer("Queries are served by an unofficial MAL API and Anicord has no control over the content.")
     
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
-    
     await ctx.respond(embed=embed)
 
 #manga
@@ -390,37 +367,29 @@ async def character(ctx: lightbulb.Context) -> None:
     if not character_data or not character_data.get('data'):
         await ctx.respond("No valid character found.")
         return
-
     sorted_characters_by_popularity = sorted(character_data['data'], key=lambda x: x.get('favorites', 0), reverse=True)
-
     most_popular_character = sorted_characters_by_popularity[0]
     name_english = most_popular_character.get('name')
     name_japanese = most_popular_character.get('name_kanji')
     description = most_popular_character.get('about', 'No description available.')
     image_url = most_popular_character.get('images', {}).get('jpg', {}).get('image_url')
     mal_url = most_popular_character.get('url')
-
     details = []
     description_lines = description.split('\n')
     for line in description_lines:
         if ':' in line:
             details.append(line.strip())
-    
     details_description = '\n'.join(details).strip()
-
     embed = hikari.Embed(
         title=f"{name_english} | {name_japanese}",
         url=mal_url,
         color=0x2f3136
     )
-
     if image_url:
         embed.set_image(image_url)
-
     embed.description = details_description if details_description else "No specific details available."
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
-    
     await ctx.respond(embed=embed)
 
 #animeme
@@ -571,8 +540,8 @@ async def roleplay(ctx):
         embed=hikari.Embed(
             description=(
                 "**Thank you!**\n"
-                "If you like using Anicord, consider [voting](https://top.gg/bot/1003247499911376956/vote) or leaving a [review](https://top.gg/bot/1003247499911376956).\n"
-                "To help keep Anicord online, consider becoming a [member](https://buymeacoffee.com/azael/membership)."
+                "If you like using Anicord, consider leaving a [review](https://top.gg/bot/1003247499911376956).\n"
+                "Becoming a [member](https://buymeacoffee.com/azael/membership) for $3 to keep Anicord online."
             ),
             color=0x2f3136
         )
@@ -1211,8 +1180,8 @@ async def hroleplay(ctx):
         embed=hikari.Embed(
             description=(
                 "**Thank you!**\n"
-                "If you like using Anicord, consider [voting](https://top.gg/bot/1003247499911376956/vote) or leaving a [review](https://top.gg/bot/1003247499911376956).\n"
-                "To help keep Anicord online, consider becoming a [member](https://buymeacoffee.com/azael/membership)."
+                "If you like using Anicord, consider leaving a [review](https://top.gg/bot/1003247499911376956).\n"
+                "Becoming a [member](https://buymeacoffee.com/azael/membership) for $3 to keep Anicord online."
             ),
             color=0x2f3136
         )
@@ -1239,7 +1208,13 @@ async def fuck(ctx: lightbulb.Context) -> None:
         "https://cdn.discordapp.com/attachments/1243845586910838834/1244389219372371998/fucking3.gif?ex=6654ef45&is=66539dc5&hm=5f2c0602a6f23078e059342e8bcce5f84f5b3f5b9e45bc7bf2b94ae3afe0637a&",
         "https://cdn.discordapp.com/attachments/1243845586910838834/1244389242474463393/fucking4.gif?ex=6654ef4b&is=66539dcb&hm=03478effce2b7101cc83fc198042e03803ca22d5458ae8c5dd67e22de7730918&",
         "https://cdn.discordapp.com/attachments/1243845586910838834/1244389267464126534/fucking5.gif?ex=6654ef50&is=66539dd0&hm=406e2124f83a9eaa4a07a45a84a3744d1ac00b564fa8b08fe1f707da5a0b274f&",
-        "https://cdn.discordapp.com/attachments/1243845586910838834/1244389280655212604/fucking6.gif?ex=6654ef54&is=66539dd4&hm=4cfbb483e7f2ccb4227e3b7e1367f4027dd521741b9341aadab4c93f91d43ba1&"
+        "https://cdn.discordapp.com/attachments/1243845586910838834/1244389280655212604/fucking6.gif?ex=6654ef54&is=66539dd4&hm=4cfbb483e7f2ccb4227e3b7e1367f4027dd521741b9341aadab4c93f91d43ba1&",
+        "https://cdn.discordapp.com/attachments/1243845586910838834/1249426802317987942/7.gif?ex=666742e2&is=6665f162&hm=5df102f0da0c124d8de3493b2f3e7674689a31d94f78677e49b14fbadce4e9ec&",
+        "https://cdn.discordapp.com/attachments/1243845586910838834/1249426818545483816/8.gif?ex=666742e6&is=6665f166&hm=33911b1b9475c901d6b9ea3663a1b50d8c28d9f4b858714cc777bba5e022f6fd&",
+        "https://cdn.discordapp.com/attachments/1243845586910838834/1249426834265997455/9.gif?ex=666742ea&is=6665f16a&hm=5d910f0fecd4e17daa759f8e9afb17b482d991acfd2f43a0f3e15c870df67300&",
+        "https://cdn.discordapp.com/attachments/1243845586910838834/1249426845611462768/10.gif?ex=666742ed&is=6665f16d&hm=d1603b0473e2a902ab4baa7362493ef519ebbd399f0b4dd0dc05ac1c61281da6&",
+        "https://cdn.discordapp.com/attachments/1243845586910838834/1249426858458615988/11.gif?ex=666742f0&is=6665f170&hm=e36eb28f5cec2403f08bcfaa0e397bbd94a92e077afc6821c14ea0623e14a894&",
+        "https://cdn.discordapp.com/attachments/1243845586910838834/1249426877609807943/12.gif?ex=666742f4&is=6665f174&hm=71b743affd2575da88c7d55a6696cdf698bb9f35e7b20e1d378793b3575ba464&"
     ]
     random_gif = choice(gif)
     embed = hikari.Embed(
@@ -1354,7 +1329,7 @@ async def handjob(ctx: lightbulb.Context) -> None:
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.option("user", "The user to tag", hikari.User)
-@lightbulb.command("cum", "someone")
+@lightbulb.command("cum", "Cum on someone.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def sixtynine(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
@@ -1388,7 +1363,7 @@ async def sixtynine(ctx: lightbulb.Context) -> None:
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.option("user", "The user to tag", hikari.User)
-@lightbulb.command("ride", "someone")
+@lightbulb.command("ride", "Ride someone.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def ride(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
@@ -1409,7 +1384,7 @@ async def ride(ctx: lightbulb.Context) -> None:
         "https://cdn.discordapp.com/attachments/1243886309068767354/1244713759696490536/4.gif?ex=66561d85&is=6654cc05&hm=04e565991b6562837846998dda3201670e950ef5bb1001304c622a1862ab92c1&",
         "https://cdn.discordapp.com/attachments/1243886309068767354/1244713789589553252/5.gif?ex=66561d8d&is=6654cc0d&hm=b458de2e69aed45e887834bcc8abbed84b6d0ed6db3026ad9b108f31c8d1c06b&",
         "https://cdn.discordapp.com/attachments/1243886309068767354/1244713810443632680/6.gif?ex=66561d92&is=6654cc12&hm=f220b177f0d270fe321998ea4dcc8719aace5b4661c0da54379ff7c9f8c26ca5&",
-        "https://cdn.discordapp.com/attachments/1243886309068767354/1244713788004106330/7.gif?ex=66561d8c&is=6654cc0c&hm=038a5ea64ee47f25565acef0325f7bbe7cb0bb98729567af999aea7c6b35f264&"
+        "https://cdn.discordapp.com/attachments/1243886309068767354/1249426073368657960/7.gif?ex=66674235&is=6665f0b5&hm=fb959c5c97fe14302294f8cf77b64f154030a8e4926b74b848d461f91ae9565d&"
     ]
     random_gif = choice(gif)
     embed = hikari.Embed(
@@ -1423,7 +1398,7 @@ async def ride(ctx: lightbulb.Context) -> None:
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.option("user", "The user to tag", hikari.User)
-@lightbulb.command("fingering", "someone")
+@lightbulb.command("fingering", "Finger someone.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def fingering(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
@@ -1457,7 +1432,7 @@ async def fingering(ctx: lightbulb.Context) -> None:
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.option("user", "The user to tag", hikari.User)
-@lightbulb.command("boobsuck", "someone")
+@lightbulb.command("boobsuck", "Suck on someone's boobs.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def boobsuck(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
@@ -1520,8 +1495,8 @@ async def nsfw(ctx):
         embed=hikari.Embed(
             description=(
                 "**Thank you!**\n"
-                "If you like using Anicord, consider [voting](https://top.gg/bot/1003247499911376956/vote) or leaving a [review](https://top.gg/bot/1003247499911376956).\n"
-                "To help keep Anicord online, consider becoming a [member](https://buymeacoffee.com/azael/membership)."
+                "If you like using Anicord, consider leaving a [review](https://top.gg/bot/1003247499911376956).\n"
+                "Becoming a [member](https://buymeacoffee.com/azael/membership) for $3 to keep Anicord online."
             ),
             color=0x2f3136
         )
@@ -1644,6 +1619,7 @@ async def gimmick(ctx):
         description=(
             "**/howhorny:** Fine out how horny someone is.\n"
             "**/howgay:** Find out how gay someone is.\n"
+            "**/ship:** Find out how compatible two users are.\n"
             "More Commands In Development."
         ),
         color=0x2f3136
@@ -1654,8 +1630,8 @@ async def gimmick(ctx):
         embed=hikari.Embed(
             description=(
                 "**Thank you!**\n"
-                "If you like using Anicord, consider [voting](https://top.gg/bot/1003247499911376956/vote) or leaving a [review](https://top.gg/bot/1003247499911376956).\n"
-                "To help keep Anicord online, consider becoming a [member](https://buymeacoffee.com/azael/membership)."
+                "If you like using Anicord, consider leaving a [review](https://top.gg/bot/1003247499911376956).\n"
+                "Becoming a [member](https://buymeacoffee.com/azael/membership) for $3 to keep Anicord online."
             ),
             color=0x2f3136
         )
@@ -1697,13 +1673,31 @@ async def howgay(ctx: lightbulb.Context) -> None:
     horny_level = randint(0, 100)
     await ctx.respond(f"{ctx.options.user.mention} is **{horny_level}%** gay.")
 
+#ship
+@bot.command
+@lightbulb.add_cooldown(length=5, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.option("user2", "The second user to tag", hikari.User)
+@lightbulb.option("user1", "The first user to tag", hikari.User)
+@lightbulb.command("ship", "Find out how compatible two users are.")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def ship(ctx: lightbulb.Context) -> None:
+    if any(word in str(ctx.author.id) for word in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+    guild = ctx.get_guild()
+    if guild is not None:
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
+    else:
+        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
+    compatibility_level = randint(0, 100)
+    await ctx.respond(f"{ctx.options.user1.mention} and {ctx.options.user2.mention} are **{compatibility_level}%** compatible.")
+
 #----------------------------------------------------------------------------------------
-#misc
+#Miscellaneous
 @bot.command
 @lightbulb.add_cooldown(length=20, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.command("misc", "Overview of all role-play commands.")
+@lightbulb.command("miscellaneous", "Overview of all miscellaneous commands.")
 @lightbulb.implements(lightbulb.SlashCommand)
-async def misc(ctx):
+async def miscellaneous(ctx):
     guild = ctx.get_guild()
     if guild is not None:
         await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
@@ -1729,8 +1723,8 @@ async def misc(ctx):
         embed=hikari.Embed(
             description=(
                 "**Thank you!**\n"
-                "If you like using Anicord, consider [voting](https://top.gg/bot/1003247499911376956/vote) or leaving a [review](https://top.gg/bot/1003247499911376956).\n"
-                "To help keep Anicord online, consider becoming a [member](https://buymeacoffee.com/azael/membership)."
+                "If you like using Anicord, consider leaving a [review](https://top.gg/bot/1003247499911376956).\n"
+                "Becoming a [member](https://buymeacoffee.com/azael/membership) for $3 to keep Anicord online."
             ),
             color=0x2f3136
         )
