@@ -141,7 +141,6 @@ async def core(ctx):
         description=(
             "**/anime:** Look up an anime.\n"
             "**/manga:** Look up an manga.\n"
-            "**/extended:** Choose between different search queries.\n"
             "**/character:** Look up a character.\n"
             "**/animeme:** View an anime meme.\n"
             "**/random:** Generate a random anime.\n"
@@ -268,74 +267,6 @@ async def mangasearch(ctx: lightbulb.Context) -> None:
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     
     await ctx.respond(embed=embed)
-
-#animeextended
-@bot.command
-@lightbulb.add_cooldown(length=30, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("name", "Anime")
-@lightbulb.command("extended", "Receive search queries to choose for a more detailed experience.", auto_defer=True)
-@lightbulb.implements(lightbulb.SlashCommand)
-async def extended(ctx: lightbulb.Context) -> None:
-    await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
-    if str(ctx.author.id) in prem_users:
-        await ctx.command.cooldown_manager.reset_cooldown(ctx)
-        name = ctx.options.name
-        search = await jikan.search("anime", name)
-        if len(search["results"]) < 4:
-            await ctx.respond("Not enough search results found.", flags=hikari.MessageFlag.EPHEMERAL)
-            return
-        anime_options = search["results"][:4]
-        components = []
-        action_row = hikari.ActionRowBuilder()
-        for i, anime in enumerate(anime_options):
-            button = hikari.ButtonBuilder(style=hikari.ButtonStyle.PRIMARY, custom_id=f"button_{i}", emoji=f"{i+1}️⃣")
-            action_row.add_component(button)
-        components.append(action_row.build())
-        embed = hikari.Embed(
-            title="Choose a show:",
-            description="\n".join([f"{i+1}️⃣ {anime['title']}" for i, anime in enumerate(anime_options)]),
-            color=0x2f3136
-        )
-        await ctx.respond(embed=embed, component=components)
-
-        @bot.listen(hikari.InteractionCreateEvent)
-        async def on_button_click(event: hikari.InteractionCreateEvent) -> None:
-            if event.interaction.user.id != ctx.author.id:
-                return  # Ensure only the command user can interact
-            if event.interaction.component_type != hikari.ComponentType.BUTTON:
-                return
-            button_id = event.interaction.custom_id
-            if button_id.startswith("button_"):
-                index = int(button_id.split("_")[1])
-                anime = anime_options[index]
-                anime_details = await jikan.anime(anime["mal_id"])
-                embed = hikari.Embed(
-                    title=f"{anime_details['title']} | {anime_details['title_japanese']}",
-                    description=anime_details['synopsis'] or 'No synopsis available.',
-                    url=anime_details['url'],
-                    color=0x2f3136
-                )
-                embed.set_thumbnail(anime_details['image_url'])
-                if anime_details['premiered']:
-                    embed.add_field(name="Premiered", value=anime_details['premiered'], inline=True)
-                if anime_details['status']:
-                    embed.add_field(name="Status", value=anime_details['status'], inline=True)
-                if anime_details['type']:
-                    embed.add_field(name="Type", value=anime_details['type'], inline=True)
-                if anime_details['score'] is not None:
-                    embed.add_field(name="Score", value=str(anime_details['score']), inline=True)
-                if anime_details['episodes'] is not None:
-                    embed.add_field(name="Episodes", value=str(anime_details['episodes']), inline=True)
-                if anime_details['broadcast']:
-                    embed.add_field(name="Broadcast Time", value=anime_details['broadcast'], inline=True)
-                if anime_details['rank']:
-                    embed.add_field(name="Ranking", value=str(anime_details['rank']), inline=True)
-                if anime_details['popularity']:
-                    embed.add_field(name="Popularity", value=str(anime_details['popularity']), inline=True)
-                if anime_details['rating']:
-                    embed.add_field(name="Rating", value=anime_details['rating'], inline=True)
-                embed.set_footer("Queries are served by the Jikan API.")
-                await event.interaction.create_initial_response(hikari.ResponseType.MESSAGE_UPDATE, embed=embed, component=None)
 
 #character
 async def fetch_character_info(name, limit=5):
