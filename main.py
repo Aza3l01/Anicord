@@ -42,6 +42,16 @@ class TopGGClient:
                 print(f"Failed to post guild count to Top.gg: {response.status}")
             else:
                 print("Posted server count to Top.gg")
+    async def get_user_vote(self, user_id):
+        url = f"https://top.gg/api/bots/{self.bot.get_me().id}/check?userId={user_id}"
+        headers = {
+            "Authorization": self.token
+        }
+        async with self.session.get(url, headers=headers) as response:
+            if response.status == 200:
+                data = await response.json()
+                return data.get('voted') == 1
+            return False
     async def close(self):
         await self.session.close()
 
@@ -111,15 +121,6 @@ async def help(ctx):
     )
     embed.set_footer("Anicord is under development. Join the support server if you need help :)")
     await ctx.respond(embed=embed)
-    await ctx.respond(
-        embed=hikari.Embed(
-            description=(
-                "**Thank you!**\n"
-                "If you like using Anicord, consider becoming a [member](https://buymeacoffee.com/azael/membership) for $3 to keep Anicord online or leave a [review](https://top.gg/bot/1003247499911376956)."
-            ),
-            color=0x2f3136
-        )
-    )
 
 #----------------------------------------------------------------------------------------
 #core
@@ -1095,7 +1096,7 @@ async def hroleplay(ctx):
     embed.add_field(
         name="\u200B",
         value=(
-            "To use premium commands, become a [member](https://buymeacoffee.com/azael/membership).\n"
+            "To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) at top.gg to get access for the next 12 hours or become a [member](https://buymeacoffee.com/azael/membership) for $3.\n"
             "More commands in development."
         ),
         inline=False
@@ -1129,7 +1130,7 @@ async def fuck(ctx: lightbulb.Context) -> None:
     if not ctx.get_channel().is_nsfw:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
-    gif = [
+    gifs = [
         "https://cdn.discordapp.com/attachments/1243845586910838834/1244389195997384724/fucking2.gif?ex=6654ef3f&is=66539dbf&hm=a51ca33ce38b389cbbd25705f9032c2e3373525ac8c0d742a5e02a3ab1578141&",
         "https://cdn.discordapp.com/attachments/1243845586910838834/1244389219372371998/fucking3.gif?ex=6654ef45&is=66539dc5&hm=5f2c0602a6f23078e059342e8bcce5f84f5b3f5b9e45bc7bf2b94ae3afe0637a&",
         "https://cdn.discordapp.com/attachments/1243845586910838834/1244389242474463393/fucking4.gif?ex=6654ef4b&is=66539dcb&hm=03478effce2b7101cc83fc198042e03803ca22d5458ae8c5dd67e22de7730918&",
@@ -1142,13 +1143,15 @@ async def fuck(ctx: lightbulb.Context) -> None:
         "https://cdn.discordapp.com/attachments/1243845586910838834/1249426858458615988/11.gif?ex=666742f0&is=6665f170&hm=e36eb28f5cec2403f08bcfaa0e397bbd94a92e077afc6821c14ea0623e14a894&",
         "https://cdn.discordapp.com/attachments/1243845586910838834/1249426877609807943/12.gif?ex=666742f4&is=6665f174&hm=71b743affd2575da88c7d55a6696cdf698bb9f35e7b20e1d378793b3575ba464&"
     ]
-    random_gif = choice(gif)
+
+    random_gif = choice(gifs)
     embed = hikari.Embed(
         description=f"**{ctx.author.mention} is fucking {ctx.options.user.mention}**",
         color=0x2f3136
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
+    
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
 
@@ -1263,12 +1266,18 @@ async def sixtynine(ctx: lightbulb.Context) -> None:
         await bot.rest.create_message(channel, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
         await bot.rest.create_message(channel, f"`{ctx.command.name}` was used.")
-    #if str(ctx.author.id) not in prem_users:
-        #await ctx.respond("This is a premium command. To use this command, become a [member](https://buymeacoffee.com/azael/membership). Memberships help keep the bot online.")
-        #return
     if not ctx.get_channel().is_nsfw:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
+    if any(word in str(ctx.author.id) for word in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+    if str(ctx.author.id) not in prem_users:
+        has_voted = await topgg_client.get_user_vote(ctx.author.id)
+        if not has_voted:
+            await ctx.respond(
+                "To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) at top.gg to get access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>) for $3."
+            )
+            return
     gif = [
         "https://cdn.discordapp.com/attachments/1243886267767459871/1244710926880473119/1.gif?ex=66561ae2&is=6654c962&hm=36e77cfac89bcf2672476b8ce0710d6b2121439cdc6dcddcf0c32f45540ba2bb&",
         "https://cdn.discordapp.com/attachments/1243886267767459871/1244710926880473119/1.gif?ex=66561ae2&is=6654c962&hm=36e77cfac89bcf2672476b8ce0710d6b2121439cdc6dcddcf0c32f45540ba2bb&",
@@ -1297,12 +1306,18 @@ async def ride(ctx: lightbulb.Context) -> None:
         await bot.rest.create_message(channel, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
         await bot.rest.create_message(channel, f"`{ctx.command.name}` was used.")
-    #if str(ctx.author.id) not in prem_users:
-        #await ctx.respond("This is a premium command. To use this command, become a [member](https://buymeacoffee.com/azael/membership). Memberships help keep the bot online.")
-        #return
     if not ctx.get_channel().is_nsfw:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
+    if any(word in str(ctx.author.id) for word in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+    if str(ctx.author.id) not in prem_users:
+        has_voted = await topgg_client.get_user_vote(ctx.author.id)
+        if not has_voted:
+            await ctx.respond(
+                "To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) at top.gg to get access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>) for $3."
+            )
+            return
     gif = [
         "https://cdn.discordapp.com/attachments/1243886309068767354/1244713699269283870/1.gif?ex=66561d77&is=6654cbf7&hm=4b119beb0a5f504c8db3f23d3818721105af8fd325036fc29ce8c933f7f133fb&",
         "https://cdn.discordapp.com/attachments/1243886309068767354/1244713776272375849/2.gif?ex=66561d89&is=6654cc09&hm=dfba715860c550517735022236ff17aac410247ad121fc112e6647be72b3dc84&",
@@ -1332,12 +1347,18 @@ async def fingering(ctx: lightbulb.Context) -> None:
         await bot.rest.create_message(channel, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
         await bot.rest.create_message(channel, f"`{ctx.command.name}` was used.")
-    #if str(ctx.author.id) not in prem_users:
-        #await ctx.respond("This is a premium command. To use this command, become a [member](https://buymeacoffee.com/azael/membership). Memberships help keep the bot online.")
-        #return
     if not ctx.get_channel().is_nsfw:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
+    if any(word in str(ctx.author.id) for word in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+    if str(ctx.author.id) not in prem_users:
+        has_voted = await topgg_client.get_user_vote(ctx.author.id)
+        if not has_voted:
+            await ctx.respond(
+                "To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) at top.gg to get access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>) for $3."
+            )
+            return
     gif = [
         "https://cdn.discordapp.com/attachments/1243886356879511602/1244716343274639360/1.gif?ex=66561fed&is=6654ce6d&hm=b55d1c3d927f835ca0aead2fc6dad7d9f8d43be7abfd4f12577a56d184fa396b&",
         "https://cdn.discordapp.com/attachments/1243886356879511602/1244716354309984257/2.gif?ex=66561ff0&is=6654ce70&hm=4b670ef46fdb70548a105ff37d07cdee399dc59cb1ad4799d268be0e88a04e0d&",
@@ -1366,12 +1387,18 @@ async def boobsuck(ctx: lightbulb.Context) -> None:
         await bot.rest.create_message(channel, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
         await bot.rest.create_message(channel, f"`{ctx.command.name}` was used.")
-    #if str(ctx.author.id) not in prem_users:
-        #await ctx.respond("This is a premium command. To use this command, become a [member](https://buymeacoffee.com/azael/membership). Memberships help keep the bot online.")
-        #return
     if not ctx.get_channel().is_nsfw:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
+    if any(word in str(ctx.author.id) for word in prem_users):
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+    if str(ctx.author.id) not in prem_users:
+        has_voted = await topgg_client.get_user_vote(ctx.author.id)
+        if not has_voted:
+            await ctx.respond(
+                "To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) at top.gg to get access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>) for $3."
+            )
+            return
     gif = [
         "https://cdn.discordapp.com/attachments/1243886396628930580/1244719521432866912/1.gif?ex=665622e3&is=6654d163&hm=03259432b4f33cbff7ad2de7cf07251540f5cf52b297b434547a02425f8a82e3&",
         "https://cdn.discordapp.com/attachments/1243886396628930580/1244719554022604800/3.gif?ex=665622eb&is=6654d16b&hm=5f498d6c12cf852aca6816bba0fa56abaa2c99a234b35e0bea451d158cbb7dce&",
@@ -1410,7 +1437,8 @@ async def nsfw(ctx):
             "NSFW commands are LOCKED from normal channels and are ONLY available in NSFW channels.\n\n"
             "**/hmeme:** Get a hentai meme.\n"
             "**/hgif:** Get a hentai gif.\n"
-            "**/himage:** Get a hentai image.\n"
+            "**/himage:** Get a hentai image.\n\n"
+            "To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) at top.gg to get access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>) for $3.\n"
             "More Commands In Development."
         ),
         color=0x2f3136
@@ -1441,10 +1469,15 @@ async def hmeme(ctx: lightbulb.Context) -> None:
     if not ctx.get_channel().is_nsfw:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
-
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
-    
+    if str(ctx.author.id) not in prem_users:
+        has_voted = await topgg_client.get_user_vote(ctx.author.id)
+        if not has_voted:
+            await ctx.respond(
+                "To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) at top.gg to get access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>) for $3."
+            )
+            return
     sub = reddit.subreddit("hentaimemes")
     posts = [post for post in sub.hot(limit=50)]
     random_post = choice(posts)
@@ -1475,6 +1508,13 @@ async def hgif(ctx: lightbulb.Context) -> None:
         return
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
+    if str(ctx.author.id) not in prem_users:
+        has_voted = await topgg_client.get_user_vote(ctx.author.id)
+        if not has_voted:
+            await ctx.respond(
+                "To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) at top.gg to get access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>) for $3."
+            )
+            return
     sub = reddit.subreddit("HENTAI_GIF")
     posts = [post for post in sub.hot(limit=50)]
     random_post = choice(posts)
@@ -1502,8 +1542,15 @@ async def himage(ctx: lightbulb.Context) -> None:
     if not ctx.get_channel().is_nsfw:
         await ctx.respond("This command can only be used in NSFW channels.")
         return
-    if any(str(ctx.author.id) == user_id for user_id in prem_users):
+    if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
+    if str(ctx.author.id) not in prem_users:
+        has_voted = await topgg_client.get_user_vote(ctx.author.id)
+        if not has_voted:
+            await ctx.respond(
+                "To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) at top.gg to get access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>) for $3."
+            )
+            return
     sub = reddit.subreddit("hentai+nhentai+3DPorncraft")
     posts = list(sub.hot(limit=50))
     image_posts = [post for post in posts if post.url.endswith(('.jpg', '.jpeg', '.png'))]
