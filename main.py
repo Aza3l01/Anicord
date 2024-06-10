@@ -87,9 +87,9 @@ async def on_guild_leave(event):
 async def help(ctx):
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(channel, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(channel, f"`{ctx.command.name}` was used.")
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
@@ -104,7 +104,7 @@ async def help(ctx):
             "**Other NSFW Commands:**\n"
             "**/nsfw:** Overview of NSFW commands like hentai memes and gifs.\n\n"
             "**Miscellaneous:**\n"
-            "**/misc:** Overview of miscellaneous commands.\n\n"
+            "**/miscellaneous:** Overview of miscellaneous commands.\n\n"
             "NSFW commands are LOCKED from normal channels and are ONLY available in NSFW channels.."
         ),
         color=0x2f3136
@@ -115,8 +115,7 @@ async def help(ctx):
         embed=hikari.Embed(
             description=(
                 "**Thank you!**\n"
-                "If you like using Anicord, consider leaving a [review](https://top.gg/bot/1003247499911376956).\n"
-                "Becoming a [member](https://buymeacoffee.com/azael/membership) for $3 to keep Anicord online."
+                "If you like using Anicord, consider becoming a [member](https://buymeacoffee.com/azael/membership) for $3 to keep Anicord online or leave a [review](https://top.gg/bot/1003247499911376956)."
             ),
             color=0x2f3136
         )
@@ -131,9 +130,9 @@ async def help(ctx):
 async def core(ctx):
     guild = ctx.get_guild()
     if guild is not None:
-        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used in `{guild.name}`.")
+        await bot.rest.create_message(channel, f"`{ctx.command.name}` was used in `{guild.name}`.")
     else:
-        await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
+        await bot.rest.create_message(channel, f"`{ctx.command.name}` was used.")
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
@@ -153,8 +152,7 @@ async def core(ctx):
         embed=hikari.Embed(
             description=(
                 "**Thank you!**\n"
-                "If you like using Anicord, consider leaving a [review](https://top.gg/bot/1003247499911376956).\n"
-                "Becoming a [member](https://buymeacoffee.com/azael/membership) for $3 to keep Anicord online."
+                "If you like using Anicord, consider becoming a [member](https://buymeacoffee.com/azael/membership) for $3 to keep Anicord online or leave a [review](https://top.gg/bot/1003247499911376956)."
             ),
             color=0x2f3136
         )
@@ -174,7 +172,6 @@ async def anisearch(ctx: lightbulb.Context) -> None:
         await bot.rest.create_message(1245405333229146219, f"`{ctx.command.name}` was used.")
     name = ctx.options.name
     search = AnimeSearch(name)
-
     anime_result = None
     if search.results[0] is not None:
         anime_result = search.results[0]
@@ -471,8 +468,7 @@ async def roleplay(ctx):
         embed=hikari.Embed(
             description=(
                 "**Thank you!**\n"
-                "If you like using Anicord, consider leaving a [review](https://top.gg/bot/1003247499911376956).\n"
-                "Becoming a [member](https://buymeacoffee.com/azael/membership) for $3 to keep Anicord online."
+                "If you like using Anicord, consider becoming a [member](https://buymeacoffee.com/azael/membership) for $3 to keep Anicord online or leave a [review](https://top.gg/bot/1003247499911376956)."
             ),
             color=0x2f3136
         )
@@ -1111,8 +1107,7 @@ async def hroleplay(ctx):
         embed=hikari.Embed(
             description=(
                 "**Thank you!**\n"
-                "If you like using Anicord, consider leaving a [review](https://top.gg/bot/1003247499911376956).\n"
-                "Becoming a [member](https://buymeacoffee.com/azael/membership) for $3 to keep Anicord online."
+                "If you like using Anicord, consider becoming a [member](https://buymeacoffee.com/azael/membership) for $3 to keep Anicord online or leave a [review](https://top.gg/bot/1003247499911376956)."
             ),
             color=0x2f3136
         )
@@ -1426,8 +1421,7 @@ async def nsfw(ctx):
         embed=hikari.Embed(
             description=(
                 "**Thank you!**\n"
-                "If you like using Anicord, consider leaving a [review](https://top.gg/bot/1003247499911376956).\n"
-                "Becoming a [member](https://buymeacoffee.com/azael/membership) for $3 to keep Anicord online."
+                "If you like using Anicord, consider becoming a [member](https://buymeacoffee.com/azael/membership) for $3 to keep Anicord online or leave a [review](https://top.gg/bot/1003247499911376956)."
             ),
             color=0x2f3136
         )
@@ -1561,8 +1555,7 @@ async def gimmick(ctx):
         embed=hikari.Embed(
             description=(
                 "**Thank you!**\n"
-                "If you like using Anicord, consider leaving a [review](https://top.gg/bot/1003247499911376956).\n"
-                "Becoming a [member](https://buymeacoffee.com/azael/membership) for $3 to keep Anicord online."
+                "If you like using Anicord, consider becoming a [member](https://buymeacoffee.com/azael/membership) for $3 to keep Anicord online or leave a [review](https://top.gg/bot/1003247499911376956)."
             ),
             color=0x2f3136
         )
@@ -1654,8 +1647,7 @@ async def miscellaneous(ctx):
         embed=hikari.Embed(
             description=(
                 "**Thank you!**\n"
-                "If you like using Anicord, consider leaving a [review](https://top.gg/bot/1003247499911376956).\n"
-                "Becoming a [member](https://buymeacoffee.com/azael/membership) for $3 to keep Anicord online."
+                "If you like using Anicord, consider becoming a [member](https://buymeacoffee.com/azael/membership) for $3 to keep Anicord online or leave a [review](https://top.gg/bot/1003247499911376956)."
             ),
             color=0x2f3136
         )
