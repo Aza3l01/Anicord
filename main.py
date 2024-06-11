@@ -1503,12 +1503,12 @@ async def hgif(ctx: lightbulb.Context) -> None:
         return
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
-    if str(ctx.author.id) not in prem_users:
-        has_voted = await topgg_client.get_user_vote(ctx.author.id)
-        if not has_voted:
-            await ctx.respond("To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) at top.gg to get access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>) for $3.")
-            await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
-            return
+    # if str(ctx.author.id) not in prem_users:
+    #     has_voted = await topgg_client.get_user_vote(ctx.author.id)
+    #     if not has_voted:
+    #         await ctx.respond("To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) at top.gg to get access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>) for $3.")
+    #         await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
+    #         return
     sub = reddit.subreddit("HENTAI_GIF")
     posts = [post for post in sub.hot(limit=50)]
     random_post = choice(posts)
