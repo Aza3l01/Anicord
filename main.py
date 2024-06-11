@@ -58,7 +58,7 @@ class TopGGClient:
 topgg_token = os.getenv("TOPGG_TOKEN")
 topgg_client = TopGGClient(bot, topgg_token)
 
-#starting count update
+#count update
 @bot.listen(hikari.StartedEvent)
 async def on_starting(event: hikari.StartedEvent) -> None:
     guilds = await bot.rest.fetch_my_guilds()
@@ -91,7 +91,7 @@ async def on_guild_leave(event):
 
 #help command
 @bot.command
-@lightbulb.add_cooldown(length=20, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.command("help", "Get help")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def help(ctx):
@@ -110,22 +110,22 @@ async def help(ctx):
             "**Role-play Reactions:**\n"
             "**/roleplay:** Overview of all role-play commands.\n\n"
             "**NSFW Role-play Reactions:**\n"
-            "**/hroleplay:** Overview of NSFW all role-play commands.\n\n"
+            "**/hroleplay:** Overview of all NSFW role-play commands.\n\n"
             "**Other NSFW Commands:**\n"
-            "**/nsfw:** Overview of NSFW commands like hentai memes and gifs.\n\n"
+            "**/nsfw:** Overview of all NSFW commands like hentai memes and gifs.\n\n"
             "**Miscellaneous:**\n"
             "**/miscellaneous:** Overview of miscellaneous commands.\n\n"
             "NSFW commands are LOCKED from normal channels and are ONLY available in NSFW channels.."
         ),
         color=0x2f3136
     )
-    embed.set_footer("Anicord is under development. Join the support server if you need help :)")
+    embed.set_footer("Join the support server if you need help :)")
     await ctx.respond(embed=embed)
 
 #----------------------------------------------------------------------------------------
 #core
 @bot.command
-@lightbulb.add_cooldown(length=20, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.command("core", "Overview of all core commands.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def core(ctx):
@@ -140,14 +140,14 @@ async def core(ctx):
         title="__**Core Commands**__",
         description=(
             "**/anime:** Look up an anime.\n"
-            "**/manga:** Look up an manga.\n"
+            "**/manga:** Look up a manga.\n"
             "**/character:** Look up a character.\n"
             "**/animeme:** View an anime meme.\n"
             "**/random:** Generate a random anime.\n"
         ),
         color=0x2f3136
     )
-    embed.set_footer("Anicord is under development. Join the support server if you need help :)")
+    embed.set_footer("Join the support server if you need help :)")
     await ctx.respond(embed=embed)
     await ctx.respond(
         embed=hikari.Embed(
@@ -161,7 +161,7 @@ async def core(ctx):
 
 #anime
 @bot.command
-@lightbulb.add_cooldown(length=20, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.option("name", "Anime")
 @lightbulb.command("anime", "Look up an anime.", auto_defer=True)
 @lightbulb.implements(lightbulb.SlashCommand)
@@ -215,7 +215,7 @@ async def anisearch(ctx: lightbulb.Context) -> None:
 
 #manga
 @bot.command
-@lightbulb.add_cooldown(length=20, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.option("name", "Manga")
 @lightbulb.command("manga", "Look up a manga.", auto_defer=True)
 @lightbulb.implements(lightbulb.SlashCommand)
@@ -281,7 +281,7 @@ async def fetch_character_info(name, limit=5):
             return await response.json()
 
 @bot.command
-@lightbulb.add_cooldown(length=20, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.option("name", "Character")
 @lightbulb.command("character", "Look up a character.", auto_defer=True)
 @lightbulb.implements(lightbulb.SlashCommand)
@@ -357,7 +357,7 @@ async def animeme(ctx: lightbulb.Context) -> None:
 
 #random
 @bot.command
-@lightbulb.add_cooldown(length=20, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.command("random", "Generate a random anime.", auto_defer=True)
 @lightbulb.implements(lightbulb.SlashCommand)
 async def random(ctx: lightbulb.Context) -> None:
@@ -407,7 +407,7 @@ async def random(ctx: lightbulb.Context) -> None:
 #----------------------------------------------------------------------------------------
 #roleplay
 @bot.command
-@lightbulb.add_cooldown(length=20, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.command("roleplay", "Overview of all role-play commands.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def roleplay(ctx):
@@ -455,14 +455,7 @@ async def roleplay(ctx):
         ),
         inline=True
     )
-    embed.add_field(
-        name="\u200B",
-        value=(
-            "More commands in development."
-        ),
-        inline=False
-    )
-    embed.set_footer("Anicord is under development. Join the support server if you need help :)")
+    embed.set_footer("Join the support server if you need help :)")
 
     await ctx.respond(embed=embed)
     await ctx.respond(
@@ -1054,7 +1047,7 @@ async def slap(ctx: lightbulb.Context) -> None:
 #----------------------------------------------------------------------------------------
 #hroleplay
 @bot.command
-@lightbulb.add_cooldown(length=20, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.command("hroleplay", "Overview of all role-play commands.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def hroleplay(ctx):
@@ -1097,11 +1090,10 @@ async def hroleplay(ctx):
         name="\u200B",
         value=(
             "To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) at top.gg to get access for the next 12 hours or become a [member](https://buymeacoffee.com/azael/membership) for $3.\n"
-            "More commands in development."
         ),
         inline=False
     )
-    embed.set_footer("Anicord is under development. Join the support server if you need help :)")
+    embed.set_footer("Join the support server if you need help :)")
 
     await ctx.respond(embed=embed)
     await ctx.respond(
@@ -1274,9 +1266,8 @@ async def sixtynine(ctx: lightbulb.Context) -> None:
     if str(ctx.author.id) not in prem_users:
         has_voted = await topgg_client.get_user_vote(ctx.author.id)
         if not has_voted:
-            await ctx.respond(
-                "To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) at top.gg to get access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>) for $3."
-            )
+            await ctx.respond("To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) at top.gg to get access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>) for $3.")
+            await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
             return
     gif = [
         "https://cdn.discordapp.com/attachments/1243886267767459871/1244710926880473119/1.gif?ex=66561ae2&is=6654c962&hm=36e77cfac89bcf2672476b8ce0710d6b2121439cdc6dcddcf0c32f45540ba2bb&",
@@ -1314,9 +1305,8 @@ async def ride(ctx: lightbulb.Context) -> None:
     if str(ctx.author.id) not in prem_users:
         has_voted = await topgg_client.get_user_vote(ctx.author.id)
         if not has_voted:
-            await ctx.respond(
-                "To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) at top.gg to get access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>) for $3."
-            )
+            await ctx.respond("To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) at top.gg to get access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>) for $3.")
+            await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
             return
     gif = [
         "https://cdn.discordapp.com/attachments/1243886309068767354/1244713699269283870/1.gif?ex=66561d77&is=6654cbf7&hm=4b119beb0a5f504c8db3f23d3818721105af8fd325036fc29ce8c933f7f133fb&",
@@ -1355,9 +1345,8 @@ async def fingering(ctx: lightbulb.Context) -> None:
     if str(ctx.author.id) not in prem_users:
         has_voted = await topgg_client.get_user_vote(ctx.author.id)
         if not has_voted:
-            await ctx.respond(
-                "To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) at top.gg to get access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>) for $3."
-            )
+            await ctx.respond("To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) at top.gg to get access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>) for $3.")
+            await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
             return
     gif = [
         "https://cdn.discordapp.com/attachments/1243886356879511602/1244716343274639360/1.gif?ex=66561fed&is=6654ce6d&hm=b55d1c3d927f835ca0aead2fc6dad7d9f8d43be7abfd4f12577a56d184fa396b&",
@@ -1395,9 +1384,8 @@ async def boobsuck(ctx: lightbulb.Context) -> None:
     if str(ctx.author.id) not in prem_users:
         has_voted = await topgg_client.get_user_vote(ctx.author.id)
         if not has_voted:
-            await ctx.respond(
-                "To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) at top.gg to get access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>) for $3."
-            )
+            await ctx.respond("To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) at top.gg to get access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>) for $3.")
+            await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
             return
     gif = [
         "https://cdn.discordapp.com/attachments/1243886396628930580/1244719521432866912/1.gif?ex=665622e3&is=6654d163&hm=03259432b4f33cbff7ad2de7cf07251540f5cf52b297b434547a02425f8a82e3&",
@@ -1417,7 +1405,7 @@ async def boobsuck(ctx: lightbulb.Context) -> None:
 #----------------------------------------------------------------------------------------
 #nsfw
 @bot.command
-@lightbulb.add_cooldown(length=20, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.command("nsfw", "Overview of all role-play commands.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def nsfw(ctx):
@@ -1439,11 +1427,10 @@ async def nsfw(ctx):
             "**/hgif:** Get a hentai gif.\n"
             "**/himage:** Get a hentai image.\n\n"
             "To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) at top.gg to get access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>) for $3.\n"
-            "More Commands In Development."
         ),
         color=0x2f3136
     )
-    embed.set_footer("Anicord is under development. Join the support server if you need help :)")
+    embed.set_footer("Join the support server if you need help :)")
     await ctx.respond(embed=embed)
     await ctx.respond(
         embed=hikari.Embed(
@@ -1474,9 +1461,8 @@ async def hmeme(ctx: lightbulb.Context) -> None:
     if str(ctx.author.id) not in prem_users:
         has_voted = await topgg_client.get_user_vote(ctx.author.id)
         if not has_voted:
-            await ctx.respond(
-                "To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) at top.gg to get access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>) for $3."
-            )
+            await ctx.respond("To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) at top.gg to get access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>) for $3.")
+            await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
             return
     sub = reddit.subreddit("hentaimemes")
     posts = [post for post in sub.hot(limit=50)]
@@ -1511,9 +1497,8 @@ async def hgif(ctx: lightbulb.Context) -> None:
     if str(ctx.author.id) not in prem_users:
         has_voted = await topgg_client.get_user_vote(ctx.author.id)
         if not has_voted:
-            await ctx.respond(
-                "To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) at top.gg to get access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>) for $3."
-            )
+            await ctx.respond("To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) at top.gg to get access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>) for $3.")
+            await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
             return
     sub = reddit.subreddit("HENTAI_GIF")
     posts = [post for post in sub.hot(limit=50)]
@@ -1547,9 +1532,8 @@ async def himage(ctx: lightbulb.Context) -> None:
     if str(ctx.author.id) not in prem_users:
         has_voted = await topgg_client.get_user_vote(ctx.author.id)
         if not has_voted:
-            await ctx.respond(
-                "To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) at top.gg to get access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>) for $3."
-            )
+            await ctx.respond("To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) at top.gg to get access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>) for $3.")
+            await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
             return
     sub = reddit.subreddit("hentai+nhentai+3DPorncraft")
     posts = list(sub.hot(limit=50))
@@ -1572,7 +1556,7 @@ async def himage(ctx: lightbulb.Context) -> None:
 #----------------------------------------------------------------------------------------
 #gimmick
 @bot.command
-@lightbulb.add_cooldown(length=20, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.command("gimmick", "Overview of all gimmick commands.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def gimmick(ctx):
@@ -1592,11 +1576,10 @@ async def gimmick(ctx):
             "**/howhorny:** Fine out how horny someone is.\n"
             "**/howgay:** Find out how gay someone is.\n"
             "**/ship:** Find out how compatible two users are.\n"
-            "More Commands In Development."
         ),
         color=0x2f3136
     )
-    embed.set_footer("Anicord is under development. Join the support server if you need help :)")
+    embed.set_footer("Join the support server if you need help :)")
     await ctx.respond(embed=embed)
     await ctx.respond(
         embed=hikari.Embed(
@@ -1610,7 +1593,7 @@ async def gimmick(ctx):
 
 #howhorny
 @bot.command
-@lightbulb.add_cooldown(length=5, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.option("user", "The user to tag", hikari.User)
 @lightbulb.command("howhorny", "Find out how horny someone is.")
 @lightbulb.implements(lightbulb.SlashCommand)
@@ -1628,7 +1611,7 @@ async def howhorny(ctx: lightbulb.Context) -> None:
 
 #howgay
 @bot.command
-@lightbulb.add_cooldown(length=5, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.option("user", "The user to tag", hikari.User)
 @lightbulb.command("howgay", "Find out how gay someone is.")
 @lightbulb.implements(lightbulb.SlashCommand)
@@ -1646,7 +1629,7 @@ async def howgay(ctx: lightbulb.Context) -> None:
 
 #ship
 @bot.command
-@lightbulb.add_cooldown(length=5, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.option("user2", "The second user to tag", hikari.User)
 @lightbulb.option("user1", "The first user to tag", hikari.User)
 @lightbulb.command("ship", "Find out how compatible two users are.")
@@ -1665,7 +1648,7 @@ async def ship(ctx: lightbulb.Context) -> None:
 #----------------------------------------------------------------------------------------
 #Miscellaneous
 @bot.command
-@lightbulb.add_cooldown(length=20, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.command("miscellaneous", "Overview of all miscellaneous commands.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def miscellaneous(ctx):
@@ -1688,7 +1671,7 @@ async def miscellaneous(ctx):
         ),
         color=0x2f3136
     )
-    embed.set_footer("Anicord is under development. Join the support server if you need help :)")
+    embed.set_footer("Join the support server if you need help :)")
     await ctx.respond(embed=embed)
     await ctx.respond(
         embed=hikari.Embed(
@@ -1702,7 +1685,7 @@ async def miscellaneous(ctx):
 
 #invite command
 @bot.command
-@lightbulb.add_cooldown(length=20, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.command("invite", "Get the bot's invite link.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def invite(ctx):
@@ -1722,7 +1705,7 @@ async def invite(ctx):
 
 #vote command
 @bot.command
-@lightbulb.add_cooldown(length=20, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.command("vote", "Get the link to vote at top.gg.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def vote(ctx):
@@ -1742,7 +1725,7 @@ async def vote(ctx):
 
 #support command
 @bot.command
-@lightbulb.add_cooldown(length=20, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.command("support", "Invite to join the support server.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def support(ctx):
@@ -1762,7 +1745,7 @@ async def support(ctx):
 
 #donate command
 @bot.command
-@lightbulb.add_cooldown(length=20, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.command("donate", "Donate to support Anicord.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def donate(ctx):
@@ -1782,7 +1765,7 @@ async def donate(ctx):
 
 #more command
 @bot.command
-@lightbulb.add_cooldown(length=20, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.command("more", "Check out more bots from me.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def more(ctx):
@@ -1802,7 +1785,7 @@ async def more(ctx):
 
 #privacy command
 @bot.command
-@lightbulb.add_cooldown(length=20, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.command("privacy", "View our privacy policy statement.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def privacy(ctx):
@@ -1815,7 +1798,7 @@ async def privacy(ctx):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
 		title="",
-		description="**Privacy Policy:** \n The personal information of any user, including the username or the command, is not tracked by Anicord.\n[Click to view the full privacy policy statement.](https://gist.github.com/Aza3l01/4374050bc9749c6588a6291629f08f39)",
+		description="**Privacy Policy:** \n The personal information of any user, including the username or the commands used by a user, is not tracked by Anicord. The user_id of premium members are stored to provide the user the with perks and is deleted once a user is no longer a member. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to request the deletion of your data.\n[Click to view the full privacy policy statement.](https://gist.github.com/Aza3l01/4374050bc9749c6588a6291629f08f39)",
 		color=0x2f3136
 	)
     await ctx.respond(embed=embed)
@@ -1829,7 +1812,7 @@ async def on_error(event: lightbulb.CommandErrorEvent) -> None:
         raise event.exception
     exception = event.exception.__cause__ or event.exception
     if isinstance(exception, lightbulb.CommandIsOnCooldown):
-        await event.context.respond(f"`/{event.context.command.name}` is on cooldown. Retry in `{exception.retry_after:.0f}` seconds. ⏱️ \n API commands are ratelimited to prevent spam abuse which could bring the bot down. \n To avoid cooldowns, become a [member](https://buymeacoffee.com/azael/membership).")
+        await event.context.respond(f"`/{event.context.command.name}` is on cooldown. Retry in `{exception.retry_after:.0f}` seconds. ⏱️ Commands are ratelimited to prevent spam abuse which could bring the bot down. To remove cool-downs, become a [member](https://buymeacoffee.com/azael/membership) for $3.")
     else:
         raise exception
 
