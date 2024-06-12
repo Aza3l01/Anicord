@@ -1052,9 +1052,7 @@ async def hroleplay(ctx):
     )
     embed.add_field(
         name="\u200B",
-        value=(
-            "To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to get access for the next 12 hours or become a [member](https://buymeacoffee.com/azael/membership) for $3.\n"
-        ),
+        value=("To use all premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).\n"),
         inline=False
     )
     embed.set_footer("Join the support server if you need help :)")
@@ -1224,7 +1222,7 @@ async def sixtynine(ctx: lightbulb.Context) -> None:
     if str(ctx.author.id) not in prem_users:
         has_voted = await topgg_client.get_user_vote(ctx.author.id)
         if not has_voted:
-            await ctx.respond("To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).")
+            await ctx.respond("To use all premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).")
             await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
             return
     gif = [
@@ -1264,7 +1262,7 @@ async def ride(ctx: lightbulb.Context) -> None:
     if str(ctx.author.id) not in prem_users:
         has_voted = await topgg_client.get_user_vote(ctx.author.id)
         if not has_voted:
-            await ctx.respond("To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).")
+            await ctx.respond("To use all premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).")
             await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
             return
     gif = [
@@ -1307,7 +1305,7 @@ async def fingering(ctx: lightbulb.Context) -> None:
     if str(ctx.author.id) not in prem_users:
         has_voted = await topgg_client.get_user_vote(ctx.author.id)
         if not has_voted:
-            await ctx.respond("To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).")
+            await ctx.respond("To use all premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).")
             await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
             return
     gif = [
@@ -1348,7 +1346,7 @@ async def boobsuck(ctx: lightbulb.Context) -> None:
     if str(ctx.author.id) not in prem_users:
         has_voted = await topgg_client.get_user_vote(ctx.author.id)
         if not has_voted:
-            await ctx.respond("To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).")
+            await ctx.respond("To use all premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).")
             await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
             return
     gif = [
@@ -1390,7 +1388,7 @@ async def nsfw(ctx):
             "**/hmeme:** Get a hentai meme.\n"
             "**/hgif:** Get a hentai gif.\n"
             "**/himage:** Get a hentai image.\n\n"
-            "To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).\n"
+            "To use all premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).\n"
         ),
         color=0x2B2D31
     )
@@ -1416,7 +1414,7 @@ async def hmeme(ctx: lightbulb.Context) -> None:
     if str(ctx.author.id) not in prem_users:
         has_voted = await topgg_client.get_user_vote(ctx.author.id)
         if not has_voted:
-            await ctx.respond("To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).")
+            await ctx.respond("To use all premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).")
             await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
             return
     sub = reddit.subreddit("hentaimemes")
@@ -1452,7 +1450,7 @@ async def hgif(ctx: lightbulb.Context) -> None:
     # if str(ctx.author.id) not in prem_users:
     #     has_voted = await topgg_client.get_user_vote(ctx.author.id)
     #     if not has_voted:
-    #         await ctx.respond("To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).")
+    #         await ctx.respond("To use all premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).")
     #         await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
     #         return
     sub = reddit.subreddit("HENTAI_GIF")
@@ -1487,7 +1485,7 @@ async def himage(ctx: lightbulb.Context) -> None:
     if str(ctx.author.id) not in prem_users:
         has_voted = await topgg_client.get_user_vote(ctx.author.id)
         if not has_voted:
-            await ctx.respond("To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).")
+            await ctx.respond("To use all premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).")
             await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
             return
     sub = reddit.subreddit("hentai+nhentai+3DPorncraft")
