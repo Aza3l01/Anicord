@@ -103,7 +103,7 @@ async def help(ctx):
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
-        title="__**Help**__",
+        title="__Help__",
         description=(
             "**Core Commands:**\n"
             "**/core:** Overview of all core commands.\n\n"
@@ -117,7 +117,7 @@ async def help(ctx):
             "**/miscellaneous:** Overview of miscellaneous commands.\n\n"
             "NSFW commands are LOCKED from normal channels and are ONLY available in NSFW channels.."
         ),
-        color=0x2f3136
+        color=0x2B2D31
     )
     embed.set_footer("Join the support server if you need help :)")
     await ctx.respond(embed=embed)
@@ -145,19 +145,19 @@ async def core(ctx):
             "**/animeme:** View an anime meme.\n"
             "**/random:** Generate a random anime.\n"
         ),
-        color=0x2f3136
+        color=0x2B2D31
     )
     embed.set_footer("Join the support server if you need help :)")
     await ctx.respond(embed=embed)
-    await ctx.respond(
-        embed=hikari.Embed(
-            description=(
-                "**Thank you!**\n"
-                "If you like using Anicord, consider becoming a [member](https://buymeacoffee.com/azael/membership) for $3 to keep Anicord online or leave a [review](https://top.gg/bot/1003247499911376956)."
-            ),
-            color=0x2f3136
-        )
+    thank_you_embed = hikari.Embed(
+        title="Thank you!",
+        description=(
+            "If you like using Anicord, consider [voting](https://top.gg/bot/1003247499911376956/vote) or leaving a [review](https://top.gg/bot/1003247499911376956).\n"
+            "To help keep Anicord online, consider becoming a [member](https://buymeacoffee.com/azael/membership)."
+        ),
+        color=0x2B2D31
     )
+    await ctx.respond(embed=thank_you_embed)
 
 #anime
 @bot.command
@@ -186,7 +186,7 @@ async def anisearch(ctx: lightbulb.Context) -> None:
         title=f"{anime.title_english or 'N/A'} | {anime.title_japanese or 'N/A'}",
         description=anime.synopsis or 'No synopsis available.',
         url=anime.url,
-        color=0x2f3136
+        color=0x2B2D31
     )
     embed.set_thumbnail(anime.image_url)
     if anime.premiered:
@@ -208,7 +208,6 @@ async def anisearch(ctx: lightbulb.Context) -> None:
     if anime.rating:
         embed.add_field(name="Rating", value=anime.rating, inline=True)
     embed.set_footer("Queries are served by an unofficial MAL API and Anicord has no control over the content.")
-    
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     await ctx.respond(embed=embed)
@@ -227,7 +226,6 @@ async def mangasearch(ctx: lightbulb.Context) -> None:
         await bot.rest.create_message(channel, f"`{ctx.command.name}` was used.")
     name = ctx.options.name
     search = MangaSearch(name)
-
     manga_result = None
     if search.results[0] is not None:
         manga_result = search.results[0]
@@ -236,16 +234,14 @@ async def mangasearch(ctx: lightbulb.Context) -> None:
     else:
         await ctx.respond("No valid manga found.")
         return
-
     manga = Manga(manga_result.mal_id)
     embed = hikari.Embed(
         title=f"{manga.title_english or 'N/A'} | {manga.title_japanese or 'N/A'}",
         description=manga.synopsis or 'No synopsis available.',
         url=manga.url,
-        color=0x2f3136
+        color=0x2B2D31
     )
     embed.set_thumbnail(manga.image_url)
-
     if manga.score is not None:
         embed.add_field(name="Score", value=str(manga.score), inline=True)
     if manga.rank is not None:
@@ -258,12 +254,9 @@ async def mangasearch(ctx: lightbulb.Context) -> None:
         embed.add_field(name="Chapters", value=str(manga.chapters), inline=True)
     if manga.volumes is not None:
         embed.add_field(name="Volumes", value=str(manga.volumes), inline=True)
-
     embed.set_footer("Queries are served by an unofficial MAL API and Anicord has no control over the content.")
-    
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
-    
     await ctx.respond(embed=embed)
 
 #character
@@ -312,7 +305,7 @@ async def character(ctx: lightbulb.Context) -> None:
     embed = hikari.Embed(
         title=f"{name_english} | {name_japanese}",
         url=mal_url,
-        color=0x2f3136
+        color=0x2B2D31
     )
     if image_url:
         embed.set_image(image_url)
@@ -334,7 +327,6 @@ async def animeme(ctx: lightbulb.Context) -> None:
         await bot.rest.create_message(channel, f"`{ctx.command.name}` was used.")
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
-    
     sub = reddit.subreddit("Animemes+goodanimemes")
     posts = [post for post in sub.hot(limit=60)]
     sfw_posts = [post for post in posts if not post.over_18]
@@ -342,14 +334,12 @@ async def animeme(ctx: lightbulb.Context) -> None:
     if not sfw_posts:
         await ctx.respond("Somehow all posts on reddit are NSFW right now, please try again later. 💀")
         return
-    
     random_post = choice(sfw_posts)
-    
     embed = hikari.Embed(
         title=random_post.title,
         description="",
         url="https://www.reddit.com" + random_post.permalink,
-        color=0x2f3136
+        color=0x2B2D31
     )
     embed.set_image(random_post.url)
     embed.set_footer("This content is served by the Reddit API and Anicord has no control over it.")
@@ -367,17 +357,14 @@ async def random(ctx: lightbulb.Context) -> None:
     else:
         await bot.rest.create_message(channel, f"`{ctx.command.name}` was used.")
     anime_id = randint(1, 5000)
-
     anime = Anime(anime_id)
-
     embed = hikari.Embed(
         title=f"{anime.title_english or 'N/A'} | {anime.title_japanese or 'N/A'}",
         description=anime.synopsis or 'No synopsis available.',
         url=anime.url,
-        color=0x2f3136
+        color=0x2B2D31
     )
     embed.set_thumbnail(anime.image_url)
-
     if anime.premiered:
         embed.add_field(name="Premiered", value=anime.premiered, inline=True)
     if anime.status:
@@ -396,12 +383,9 @@ async def random(ctx: lightbulb.Context) -> None:
         embed.add_field(name="Popularity", value=str(anime.popularity), inline=True)
     if anime.rating:
         embed.add_field(name="Rating", value=anime.rating, inline=True)
-
     embed.set_footer("Queries are served by an unofficial MAL API and Anicord has no control over the content.")
-    
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
-    
     await ctx.respond(embed=embed)
 
 #----------------------------------------------------------------------------------------
@@ -420,8 +404,8 @@ async def roleplay(ctx):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
 
     embed = hikari.Embed(
-        title="__**Role-play Reactions**__",
-        color=0x2f3136
+        title="__Role-play Reactions__",
+        color=0x2B2D31
     )
     embed.add_field(
         name="Self Reactions",
@@ -458,15 +442,15 @@ async def roleplay(ctx):
     embed.set_footer("Join the support server if you need help :)")
 
     await ctx.respond(embed=embed)
-    await ctx.respond(
-        embed=hikari.Embed(
-            description=(
-                "**Thank you!**\n"
-                "If you like using Anicord, consider becoming a [member](https://buymeacoffee.com/azael/membership) for $3 to keep Anicord online or leave a [review](https://top.gg/bot/1003247499911376956)."
-            ),
-            color=0x2f3136
-        )
+    thank_you_embed = hikari.Embed(
+        title="Thank you!",
+        description=(
+            "If you like using Anicord, consider [voting](https://top.gg/bot/1003247499911376956/vote) or leaving a [review](https://top.gg/bot/1003247499911376956).\n"
+            "To help keep Anicord online, consider becoming a [member](https://buymeacoffee.com/azael/membership)."
+        ),
+        color=0x2B2D31
     )
+    await ctx.respond(embed=thank_you_embed)
 
 #Self
 #happy
@@ -490,7 +474,7 @@ async def happy(ctx: lightbulb.Context) -> None:
     random_gif = choice(gif)
     embed = hikari.Embed(
         description=f"{ctx.author.mention} is happy.",
-        color=0x2f3136
+        color=0x2B2D31
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
@@ -518,7 +502,7 @@ async def cry(ctx: lightbulb.Context) -> None:
     random_gif = choice(gif)
     embed = hikari.Embed(
         description=f"{ctx.author.mention} is crying.",
-        color=0x2f3136
+        color=0x2B2D31
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
@@ -546,7 +530,7 @@ async def beg(ctx: lightbulb.Context) -> None:
     random_gif = choice(gif)
     embed = hikari.Embed(
         description=f"{ctx.author.mention} is begging.",
-        color=0x2f3136
+        color=0x2B2D31
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
@@ -574,7 +558,7 @@ async def blush(ctx: lightbulb.Context) -> None:
     random_gif = choice(gif)
     embed = hikari.Embed(
         description=f"{ctx.author.mention} is blushing.",
-        color=0x2f3136
+        color=0x2B2D31
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
@@ -602,7 +586,7 @@ async def facepalm(ctx: lightbulb.Context) -> None:
     random_gif = choice(gif)
     embed = hikari.Embed(
         description=f"{ctx.author.mention} is facepalming.",
-        color=0x2f3136
+        color=0x2B2D31
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
@@ -630,7 +614,7 @@ async def nosebleed(ctx: lightbulb.Context) -> None:
     random_gif = choice(gif)
     embed = hikari.Embed(
         description=f"{ctx.author.mention} is bleeding from their nose.",
-        color=0x2f3136
+        color=0x2B2D31
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
@@ -658,7 +642,7 @@ async def pout(ctx: lightbulb.Context) -> None:
     random_gif = choice(gif)
     embed = hikari.Embed(
         description=f"{ctx.author.mention} is pouting.",
-        color=0x2f3136
+        color=0x2B2D31
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
@@ -687,7 +671,7 @@ async def run(ctx: lightbulb.Context) -> None:
     random_gif = choice(gif)
     embed = hikari.Embed(
         description=f"{ctx.author.mention} is running.",
-        color=0x2f3136
+        color=0x2B2D31
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
@@ -715,7 +699,7 @@ async def shrug(ctx: lightbulb.Context) -> None:
     random_gif = choice(gif)
     embed = hikari.Embed(
         description=f"{ctx.author.mention} is shrugging.",
-        color=0x2f3136
+        color=0x2B2D31
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
@@ -743,7 +727,7 @@ async def smirk(ctx: lightbulb.Context) -> None:
     random_gif = choice(gif)
     embed = hikari.Embed(
         description=f"{ctx.author.mention} is smirking.",
-        color=0x2f3136
+        color=0x2B2D31
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
@@ -754,7 +738,7 @@ async def smirk(ctx: lightbulb.Context) -> None:
 #wave
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "user to tag", type=hikari.User)
+@lightbulb.option("user", "Select a member.", type=hikari.User)
 @lightbulb.command("wave", "Wave at someone.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def wave(ctx: lightbulb.Context) -> None: 
@@ -773,7 +757,7 @@ async def wave(ctx: lightbulb.Context) -> None:
     random_gif = choice(gif)
     embed = hikari.Embed(
         description=f"**{ctx.author.mention} is waving at {ctx.options.user.mention}**",
-        color=0x2f3136
+        color=0x2B2D31
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
@@ -783,7 +767,7 @@ async def wave(ctx: lightbulb.Context) -> None:
 #bite
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "user to tag", hikari.User)
+@lightbulb.option("user", "Select a member.", hikari.User)
 @lightbulb.command("bite", "Bite someone.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def bite(ctx: lightbulb.Context) -> None:
@@ -802,7 +786,7 @@ async def bite(ctx: lightbulb.Context) -> None:
     random_gif = choice(gif)
     embed = hikari.Embed(
         description=f"**{ctx.author.mention} is biting {ctx.options.user.mention}**",
-        color=0x2f3136
+        color=0x2B2D31
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
@@ -812,7 +796,7 @@ async def bite(ctx: lightbulb.Context) -> None:
 #bonk
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "user to tag", hikari.User)
+@lightbulb.option("user", "Select a member.", hikari.User)
 @lightbulb.command("bonk", "Bonk someone.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def bonk(ctx: lightbulb.Context) -> None:
@@ -831,7 +815,7 @@ async def bonk(ctx: lightbulb.Context) -> None:
     random_gif = choice(gif)
     embed = hikari.Embed(
         description=f"**{ctx.author.mention} is bonking {ctx.options.user.mention}**",
-        color=0x2f3136
+        color=0x2B2D31
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
@@ -841,7 +825,7 @@ async def bonk(ctx: lightbulb.Context) -> None:
 #hug
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "user to tag", hikari.User)
+@lightbulb.option("user", "Select a member.", hikari.User)
 @lightbulb.command("hug", "Hug someone.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def hug(ctx: lightbulb.Context) -> None:
@@ -860,7 +844,7 @@ async def hug(ctx: lightbulb.Context) -> None:
     random_gif = choice(gif)
     embed = hikari.Embed(
         description=f"**{ctx.author.mention} is hugging {ctx.options.user.mention}**",
-        color=0x2f3136
+        color=0x2B2D31
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
@@ -870,7 +854,7 @@ async def hug(ctx: lightbulb.Context) -> None:
 #marry
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "user to tag", hikari.User)
+@lightbulb.option("user", "Select a member.", hikari.User)
 @lightbulb.command("marry", "Marry someone.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def marry(ctx: lightbulb.Context) -> None:
@@ -890,7 +874,7 @@ async def marry(ctx: lightbulb.Context) -> None:
     random_gif = choice(gif)
     embed = hikari.Embed(
         description=f"**{ctx.author.mention} is marrying {ctx.options.user.mention}**",
-        color=0x2f3136
+        color=0x2B2D31
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
@@ -900,7 +884,7 @@ async def marry(ctx: lightbulb.Context) -> None:
 #kiss
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "user to tag", hikari.User)
+@lightbulb.option("user", "Select a member.", hikari.User)
 @lightbulb.command("kiss", "Kiss someone.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def kiss(ctx: lightbulb.Context) -> None:
@@ -920,7 +904,7 @@ async def kiss(ctx: lightbulb.Context) -> None:
     random_gif = choice(gif)
     embed = hikari.Embed(
         description=f"**{ctx.author.mention} is kissing {ctx.options.user.mention}**",
-        color=0x2f3136
+        color=0x2B2D31
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
@@ -930,7 +914,7 @@ async def kiss(ctx: lightbulb.Context) -> None:
 #lick
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "user to tag", hikari.User)
+@lightbulb.option("user", "Select a member.", hikari.User)
 @lightbulb.command("lick", "Lick someone.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def lick(ctx: lightbulb.Context) -> None:
@@ -950,7 +934,7 @@ async def lick(ctx: lightbulb.Context) -> None:
     random_gif = choice(gif)
     embed = hikari.Embed(
         description=f"**{ctx.author.mention} is licking {ctx.options.user.mention}**",
-        color=0x2f3136
+        color=0x2B2D31
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
@@ -960,7 +944,7 @@ async def lick(ctx: lightbulb.Context) -> None:
 #love
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "user to tag", hikari.User)
+@lightbulb.option("user", "Select a member.", hikari.User)
 @lightbulb.command("love", "Show your love to someone.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def love(ctx: lightbulb.Context) -> None:
@@ -979,7 +963,7 @@ async def love(ctx: lightbulb.Context) -> None:
     random_gif = choice(gif)
     embed = hikari.Embed(
         description=f"**{ctx.author.mention} is in love with {ctx.options.user.mention}**",
-        color=0x2f3136
+        color=0x2B2D31
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
@@ -989,7 +973,7 @@ async def love(ctx: lightbulb.Context) -> None:
 #pat
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "user to tag", hikari.User)
+@lightbulb.option("user", "Select a member.", hikari.User)
 @lightbulb.command("pat", "Pat someone.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def pat(ctx: lightbulb.Context) -> None:
@@ -1008,7 +992,7 @@ async def pat(ctx: lightbulb.Context) -> None:
     random_gif = choice(gif)
     embed = hikari.Embed(
         description=f"**{ctx.author.mention} is patting {ctx.options.user.mention}**",
-        color=0x2f3136
+        color=0x2B2D31
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
@@ -1018,7 +1002,7 @@ async def pat(ctx: lightbulb.Context) -> None:
 #slap
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "user to tag", hikari.User)
+@lightbulb.option("user", "Select a member.", hikari.User)
 @lightbulb.command("slap", "Slap someone.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def slap(ctx: lightbulb.Context) -> None:
@@ -1037,7 +1021,7 @@ async def slap(ctx: lightbulb.Context) -> None:
     random_gif = choice(gif)
     embed = hikari.Embed(
         description=f"**{ctx.author.mention} is slapping {ctx.options.user.mention}**",
-        color=0x2f3136
+        color=0x2B2D31
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
@@ -1062,9 +1046,9 @@ async def hroleplay(ctx):
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
-        title="__**NSFW Role-play Reactions**__",
+        title="__NSFW Role-play Reactions__",
         description="NSFW commands are LOCKED from normal channels and are ONLY available in NSFW channels.",
-        color=0x2f3136
+        color=0x2B2D31
     )
     embed.add_field(
         name="Available",
@@ -1089,28 +1073,27 @@ async def hroleplay(ctx):
     embed.add_field(
         name="\u200B",
         value=(
-            "To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) at top.gg to get access for the next 12 hours or become a [member](https://buymeacoffee.com/azael/membership) for $3.\n"
+            "To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to get access for the next 12 hours or become a [member](https://buymeacoffee.com/azael/membership) for $3.\n"
         ),
         inline=False
     )
     embed.set_footer("Join the support server if you need help :)")
-
     await ctx.respond(embed=embed)
-    await ctx.respond(
-        embed=hikari.Embed(
-            description=(
-                "**Thank you!**\n"
-                "If you like using Anicord, consider becoming a [member](https://buymeacoffee.com/azael/membership) for $3 to keep Anicord online or leave a [review](https://top.gg/bot/1003247499911376956)."
-            ),
-            color=0x2f3136
-        )
+    thank_you_embed = hikari.Embed(
+        title="Thank you!",
+        description=(
+            "If you like using Anicord, consider [voting](https://top.gg/bot/1003247499911376956/vote) or leaving a [review](https://top.gg/bot/1003247499911376956).\n"
+            "To help keep Anicord online, consider becoming a [member](https://buymeacoffee.com/azael/membership)."
+        ),
+        color=0x2B2D31
     )
+    await ctx.respond(embed=thank_you_embed)
 
 #free
 #fuck
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "user to tag", hikari.User)
+@lightbulb.option("user", "Select a member.", hikari.User)
 @lightbulb.command("fuck", "Fuck someone")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def fuck(ctx: lightbulb.Context) -> None:
@@ -1139,7 +1122,7 @@ async def fuck(ctx: lightbulb.Context) -> None:
     random_gif = choice(gifs)
     embed = hikari.Embed(
         description=f"**{ctx.author.mention} is fucking {ctx.options.user.mention}**",
-        color=0x2f3136
+        color=0x2B2D31
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
@@ -1150,7 +1133,7 @@ async def fuck(ctx: lightbulb.Context) -> None:
 #blowjob
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "The user to tag", hikari.User)
+@lightbulb.option("user", "Select a member.", hikari.User)
 @lightbulb.command("blowjob", "Receive a blowjob from someone.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def blowjob(ctx: lightbulb.Context) -> None:
@@ -1175,7 +1158,7 @@ async def blowjob(ctx: lightbulb.Context) -> None:
     random_gif = choice(gif)
     embed = hikari.Embed(
         description=f"**{ctx.author.mention} is getting a blowjob from {ctx.options.user.mention}**",
-        color=0x2f3136
+        color=0x2B2D31
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
@@ -1185,7 +1168,7 @@ async def blowjob(ctx: lightbulb.Context) -> None:
 #boobjob
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "The user to tag", hikari.User)
+@lightbulb.option("user", "Select a member.", hikari.User)
 @lightbulb.command("boobjob", "Receive a boobjob from someone")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def boobjob(ctx: lightbulb.Context) -> None:
@@ -1209,7 +1192,7 @@ async def boobjob(ctx: lightbulb.Context) -> None:
     random_gif = choice(gif)
     embed = hikari.Embed(
         description=f"**{ctx.author.mention} is getting a boobjob from {ctx.options.user.mention}**",
-        color=0x2f3136
+        color=0x2B2D31
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
@@ -1219,7 +1202,7 @@ async def boobjob(ctx: lightbulb.Context) -> None:
 #handjob
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "The user to tag", hikari.User)
+@lightbulb.option("user", "Select a member.", hikari.User)
 @lightbulb.command("handjob", "Receive a handjob from someone")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def handjob(ctx: lightbulb.Context) -> None:
@@ -1242,7 +1225,7 @@ async def handjob(ctx: lightbulb.Context) -> None:
     random_gif = choice(gif)
     embed = hikari.Embed(
         description=f"**{ctx.author.mention} is getting a handjob from {ctx.options.user.mention}**",
-        color=0x2f3136
+        color=0x2B2D31
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
@@ -1253,7 +1236,7 @@ async def handjob(ctx: lightbulb.Context) -> None:
 #cum
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "The user to tag", hikari.User)
+@lightbulb.option("user", "Select a member", hikari.User)
 @lightbulb.command("cum", "Cum on someone.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def sixtynine(ctx: lightbulb.Context) -> None:
@@ -1270,7 +1253,7 @@ async def sixtynine(ctx: lightbulb.Context) -> None:
     if str(ctx.author.id) not in prem_users:
         has_voted = await topgg_client.get_user_vote(ctx.author.id)
         if not has_voted:
-            await ctx.respond("To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) at top.gg to get access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>) for $3.")
+            await ctx.respond("To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).")
             await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
             return
     gif = [
@@ -1279,12 +1262,13 @@ async def sixtynine(ctx: lightbulb.Context) -> None:
         "https://cdn.discordapp.com/attachments/1243886267767459871/1250115569815126138/3.gif?ex=6669c459&is=666872d9&hm=0a3745ef214a8b6cf28a4904b79d490a8fe4b400c819d163cf07b9d97aae5cbe&",
         "https://cdn.discordapp.com/attachments/1243886267767459871/1250115580816789645/4.gif?ex=6669c45c&is=666872dc&hm=adad0ab0c9814dcebd49450e3ba3aa187d2a0dd9273bcfccea0098db0da15e31&",
         "https://cdn.discordapp.com/attachments/1243886267767459871/1250115598684262500/5.gif?ex=6669c460&is=666872e0&hm=17fdec70fbfab46cb42213feb7890728085d5398dc69365a0497d6c1df72bde1&",
-        "https://cdn.discordapp.com/attachments/1243886267767459871/1250115610528972871/6.gif?ex=6669c463&is=666872e3&hm=26fb2e2d3efbfd1f6f9a4f8515730bc8748ea00361ba1da9231845b8998111f8&"
+        "https://cdn.discordapp.com/attachments/1243886267767459871/1250115610528972871/6.gif?ex=6669c463&is=666872e3&hm=26fb2e2d3efbfd1f6f9a4f8515730bc8748ea00361ba1da9231845b8998111f8&",
+        "https://cdn.discordapp.com/attachments/1243886267767459871/1250362508229869598/7.gif?ex=666aaa54&is=666958d4&hm=d12b36865d67298d9e9ed7abe67ec5372e5e0c21b8246748305650d3ef7e7d71&"
     ]
     random_gif = choice(gif)
     embed = hikari.Embed(
         description=f"**{ctx.author.mention} is cumming on {ctx.options.user.mention}**",
-        color=0x2f3136
+        color=0x2B2D31
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
@@ -1292,7 +1276,7 @@ async def sixtynine(ctx: lightbulb.Context) -> None:
 #ride
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "The user to tag", hikari.User)
+@lightbulb.option("user", "Select a member.", hikari.User)
 @lightbulb.command("ride", "Ride someone.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def ride(ctx: lightbulb.Context) -> None:
@@ -1309,7 +1293,7 @@ async def ride(ctx: lightbulb.Context) -> None:
     if str(ctx.author.id) not in prem_users:
         has_voted = await topgg_client.get_user_vote(ctx.author.id)
         if not has_voted:
-            await ctx.respond("To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) at top.gg to get access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>) for $3.")
+            await ctx.respond("To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).")
             await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
             return
     gif = [
@@ -1327,7 +1311,7 @@ async def ride(ctx: lightbulb.Context) -> None:
     random_gif = choice(gif)
     embed = hikari.Embed(
         description=f"**{ctx.author.mention} is riding {ctx.options.user.mention}**",
-        color=0x2f3136
+        color=0x2B2D31
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
@@ -1335,7 +1319,7 @@ async def ride(ctx: lightbulb.Context) -> None:
 #fingering
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "The user to tag", hikari.User)
+@lightbulb.option("user", "Select a member.", hikari.User)
 @lightbulb.command("fingering", "Finger someone.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def fingering(ctx: lightbulb.Context) -> None:
@@ -1352,7 +1336,7 @@ async def fingering(ctx: lightbulb.Context) -> None:
     if str(ctx.author.id) not in prem_users:
         has_voted = await topgg_client.get_user_vote(ctx.author.id)
         if not has_voted:
-            await ctx.respond("To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) at top.gg to get access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>) for $3.")
+            await ctx.respond("To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).")
             await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
             return
     gif = [
@@ -1368,7 +1352,7 @@ async def fingering(ctx: lightbulb.Context) -> None:
     random_gif = choice(gif)
     embed = hikari.Embed(
         description=f"**{ctx.author.mention} is fingering {ctx.options.user.mention}**",
-        color=0x2f3136
+        color=0x2B2D31
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
@@ -1376,7 +1360,7 @@ async def fingering(ctx: lightbulb.Context) -> None:
 #boobsuck
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "The user to tag", hikari.User)
+@lightbulb.option("user", "Select a member.", hikari.User)
 @lightbulb.command("boobsuck", "Suck on someone's boobs.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def boobsuck(ctx: lightbulb.Context) -> None:
@@ -1393,7 +1377,7 @@ async def boobsuck(ctx: lightbulb.Context) -> None:
     if str(ctx.author.id) not in prem_users:
         has_voted = await topgg_client.get_user_vote(ctx.author.id)
         if not has_voted:
-            await ctx.respond("To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) at top.gg to get access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>) for $3.")
+            await ctx.respond("To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).")
             await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
             return
     gif = [
@@ -1406,7 +1390,7 @@ async def boobsuck(ctx: lightbulb.Context) -> None:
     random_gif = choice(gif)
     embed = hikari.Embed(
         description=f"**{ctx.author.mention} is sucking {ctx.options.user.mention}'s boobs**",
-        color=0x2f3136
+        color=0x2B2D31
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
@@ -1429,27 +1413,27 @@ async def nsfw(ctx):
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
-        title="__**NSFW Commands**__",
+        title="__NSFW Commands__",
         description=(
             "NSFW commands are LOCKED from normal channels and are ONLY available in NSFW channels.\n\n"
             "**/hmeme:** Get a hentai meme.\n"
             "**/hgif:** Get a hentai gif.\n"
             "**/himage:** Get a hentai image.\n\n"
-            "To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) at top.gg to get access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>) for $3.\n"
+            "To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).\n"
         ),
-        color=0x2f3136
+        color=0x2B2D31
     )
     embed.set_footer("Join the support server if you need help :)")
     await ctx.respond(embed=embed)
-    await ctx.respond(
-        embed=hikari.Embed(
-            description=(
-                "**Thank you!**\n"
-                "If you like using Anicord, consider becoming a [member](https://buymeacoffee.com/azael/membership) for $3 to keep Anicord online or leave a [review](https://top.gg/bot/1003247499911376956)."
-            ),
-            color=0x2f3136
-        )
+    thank_you_embed = hikari.Embed(
+        title="Thank you!",
+        description=(
+            "If you like using Anicord, consider [voting](https://top.gg/bot/1003247499911376956/vote) or leaving a [review](https://top.gg/bot/1003247499911376956).\n"
+            "To help keep Anicord online, consider becoming a [member](https://buymeacoffee.com/azael/membership)."
+        ),
+        color=0x2B2D31
     )
+    await ctx.respond(embed=thank_you_embed)
 
 #hmeme
 @bot.command
@@ -1470,7 +1454,7 @@ async def hmeme(ctx: lightbulb.Context) -> None:
     if str(ctx.author.id) not in prem_users:
         has_voted = await topgg_client.get_user_vote(ctx.author.id)
         if not has_voted:
-            await ctx.respond("To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) at top.gg to get access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>) for $3.")
+            await ctx.respond("To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).")
             await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
             return
     sub = reddit.subreddit("hentaimemes")
@@ -1481,7 +1465,7 @@ async def hmeme(ctx: lightbulb.Context) -> None:
         title=random_post.title,
         description="",
         url="https://www.reddit.com" + random_post.permalink,
-        color=0x2f3136
+        color=0x2B2D31
     )
     embed.set_image(random_post.url)
     embed.set_footer("This content is served by the Reddit API and Anicord has no control over it.")
@@ -1506,7 +1490,7 @@ async def hgif(ctx: lightbulb.Context) -> None:
     # if str(ctx.author.id) not in prem_users:
     #     has_voted = await topgg_client.get_user_vote(ctx.author.id)
     #     if not has_voted:
-    #         await ctx.respond("To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) at top.gg to get access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>) for $3.")
+    #         await ctx.respond("To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).")
     #         await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
     #         return
     sub = reddit.subreddit("HENTAI_GIF")
@@ -1516,7 +1500,7 @@ async def hgif(ctx: lightbulb.Context) -> None:
         title=random_post.title,
         description="",
         url="https://www.reddit.com" + random_post.permalink,
-        color=0x2f3136
+        color=0x2B2D31
     )
     embed.set_image(random_post.url)
     embed.set_footer("This content is served by the Reddit API and Anicord has no control over it.")
@@ -1525,7 +1509,7 @@ async def hgif(ctx: lightbulb.Context) -> None:
 #himage
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.command("himage", "Get an image.", auto_defer=True)
+@lightbulb.command("himage", "Get a hentai image.", auto_defer=True)
 @lightbulb.implements(lightbulb.SlashCommand)
 async def himage(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
@@ -1541,7 +1525,7 @@ async def himage(ctx: lightbulb.Context) -> None:
     if str(ctx.author.id) not in prem_users:
         has_voted = await topgg_client.get_user_vote(ctx.author.id)
         if not has_voted:
-            await ctx.respond("To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) at top.gg to get access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>) for $3.")
+            await ctx.respond("To use premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).")
             await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
             return
     sub = reddit.subreddit("hentai+nhentai+3DPorncraft")
@@ -1555,11 +1539,10 @@ async def himage(ctx: lightbulb.Context) -> None:
         title=random_post.title,
         description="",
         url=f"https://www.reddit.com{random_post.permalink}",
-        color=0x2f3136
+        color=0x2B2D31
     )
     embed.set_image(random_post.url)
     embed.set_footer("This content is served by the Reddit API and Anicord has no control over it.")
-    
     await ctx.respond(embed=embed)
 
 #----------------------------------------------------------------------------------------
@@ -1580,30 +1563,30 @@ async def gimmick(ctx):
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
-        title="__**NSFW Commands**__",
+        title="__NSFW Commands__",
         description=(
             "**/howhorny:** Fine out how horny someone is.\n"
             "**/howgay:** Find out how gay someone is.\n"
             "**/ship:** Find out how compatible two users are.\n"
         ),
-        color=0x2f3136
+        color=0x2B2D31
     )
     embed.set_footer("Join the support server if you need help :)")
     await ctx.respond(embed=embed)
-    await ctx.respond(
-        embed=hikari.Embed(
-            description=(
-                "**Thank you!**\n"
-                "If you like using Anicord, consider becoming a [member](https://buymeacoffee.com/azael/membership) for $3 to keep Anicord online or leave a [review](https://top.gg/bot/1003247499911376956)."
-            ),
-            color=0x2f3136
-        )
+    thank_you_embed = hikari.Embed(
+        title="Thank you!",
+        description=(
+            "If you like using Anicord, consider [voting](https://top.gg/bot/1003247499911376956/vote) or leaving a [review](https://top.gg/bot/1003247499911376956).\n"
+            "To help keep Anicord online, consider becoming a [member](https://buymeacoffee.com/azael/membership)."
+        ),
+        color=0x2B2D31
     )
+    await ctx.respond(embed=thank_you_embed)
 
 #howhorny
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "The user to tag", hikari.User)
+@lightbulb.option("user", "Select a member.", hikari.User)
 @lightbulb.command("howhorny", "Find out how horny someone is.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def howhorny(ctx: lightbulb.Context) -> None:
@@ -1621,7 +1604,7 @@ async def howhorny(ctx: lightbulb.Context) -> None:
 #howgay
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user", "The user to tag", hikari.User)
+@lightbulb.option("user", "Select a member.", hikari.User)
 @lightbulb.command("howgay", "Find out how gay someone is.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def howgay(ctx: lightbulb.Context) -> None:
@@ -1639,8 +1622,8 @@ async def howgay(ctx: lightbulb.Context) -> None:
 #ship
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("user2", "The second user to tag", hikari.User)
-@lightbulb.option("user1", "The first user to tag", hikari.User)
+@lightbulb.option("user2", "Select a member.", hikari.User)
+@lightbulb.option("user1", "Select a member.", hikari.User)
 @lightbulb.command("ship", "Find out how compatible two users are.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def ship(ctx: lightbulb.Context) -> None:
@@ -1669,33 +1652,33 @@ async def miscellaneous(ctx):
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
-        title="__**Miscellaneous**__",
+        title="__Miscellaneous__",
         description=(
-            "**/invite:** Get the bot's invite link.\n"
-            "**/vote:** Get the link to vote at top.gg.\n"
-            "**/support:** Invite to join the support server.\n"
+            "**/invite:** Invite the bot to your server.\n"
+            "**/vote:** Vote on top.gg.\n"
+            "**/support:** Join the support server.\n"
             "**/donate:** Donate to support Anicord.\n"
-            "**/more:** Check out more bots from me.\n"
+            "**/more:** More bots from me.\n"
             "**/privacy:** View our privacy policy."
         ),
-        color=0x2f3136
+        color=0x2B2D31
     )
     embed.set_footer("Join the support server if you need help :)")
     await ctx.respond(embed=embed)
-    await ctx.respond(
-        embed=hikari.Embed(
-            description=(
-                "**Thank you!**\n"
-                "If you like using Anicord, consider becoming a [member](https://buymeacoffee.com/azael/membership) for $3 to keep Anicord online or leave a [review](https://top.gg/bot/1003247499911376956)."
-            ),
-            color=0x2f3136
-        )
+    thank_you_embed = hikari.Embed(
+        title="Thank you!",
+        description=(
+            "If you like using Anicord, consider [voting](https://top.gg/bot/1003247499911376956/vote) or leaving a [review](https://top.gg/bot/1003247499911376956).\n"
+            "To help keep Anicord online, consider becoming a [member](https://buymeacoffee.com/azael/membership)."
+        ),
+        color=0x2B2D31
     )
+    await ctx.respond(embed=thank_you_embed)
 
 #invite command
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.command("invite", "Get the bot's invite link.")
+@lightbulb.command("invite", "Invite the bot to your server.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def invite(ctx):
     guild = ctx.get_guild()
@@ -1707,15 +1690,15 @@ async def invite(ctx):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
         title="Invite:",
-		description="Get the bot's invite link [here](https://discord.com/api/oauth2/authorize?client_id=1003247499911376956&permissions=414464723008&scope=bot%20applications.commands).",
-		color=0x2f3136
+		description="[Invite the bot to your server.](https://discord.com/api/oauth2/authorize?client_id=1003247499911376956&permissions=414464723008&scope=bot%20applications.commands)",
+		color=0x2B2D31
 	)
     await ctx.respond(embed=embed)
 
 #vote command
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.command("vote", "Get the link to vote at top.gg.")
+@lightbulb.command("vote", "Vote on top.gg.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def vote(ctx):
     guild = ctx.get_guild()
@@ -1727,15 +1710,15 @@ async def vote(ctx):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
 		title="Vote:",
-		description="Click [here](https://top.gg/bot/1003247499911376956/vote) to vote on top.gg. Thank you!",
-		color=0x2f3136
+		description="[Vote on top.gg, thank you!](https://top.gg/bot/1003247499911376956/vote)",
+		color=0x2B2D31
     )
     await ctx.respond(embed=embed)
 
 #support command
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.command("support", "Invite to join the support server.")
+@lightbulb.command("support", "Join the support server.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def support(ctx):
     guild = ctx.get_guild()
@@ -1747,8 +1730,8 @@ async def support(ctx):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
         title="Support:",
-		description="Click [here](https://discord.com/invite/CvpujuXmEf) to join the support server.",
-		color=0x2f3136
+		description="[Join the support server.](https://discord.com/invite/x7MdgVFUwa)",
+		color=0x2B2D31
 	)
     await ctx.respond(embed=embed)
 
@@ -1767,15 +1750,15 @@ async def donate(ctx):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
         title="Donate:",
-        description="[Buy me a coffee](https://www.buymeacoffee.com/azael) to keep Anicord alive. Thank you! :)",
-		color=0x2f3136
+        description="[Donate to keep Anicord online, thank you!](https://buymeacoffee.com/azael)",
+		color=0x2B2D31
 	)
     await ctx.respond(embed=embed)
 
 #more command
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.command("more", "Check out more bots from me.")
+@lightbulb.command("more", "More bots from me.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def more(ctx):
     guild = ctx.get_guild()
@@ -1787,15 +1770,15 @@ async def more(ctx):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
         title="More:",
-        description="Click [here](https://top.gg/user/67067136345571328) to check out more bots from me.",
-        color=0x2f3136
+        description="[Check out more bots from me.](https://top.gg/user/67067136345571328)",
+        color=0x2B2D31
     )
     await ctx.respond(embed=embed)
 
 #privacy command
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.command("privacy", "View our privacy policy statement.")
+@lightbulb.command("privacy", "Privacy policy statement.")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def privacy(ctx):
     guild = ctx.get_guild()
@@ -1806,9 +1789,9 @@ async def privacy(ctx):
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
-		title="",
-		description="**Privacy Policy:** \n The personal information of any user, including the username or the commands used by a user, is not tracked by Anicord. The user_id of premium members are stored to provide the user the with perks and is deleted once a user is no longer a member. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to request the deletion of your data.\n[Click to view the full privacy policy statement.](https://gist.github.com/Aza3l01/4374050bc9749c6588a6291629f08f39)",
-		color=0x2f3136
+		title="Privacy Policy:",
+		description="The personal information of any user, including the username or the commands used by a user, is not tracked by Anicord.\n\nThe user_id of premium members are stored to provide the user the with perks and is deleted once a user is no longer a member.\n\nJoin the [support server](https://discord.com/invite/x7MdgVFUwa) to request the deletion of your data.\n\n[Click to view the full privacy policy statement.](https://gist.github.com/Aza3l01/4374050bc9749c6588a6291629f08f39)",
+		color=0x2B2D31
 	)
     await ctx.respond(embed=embed)
 
@@ -1825,6 +1808,7 @@ async def on_error(event: lightbulb.CommandErrorEvent) -> None:
     else:
         raise exception
 
+#top.gg stop
 @bot.listen(hikari.StoppedEvent)
 async def on_stopping(event: hikari.StoppedEvent) -> None:
     await topgg_client.close()
