@@ -149,15 +149,6 @@ async def core(ctx):
     )
     embed.set_footer("Join the support server if you need help :)")
     await ctx.respond(embed=embed)
-    thank_you_embed = hikari.Embed(
-        title="Thank you!",
-        description=(
-            "If you like using Anicord, consider [voting](https://top.gg/bot/1003247499911376956/vote) or leaving a [review](https://top.gg/bot/1003247499911376956).\n"
-            "To help keep Anicord online, consider becoming a [member](https://buymeacoffee.com/azael/membership)."
-        ),
-        color=0x2B2D31
-    )
-    await ctx.respond(embed=thank_you_embed)
 
 #anime
 @bot.command
@@ -402,7 +393,6 @@ async def roleplay(ctx):
         await bot.rest.create_message(channel, f"`{ctx.command.name}` was used.")
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
-
     embed = hikari.Embed(
         title="__Role-play Reactions__",
         color=0x2B2D31
@@ -440,17 +430,7 @@ async def roleplay(ctx):
         inline=True
     )
     embed.set_footer("Join the support server if you need help :)")
-
     await ctx.respond(embed=embed)
-    thank_you_embed = hikari.Embed(
-        title="Thank you!",
-        description=(
-            "If you like using Anicord, consider [voting](https://top.gg/bot/1003247499911376956/vote) or leaving a [review](https://top.gg/bot/1003247499911376956).\n"
-            "To help keep Anicord online, consider becoming a [member](https://buymeacoffee.com/azael/membership)."
-        ),
-        color=0x2B2D31
-    )
-    await ctx.respond(embed=thank_you_embed)
 
 #Self
 #happy
@@ -1079,15 +1059,6 @@ async def hroleplay(ctx):
     )
     embed.set_footer("Join the support server if you need help :)")
     await ctx.respond(embed=embed)
-    thank_you_embed = hikari.Embed(
-        title="Thank you!",
-        description=(
-            "If you like using Anicord, consider [voting](https://top.gg/bot/1003247499911376956/vote) or leaving a [review](https://top.gg/bot/1003247499911376956).\n"
-            "To help keep Anicord online, consider becoming a [member](https://buymeacoffee.com/azael/membership)."
-        ),
-        color=0x2B2D31
-    )
-    await ctx.respond(embed=thank_you_embed)
 
 #free
 #fuck
@@ -1425,15 +1396,6 @@ async def nsfw(ctx):
     )
     embed.set_footer("Join the support server if you need help :)")
     await ctx.respond(embed=embed)
-    thank_you_embed = hikari.Embed(
-        title="Thank you!",
-        description=(
-            "If you like using Anicord, consider [voting](https://top.gg/bot/1003247499911376956/vote) or leaving a [review](https://top.gg/bot/1003247499911376956).\n"
-            "To help keep Anicord online, consider becoming a [member](https://buymeacoffee.com/azael/membership)."
-        ),
-        color=0x2B2D31
-    )
-    await ctx.respond(embed=thank_you_embed)
 
 #hmeme
 @bot.command
@@ -1573,15 +1535,6 @@ async def gimmick(ctx):
     )
     embed.set_footer("Join the support server if you need help :)")
     await ctx.respond(embed=embed)
-    thank_you_embed = hikari.Embed(
-        title="Thank you!",
-        description=(
-            "If you like using Anicord, consider [voting](https://top.gg/bot/1003247499911376956/vote) or leaving a [review](https://top.gg/bot/1003247499911376956).\n"
-            "To help keep Anicord online, consider becoming a [member](https://buymeacoffee.com/azael/membership)."
-        ),
-        color=0x2B2D31
-    )
-    await ctx.respond(embed=thank_you_embed)
 
 #howhorny
 @bot.command
@@ -1665,15 +1618,6 @@ async def miscellaneous(ctx):
     )
     embed.set_footer("Join the support server if you need help :)")
     await ctx.respond(embed=embed)
-    thank_you_embed = hikari.Embed(
-        title="Thank you!",
-        description=(
-            "If you like using Anicord, consider [voting](https://top.gg/bot/1003247499911376956/vote) or leaving a [review](https://top.gg/bot/1003247499911376956).\n"
-            "To help keep Anicord online, consider becoming a [member](https://buymeacoffee.com/azael/membership)."
-        ),
-        color=0x2B2D31
-    )
-    await ctx.respond(embed=thank_you_embed)
 
 #invite command
 @bot.command
