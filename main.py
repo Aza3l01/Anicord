@@ -7,6 +7,7 @@ import jikanpy
 from random import randint, choice
 import os
 from dotenv import load_dotenv
+import requests
 
 load_dotenv()
 channel = os.getenv('CHANNEL_ID')
@@ -16,6 +17,7 @@ prem_users = prem_users_string.split(",")
 jikan = jikanpy.Jikan()
 
 bot = lightbulb.BotApp(token=os.getenv('BOT_TOKEN'))
+animegan_api_key = os.getenv('ANIMEGAN_API_KEY')
 
 reddit = praw.Reddit(
     client_id=os.getenv("CLIENT_ID"),
@@ -103,7 +105,7 @@ async def help(ctx):
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
-        title="__Help__",
+        title="📚 Help 📚",
         description=(
             "**Core Commands:**\n"
             "**/core:** Overview of all core commands.\n\n"
@@ -121,6 +123,7 @@ async def help(ctx):
     )
     embed.set_footer("Join the support server if you need help :)")
     await ctx.respond(embed=embed)
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
 
 #----------------------------------------------------------------------------------------
 #core
@@ -137,18 +140,22 @@ async def core(ctx):
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
-        title="__**Core Commands**__",
+        title="🌸 Core Commands 🌸",
         description=(
             "**/anime:** Look up an anime.\n"
             "**/manga:** Look up a manga.\n"
             "**/character:** Look up a character.\n"
             "**/animeme:** View an anime meme.\n"
             "**/random:** Generate a random anime.\n"
+            "**/animefy:** Animefy your image. (P)\n"
+            "**/anigen:** AI generate an anime image from a text prompt. (P)\n\n"
+            "AI generation is resource-intensive, so access to premium commands (P) is limited to [members](<https://buymeacoffee.com/azael/membership>) as of now."
         ),
         color=0x2B2D31
     )
     embed.set_footer("Join the support server if you need help :)")
     await ctx.respond(embed=embed)
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
 
 #anime
 @bot.command
@@ -202,6 +209,7 @@ async def anisearch(ctx: lightbulb.Context) -> None:
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     await ctx.respond(embed=embed)
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
 
 #manga
 @bot.command
@@ -249,6 +257,7 @@ async def mangasearch(ctx: lightbulb.Context) -> None:
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     await ctx.respond(embed=embed)
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
 
 #character
 async def fetch_character_info(name, limit=5):
@@ -304,6 +313,8 @@ async def character(ctx: lightbulb.Context) -> None:
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     await ctx.respond(embed=embed)
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
+    await ctx.respond("This command is still being optimized, expect weird characters to pop up.")
 
 #animeme
 @bot.command
@@ -335,6 +346,7 @@ async def animeme(ctx: lightbulb.Context) -> None:
     embed.set_image(random_post.url)
     embed.set_footer("This content is served by the Reddit API and Anicord has no control over it.")
     await ctx.respond(embed=embed)
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
 
 #random
 @bot.command
@@ -378,6 +390,99 @@ async def random(ctx: lightbulb.Context) -> None:
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     await ctx.respond(embed=embed)
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
+
+#ai
+async def animefy_image(image_url):
+    try:
+        response = requests.post(
+            'https://api.deepai.org/api/anime-gan',
+            data={'image': image_url},
+            headers={'api-key': animegan_api_key}
+        )
+        if response.status_code == 200:
+            return response.json().get('output_url')
+        else:
+            print(f"Animefy image request failed with status code {response.status_code}: {response.text}")
+            return None
+    except Exception as e:
+        print(f"An error occurred while trying to animefy the image: {e}")
+        return None
+
+async def generate_anime_image(prompt):
+    try:
+        response = requests.post(
+            'https://api.deepai.org/api/text2img',
+            data={'text': prompt},
+            headers={'api-key': animegan_api_key}
+        )
+        if response.status_code == 200:
+            return response.json().get('output_url')
+        else:
+            print(f"Generate anime image request failed with status code {response.status_code}: {response.text}")
+            return None
+    except Exception as e:
+        print(f"An error occurred while trying to generate the anime image: {e}")
+        return None
+
+@bot.command
+@lightbulb.add_cooldown(length=30, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.option("image", "The image to animefy.", type=hikari.OptionType.ATTACHMENT)
+@lightbulb.command("animefy", "Animefy your image.")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def animefy(ctx):
+    guild = ctx.get_guild()
+    if guild is not None:
+        await bot.rest.create_message(channel, f"`{ctx.command.name}` was used in `{guild.name}`.")
+    else:
+        await bot.rest.create_message(channel, f"`{ctx.command.name}` was used.")
+    if str(ctx.author.id) not in prem_users:
+        await ctx.respond("AI image transformation is resource-intensive, so access is limited to [premium members](<https://buymeacoffee.com/azael/membership>) for the time being.")
+        return  
+    attachment = ctx.options.image
+    if not attachment.url.lower().endswith(('png', 'jpg', 'jpeg', 'gif')):
+        await ctx.respond("Please attach a valid image file (png, jpg, jpeg).")
+        return
+    anime_image_url = await animefy_image(attachment.url)
+    await ctx.respond("Generating your image, please wait...", flags=hikari.MessageFlag.EPHEMERAL)
+    if anime_image_url:
+        embed = hikari.Embed(
+            title="Animefied Image",
+            description="Here is your anime-style image!",
+            color=0x2B2D31
+        )
+        embed.set_image(anime_image_url)
+        await ctx.respond(embed=embed)
+    else:
+        await ctx.respond("Failed to transform the image. Please try again later.")
+
+@bot.command
+@lightbulb.add_cooldown(length=30, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.option("prompt", "The prompt to generate an anime-style image.", type=hikari.OptionType.STRING)
+@lightbulb.command("anigen", "AI generate an anime image from a text prompt.")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def anigen(ctx):
+    guild = ctx.get_guild()
+    if guild is not None:
+        await bot.rest.create_message(channel, f"`{ctx.command.name}` was used in `{guild.name}`.")
+    else:
+        await bot.rest.create_message(channel, f"`{ctx.command.name}` was used.")
+    if str(ctx.author.id) not in prem_users:
+        await ctx.respond("AI image generation is resource-intensive, so access is limited to [premium members](<https://buymeacoffee.com/azael/membership>) for the time being.")
+        return
+    prompt = ctx.options.prompt
+    anime_image_url = await generate_anime_image(prompt)
+    await ctx.respond("Generating your image, please wait...", flags=hikari.MessageFlag.EPHEMERAL)
+    if anime_image_url:
+        embed = hikari.Embed(
+            title="Generated Anime Image",
+            description="Here is your generated anime-style image!",
+            color=0x2B2D31
+        )
+        embed.set_image(anime_image_url)
+        await ctx.respond(embed=embed)
+    else:
+        await ctx.respond("Failed to generate the image. Please try again later.")
 
 #----------------------------------------------------------------------------------------
 #roleplay
@@ -394,7 +499,7 @@ async def roleplay(ctx):
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
-        title="__Role-play Reactions__",
+        title="🎴 Role-play Reactions 🎴",
         color=0x2B2D31
     )
     embed.add_field(
@@ -431,6 +536,7 @@ async def roleplay(ctx):
     )
     embed.set_footer("Join the support server if you need help :)")
     await ctx.respond(embed=embed)
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
 
 #Self
 #happy
@@ -458,6 +564,7 @@ async def happy(ctx: lightbulb.Context) -> None:
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
 
@@ -486,6 +593,7 @@ async def cry(ctx: lightbulb.Context) -> None:
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
 
@@ -514,6 +622,7 @@ async def beg(ctx: lightbulb.Context) -> None:
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     
@@ -542,6 +651,7 @@ async def blush(ctx: lightbulb.Context) -> None:
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
 
@@ -570,6 +680,7 @@ async def facepalm(ctx: lightbulb.Context) -> None:
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
 
@@ -598,6 +709,7 @@ async def nosebleed(ctx: lightbulb.Context) -> None:
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
 
@@ -626,6 +738,7 @@ async def pout(ctx: lightbulb.Context) -> None:
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
 
@@ -655,6 +768,7 @@ async def run(ctx: lightbulb.Context) -> None:
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
 
@@ -683,6 +797,7 @@ async def shrug(ctx: lightbulb.Context) -> None:
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
 
@@ -711,6 +826,7 @@ async def smirk(ctx: lightbulb.Context) -> None:
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
 
@@ -741,6 +857,7 @@ async def wave(ctx: lightbulb.Context) -> None:
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
 
@@ -770,6 +887,7 @@ async def bite(ctx: lightbulb.Context) -> None:
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
 
@@ -799,6 +917,7 @@ async def bonk(ctx: lightbulb.Context) -> None:
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     
@@ -828,6 +947,7 @@ async def hug(ctx: lightbulb.Context) -> None:
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
 
@@ -858,6 +978,7 @@ async def marry(ctx: lightbulb.Context) -> None:
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
 
@@ -888,6 +1009,7 @@ async def kiss(ctx: lightbulb.Context) -> None:
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
 
@@ -918,6 +1040,7 @@ async def lick(ctx: lightbulb.Context) -> None:
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
 
@@ -947,6 +1070,7 @@ async def love(ctx: lightbulb.Context) -> None:
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
 
@@ -976,6 +1100,7 @@ async def pat(ctx: lightbulb.Context) -> None:
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
 
@@ -1005,6 +1130,7 @@ async def slap(ctx: lightbulb.Context) -> None:
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
 
@@ -1026,7 +1152,7 @@ async def hroleplay(ctx):
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
-        title="__NSFW Role-play Reactions__",
+        title="🔞 NSFW Role-play Reactions 🔞",
         description="NSFW commands are LOCKED from normal channels and are ONLY available in NSFW channels.",
         color=0x2B2D31
     )
@@ -1052,11 +1178,12 @@ async def hroleplay(ctx):
     )
     embed.add_field(
         name="\u200B",
-        value=("To use all premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).\n"),
+        value=("To use NSFW premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).\n"),
         inline=False
     )
     embed.set_footer("Join the support server if you need help :)")
     await ctx.respond(embed=embed)
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
 
 #free
 #fuck
@@ -1095,7 +1222,7 @@ async def fuck(ctx: lightbulb.Context) -> None:
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
-    
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
 
@@ -1133,6 +1260,7 @@ async def blowjob(ctx: lightbulb.Context) -> None:
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
 
@@ -1167,6 +1295,7 @@ async def boobjob(ctx: lightbulb.Context) -> None:
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
 
@@ -1202,6 +1331,7 @@ async def handjob(ctx: lightbulb.Context) -> None:
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
 
@@ -1226,7 +1356,7 @@ async def sixtynine(ctx: lightbulb.Context) -> None:
     if str(ctx.author.id) not in prem_users:
         has_voted = await topgg_client.get_user_vote(ctx.author.id)
         if not has_voted:
-            await ctx.respond("To use all premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).")
+            await ctx.respond("To use NSFW premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).")
             await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
             return
     gif = [
@@ -1245,6 +1375,7 @@ async def sixtynine(ctx: lightbulb.Context) -> None:
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
 
 #ride
 @bot.command
@@ -1266,7 +1397,7 @@ async def ride(ctx: lightbulb.Context) -> None:
     if str(ctx.author.id) not in prem_users:
         has_voted = await topgg_client.get_user_vote(ctx.author.id)
         if not has_voted:
-            await ctx.respond("To use all premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).")
+            await ctx.respond("To use NSFW premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).")
             await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
             return
     gif = [
@@ -1291,6 +1422,7 @@ async def ride(ctx: lightbulb.Context) -> None:
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
 
 #fingering
 @bot.command
@@ -1312,7 +1444,7 @@ async def fingering(ctx: lightbulb.Context) -> None:
     if str(ctx.author.id) not in prem_users:
         has_voted = await topgg_client.get_user_vote(ctx.author.id)
         if not has_voted:
-            await ctx.respond("To use all premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).")
+            await ctx.respond("To use NSFW premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).")
             await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
             return
     gif = [
@@ -1334,6 +1466,7 @@ async def fingering(ctx: lightbulb.Context) -> None:
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
 
 #boobsuck
 @bot.command
@@ -1355,7 +1488,7 @@ async def boobsuck(ctx: lightbulb.Context) -> None:
     if str(ctx.author.id) not in prem_users:
         has_voted = await topgg_client.get_user_vote(ctx.author.id)
         if not has_voted:
-            await ctx.respond("To use all premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).")
+            await ctx.respond("To use NSFW premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).")
             await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
             return
     gif = [
@@ -1372,6 +1505,7 @@ async def boobsuck(ctx: lightbulb.Context) -> None:
     )
     embed.set_image(random_gif)
     await ctx.respond(embed=embed)
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
 
 #----------------------------------------------------------------------------------------
 #nsfw
@@ -1391,18 +1525,19 @@ async def nsfw(ctx):
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
-        title="__NSFW Commands__",
+        title="🔞 NSFW Commands 🔞",
         description=(
             "NSFW commands are LOCKED from normal channels and are ONLY available in NSFW channels.\n\n"
             "**/hmeme:** Get a hentai meme.\n"
             "**/hgif:** Get a hentai gif.\n"
             "**/himage:** Get a hentai image.\n\n"
-            "To use all premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).\n"
+            "To use NSFW premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).\n"
         ),
         color=0x2B2D31
     )
     embed.set_footer("Join the support server if you need help :)")
     await ctx.respond(embed=embed)
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
 
 #hmeme
 @bot.command
@@ -1423,7 +1558,7 @@ async def hmeme(ctx: lightbulb.Context) -> None:
     if str(ctx.author.id) not in prem_users:
         has_voted = await topgg_client.get_user_vote(ctx.author.id)
         if not has_voted:
-            await ctx.respond("To use all premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).")
+            await ctx.respond("To use NSFW premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).")
             await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
             return
     sub = reddit.subreddit("hentaimemes")
@@ -1439,6 +1574,7 @@ async def hmeme(ctx: lightbulb.Context) -> None:
     embed.set_image(random_post.url)
     embed.set_footer("This content is served by the Reddit API and Anicord has no control over it.")
     await ctx.respond(embed=embed)
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
 
 #hgif
 @bot.command
@@ -1459,7 +1595,7 @@ async def hgif(ctx: lightbulb.Context) -> None:
     if str(ctx.author.id) not in prem_users:
         has_voted = await topgg_client.get_user_vote(ctx.author.id)
         if not has_voted:
-            await ctx.respond("To use all premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).")
+            await ctx.respond("To use NSFW premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).")
             await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
             return
     sub = reddit.subreddit("HENTAI_GIF")
@@ -1474,6 +1610,7 @@ async def hgif(ctx: lightbulb.Context) -> None:
     embed.set_image(random_post.url)
     embed.set_footer("This content is served by the Reddit API and Anicord has no control over it.")
     await ctx.respond(embed=embed)
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
 
 #himage
 @bot.command
@@ -1513,6 +1650,7 @@ async def himage(ctx: lightbulb.Context) -> None:
     embed.set_image(random_post.url)
     embed.set_footer("This content is served by the Reddit API and Anicord has no control over it.")
     await ctx.respond(embed=embed)
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
 
 #----------------------------------------------------------------------------------------
 #gimmick
@@ -1532,7 +1670,7 @@ async def gimmick(ctx):
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
-        title="__NSFW Commands__",
+        title="🎀 Gimmick Commands 🎀",
         description=(
             "**/howhorny:** Fine out how horny someone is.\n"
             "**/howgay:** Find out how gay someone is.\n"
@@ -1542,6 +1680,7 @@ async def gimmick(ctx):
     )
     embed.set_footer("Join the support server if you need help :)")
     await ctx.respond(embed=embed)
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
 
 #howhorny
 @bot.command
@@ -1560,6 +1699,7 @@ async def howhorny(ctx: lightbulb.Context) -> None:
     
     horny_level = randint(0, 100)
     await ctx.respond(f"{ctx.options.user.mention} is **{horny_level}%** horny.")
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
 
 #howgay
 @bot.command
@@ -1578,6 +1718,7 @@ async def howgay(ctx: lightbulb.Context) -> None:
     
     horny_level = randint(0, 100)
     await ctx.respond(f"{ctx.options.user.mention} is **{horny_level}%** gay.")
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
 
 #ship
 @bot.command
@@ -1596,6 +1737,7 @@ async def ship(ctx: lightbulb.Context) -> None:
         await bot.rest.create_message(channel, f"`{ctx.command.name}` was used.")
     compatibility_level = randint(0, 100)
     await ctx.respond(f"{ctx.options.user1.mention} and {ctx.options.user2.mention} are **{compatibility_level}%** compatible.")
+    # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
 
 #----------------------------------------------------------------------------------------
 #Miscellaneous
@@ -1612,7 +1754,7 @@ async def miscellaneous(ctx):
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
-        title="__Miscellaneous__",
+        title="🛡️ Miscellaneous 🛡️",
         description=(
             "**/invite:** Invite the bot to your server.\n"
             "**/vote:** Vote on top.gg.\n"
@@ -1755,7 +1897,7 @@ async def on_error(event: lightbulb.CommandErrorEvent) -> None:
         raise event.exception
     exception = event.exception.__cause__ or event.exception
     if isinstance(exception, lightbulb.CommandIsOnCooldown):
-        await event.context.respond(f"`/{event.context.command.name}` is on cooldown. Retry in `{exception.retry_after:.0f}` seconds. ⏱️\nCommands are ratelimited to prevent spam abuse which could bring the bot down. To remove cool-downs, become a [member](<https://buymeacoffee.com/azael/membership>) for $3.")
+        await event.context.respond(f"`/{event.context.command.name}` is on cooldown. Retry in `{exception.retry_after:.0f}` seconds. ⏱️\nCommands are ratelimited to prevent spam abuse which could bring the bot down. To remove cool-downs, become a [member](<https://buymeacoffee.com/azael/membership>).")
     else:
         raise exception
 
