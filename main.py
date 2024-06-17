@@ -7,7 +7,7 @@ import jikanpy
 from random import randint, choice
 import os
 from dotenv import load_dotenv
-import requests
+# import requests
 
 load_dotenv()
 channel = os.getenv('CHANNEL_ID')
@@ -117,7 +117,7 @@ async def help(ctx):
             "**/nsfw:** Overview of all NSFW commands like hentai memes and gifs.\n\n"
             "**Miscellaneous:**\n"
             "**/miscellaneous:** Overview of miscellaneous commands.\n\n"
-            "NSFW commands are LOCKED from normal channels and are ONLY available in NSFW channels.."
+            "NSFW commands are LOCKED from normal channels and are ONLY available in NSFW channels."
         ),
         color=0x2B2D31
     )
@@ -147,9 +147,9 @@ async def core(ctx):
             "**/character:** Look up a character.\n"
             "**/animeme:** View an anime meme.\n"
             "**/random:** Generate a random anime.\n"
-            "**/animefy:** Animefy your image. (P)\n"
-            "**/anigen:** AI generate an anime image from a text prompt. (P)\n\n"
-            "AI generation is resource-intensive, so access to premium commands (P) is limited to [members](<https://buymeacoffee.com/azael/membership>) as of now."
+            # "**/animefy:** Animefy your image. (P)\n"
+            # "**/anigen:** AI generate an anime image from a text prompt. (P)\n\n"
+            # "AI generation is resource-intensive, so access to premium commands (P) is limited to [members](<https://ko-fi.com/azaelbots>) as of now."
         ),
         color=0x2B2D31
     )
@@ -260,7 +260,7 @@ async def mangasearch(ctx: lightbulb.Context) -> None:
     # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
 
 #character
-async def fetch_character_info(name, limit=5):
+async def fetch_character_info(name, limit=10):
     async with aiohttp.ClientSession() as session:
         url = "https://api.jikan.moe/v4/characters"
         params = {
@@ -392,97 +392,97 @@ async def random(ctx: lightbulb.Context) -> None:
     await ctx.respond(embed=embed)
     # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
 
-#ai
-async def animefy_image(image_url):
-    try:
-        response = requests.post(
-            'https://api.deepai.org/api/anime-gan',
-            data={'image': image_url},
-            headers={'api-key': animegan_api_key}
-        )
-        if response.status_code == 200:
-            return response.json().get('output_url')
-        else:
-            print(f"Animefy image request failed with status code {response.status_code}: {response.text}")
-            return None
-    except Exception as e:
-        print(f"An error occurred while trying to animefy the image: {e}")
-        return None
+# #ai
+# async def animefy_image(image_url):
+#     try:
+#         response = requests.post(
+#             'https://api.deepai.org/api/anime-gan',
+#             data={'image': image_url},
+#             headers={'api-key': animegan_api_key}
+#         )
+#         if response.status_code == 200:
+#             return response.json().get('output_url')
+#         else:
+#             print(f"Animefy image request failed with status code {response.status_code}: {response.text}")
+#             return None
+#     except Exception as e:
+#         print(f"An error occurred while trying to animefy the image: {e}")
+#         return None
 
-async def generate_anime_image(prompt):
-    try:
-        response = requests.post(
-            'https://api.deepai.org/api/text2img',
-            data={'text': prompt},
-            headers={'api-key': animegan_api_key}
-        )
-        if response.status_code == 200:
-            return response.json().get('output_url')
-        else:
-            print(f"Generate anime image request failed with status code {response.status_code}: {response.text}")
-            return None
-    except Exception as e:
-        print(f"An error occurred while trying to generate the anime image: {e}")
-        return None
+# async def generate_anime_image(prompt):
+#     try:
+#         response = requests.post(
+#             'https://api.deepai.org/api/text2img',
+#             data={'text': prompt},
+#             headers={'api-key': animegan_api_key}
+#         )
+#         if response.status_code == 200:
+#             return response.json().get('output_url')
+#         else:
+#             print(f"Generate anime image request failed with status code {response.status_code}: {response.text}")
+#             return None
+#     except Exception as e:
+#         print(f"An error occurred while trying to generate the anime image: {e}")
+#         return None
 
-@bot.command
-@lightbulb.add_cooldown(length=30, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("image", "The image to animefy.", type=hikari.OptionType.ATTACHMENT)
-@lightbulb.command("animefy", "Animefy your image.")
-@lightbulb.implements(lightbulb.SlashCommand)
-async def animefy(ctx):
-    guild = ctx.get_guild()
-    if guild is not None:
-        await bot.rest.create_message(channel, f"`{ctx.command.name}` was used in `{guild.name}`.")
-    else:
-        await bot.rest.create_message(channel, f"`{ctx.command.name}` was used.")
-    if str(ctx.author.id) not in prem_users:
-        await ctx.respond("AI image transformation is resource-intensive, so access is limited to [premium members](<https://buymeacoffee.com/azael/membership>) for the time being.")
-        return  
-    attachment = ctx.options.image
-    if not attachment.url.lower().endswith(('png', 'jpg', 'jpeg', 'gif')):
-        await ctx.respond("Please attach a valid image file (png, jpg, jpeg).")
-        return
-    anime_image_url = await animefy_image(attachment.url)
-    await ctx.respond("Generating your image, please wait...", flags=hikari.MessageFlag.EPHEMERAL)
-    if anime_image_url:
-        embed = hikari.Embed(
-            title="Animefied Image",
-            description="Here is your anime-style image!",
-            color=0x2B2D31
-        )
-        embed.set_image(anime_image_url)
-        await ctx.respond(embed=embed)
-    else:
-        await ctx.respond("Failed to transform the image. Please try again later.")
+# @bot.command
+# @lightbulb.add_cooldown(length=30, uses=1, bucket=lightbulb.UserBucket)
+# @lightbulb.option("image", "The image to animefy.", type=hikari.OptionType.ATTACHMENT)
+# @lightbulb.command("animefy", "Animefy your image.")
+# @lightbulb.implements(lightbulb.SlashCommand)
+# async def animefy(ctx):
+#     guild = ctx.get_guild()
+#     if guild is not None:
+#         await bot.rest.create_message(channel, f"`{ctx.command.name}` was used in `{guild.name}`.")
+#     else:
+#         await bot.rest.create_message(channel, f"`{ctx.command.name}` was used.")
+#     if str(ctx.author.id) not in prem_users:
+#         await ctx.respond("AI image transformation is resource-intensive, so access is limited to [premium members](<https://ko-fi.com/azaelbots>) for the time being.")
+#         return  
+#     attachment = ctx.options.image
+#     if not attachment.url.lower().endswith(('png', 'jpg', 'jpeg', 'gif')):
+#         await ctx.respond("Please attach a valid image file (png, jpg, jpeg).")
+#         return
+#     anime_image_url = await animefy_image(attachment.url)
+#     await ctx.respond("Generating your image, please wait...", flags=hikari.MessageFlag.EPHEMERAL)
+#     if anime_image_url:
+#         embed = hikari.Embed(
+#             title="Animefied Image",
+#             description="Here is your anime-style image!",
+#             color=0x2B2D31
+#         )
+#         embed.set_image(anime_image_url)
+#         await ctx.respond(embed=embed)
+#     else:
+#         await ctx.respond("Failed to transform the image. Please try again later.")
 
-@bot.command
-@lightbulb.add_cooldown(length=30, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.option("prompt", "The prompt to generate an anime-style image.", type=hikari.OptionType.STRING)
-@lightbulb.command("anigen", "AI generate an anime image from a text prompt.")
-@lightbulb.implements(lightbulb.SlashCommand)
-async def anigen(ctx):
-    guild = ctx.get_guild()
-    if guild is not None:
-        await bot.rest.create_message(channel, f"`{ctx.command.name}` was used in `{guild.name}`.")
-    else:
-        await bot.rest.create_message(channel, f"`{ctx.command.name}` was used.")
-    if str(ctx.author.id) not in prem_users:
-        await ctx.respond("AI image generation is resource-intensive, so access is limited to [premium members](<https://buymeacoffee.com/azael/membership>) for the time being.")
-        return
-    prompt = ctx.options.prompt
-    anime_image_url = await generate_anime_image(prompt)
-    await ctx.respond("Generating your image, please wait...", flags=hikari.MessageFlag.EPHEMERAL)
-    if anime_image_url:
-        embed = hikari.Embed(
-            title="Generated Anime Image",
-            description="Here is your generated anime-style image!",
-            color=0x2B2D31
-        )
-        embed.set_image(anime_image_url)
-        await ctx.respond(embed=embed)
-    else:
-        await ctx.respond("Failed to generate the image. Please try again later.")
+# @bot.command
+# @lightbulb.add_cooldown(length=30, uses=1, bucket=lightbulb.UserBucket)
+# @lightbulb.option("prompt", "The prompt to generate an anime-style image.", type=hikari.OptionType.STRING)
+# @lightbulb.command("anigen", "AI generate an anime image from a text prompt.")
+# @lightbulb.implements(lightbulb.SlashCommand)
+# async def anigen(ctx):
+#     guild = ctx.get_guild()
+#     if guild is not None:
+#         await bot.rest.create_message(channel, f"`{ctx.command.name}` was used in `{guild.name}`.")
+#     else:
+#         await bot.rest.create_message(channel, f"`{ctx.command.name}` was used.")
+#     if str(ctx.author.id) not in prem_users:
+#         await ctx.respond("AI image generation is resource-intensive, so access is limited to [premium members](<https://ko-fi.com/azaelbots>) for the time being.")
+#         return
+#     prompt = ctx.options.prompt
+#     anime_image_url = await generate_anime_image(prompt)
+#     await ctx.respond("Generating your image, please wait...", flags=hikari.MessageFlag.EPHEMERAL)
+#     if anime_image_url:
+#         embed = hikari.Embed(
+#             title="Generated Anime Image",
+#             description="Here is your generated anime-style image!",
+#             color=0x2B2D31
+#         )
+#         embed.set_image(anime_image_url)
+#         await ctx.respond(embed=embed)
+#     else:
+#         await ctx.respond("Failed to generate the image. Please try again later.")
 
 #----------------------------------------------------------------------------------------
 #roleplay
@@ -1178,7 +1178,7 @@ async def hroleplay(ctx):
     )
     embed.add_field(
         name="\u200B",
-        value=("To use NSFW premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).\n"),
+        value=("To use NSFW premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://ko-fi.com/azaelbots>).\n"),
         inline=False
     )
     embed.set_footer("Join the support server if you need help :)")
@@ -1356,7 +1356,7 @@ async def sixtynine(ctx: lightbulb.Context) -> None:
     if str(ctx.author.id) not in prem_users:
         has_voted = await topgg_client.get_user_vote(ctx.author.id)
         if not has_voted:
-            await ctx.respond("To use NSFW premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).")
+            await ctx.respond("To use NSFW premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://ko-fi.com/azaelbots>).")
             await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
             return
     gif = [
@@ -1397,7 +1397,7 @@ async def ride(ctx: lightbulb.Context) -> None:
     if str(ctx.author.id) not in prem_users:
         has_voted = await topgg_client.get_user_vote(ctx.author.id)
         if not has_voted:
-            await ctx.respond("To use NSFW premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).")
+            await ctx.respond("To use NSFW premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://ko-fi.com/azaelbots>).")
             await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
             return
     gif = [
@@ -1444,7 +1444,7 @@ async def fingering(ctx: lightbulb.Context) -> None:
     if str(ctx.author.id) not in prem_users:
         has_voted = await topgg_client.get_user_vote(ctx.author.id)
         if not has_voted:
-            await ctx.respond("To use NSFW premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).")
+            await ctx.respond("To use NSFW premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://ko-fi.com/azaelbots>).")
             await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
             return
     gif = [
@@ -1488,7 +1488,7 @@ async def boobsuck(ctx: lightbulb.Context) -> None:
     if str(ctx.author.id) not in prem_users:
         has_voted = await topgg_client.get_user_vote(ctx.author.id)
         if not has_voted:
-            await ctx.respond("To use NSFW premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).")
+            await ctx.respond("To use NSFW premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://ko-fi.com/azaelbots>).")
             await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
             return
     gif = [
@@ -1531,7 +1531,7 @@ async def nsfw(ctx):
             "**/hmeme:** Get a hentai meme.\n"
             "**/hgif:** Get a hentai gif.\n"
             "**/himage:** Get a hentai image.\n\n"
-            "To use NSFW premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).\n"
+            "To use NSFW premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://ko-fi.com/azaelbots>).\n"
         ),
         color=0x2B2D31
     )
@@ -1558,7 +1558,7 @@ async def hmeme(ctx: lightbulb.Context) -> None:
     if str(ctx.author.id) not in prem_users:
         has_voted = await topgg_client.get_user_vote(ctx.author.id)
         if not has_voted:
-            await ctx.respond("To use NSFW premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).")
+            await ctx.respond("To use NSFW premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://ko-fi.com/azaelbots>).")
             await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
             return
     sub = reddit.subreddit("hentaimemes")
@@ -1595,7 +1595,7 @@ async def hgif(ctx: lightbulb.Context) -> None:
     if str(ctx.author.id) not in prem_users:
         has_voted = await topgg_client.get_user_vote(ctx.author.id)
         if not has_voted:
-            await ctx.respond("To use NSFW premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).")
+            await ctx.respond("To use NSFW premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://ko-fi.com/azaelbots>).")
             await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
             return
     sub = reddit.subreddit("HENTAI_GIF")
@@ -1631,7 +1631,7 @@ async def himage(ctx: lightbulb.Context) -> None:
     if str(ctx.author.id) not in prem_users:
         has_voted = await topgg_client.get_user_vote(ctx.author.id)
         if not has_voted:
-            await ctx.respond("To use all premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://buymeacoffee.com/azael/membership>).")
+            await ctx.respond("To use all premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://ko-fi.com/azaelbots>).")
             await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
             return
     sub = reddit.subreddit("hentai+nhentai+3DPorncraft")
@@ -1759,7 +1759,7 @@ async def miscellaneous(ctx):
             "**/invite:** Invite the bot to your server.\n"
             "**/vote:** Vote on top.gg.\n"
             "**/support:** Join the support server.\n"
-            "**/donate:** Donate to support Anicord.\n"
+            "**/premium:** Learn more about the premium version of the bot.\n"
             "**/more:** More bots from me.\n"
             "**/privacy:** View our privacy policy."
         ),
@@ -1828,12 +1828,12 @@ async def support(ctx):
 	)
     await ctx.respond(embed=embed)
 
-#donate command
+#premium command
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
-@lightbulb.command("donate", "Donate to support Anicord.")
+@lightbulb.command("premium", "Learn more about the premium version of the bot.")
 @lightbulb.implements(lightbulb.SlashCommand)
-async def donate(ctx):
+async def premium(ctx):
     guild = ctx.get_guild()
     if guild is not None:
         await bot.rest.create_message(channel, f"`{ctx.command.name}` was used in `{guild.name}`.")
@@ -1842,8 +1842,8 @@ async def donate(ctx):
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
-        title="Donate:",
-        description="[Donate to keep Anicord online, thank you!](https://buymeacoffee.com/azael)",
+        title="What is premium:",
+        description="Premium is important for supporting my bot's hosting costs.\nI do not like to fully paywall my bot's commands, so instead, users can vote on [top.gg](https://top.gg/bot/1003247499911376956) to use premium commands. Subscribing lets you skip this and also removes cool-downs.\nIf you would like to keep the bot online and support me, become a [member](https://ko-fi.com/azaelbots).\nIt helps massively. ❤️",
 		color=0x2B2D31
 	)
     await ctx.respond(embed=embed)
@@ -1897,7 +1897,7 @@ async def on_error(event: lightbulb.CommandErrorEvent) -> None:
         raise event.exception
     exception = event.exception.__cause__ or event.exception
     if isinstance(exception, lightbulb.CommandIsOnCooldown):
-        await event.context.respond(f"`/{event.context.command.name}` is on cooldown. Retry in `{exception.retry_after:.0f}` seconds. ⏱️\nCommands are ratelimited to prevent spam abuse which could bring the bot down. To remove cool-downs, become a [member](<https://buymeacoffee.com/azael/membership>).")
+        await event.context.respond(f"`/{event.context.command.name}` is on cooldown. Retry in `{exception.retry_after:.0f}` seconds. ⏱️\nCommands are ratelimited to prevent spam abuse which could bring the bot down. To remove cool-downs, become a [member](<https://ko-fi.com/azaelbots>).")
     else:
         raise exception
 
