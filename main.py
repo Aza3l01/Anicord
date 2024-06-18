@@ -261,7 +261,7 @@ async def mangasearch(ctx: lightbulb.Context) -> None:
     # await ctx.respond("Currently working on new commands (animefy and AI image generator), please expect disruption in responses. Join the [support server](https://discord.com/invite/x7MdgVFUwa) to learn more.")
 
 #character
-async def fetch_character_info(name, limit=30):
+async def fetch_character_info(name, limit=25):
     url = "https://api.jikan.moe/v4/characters"
     params = {
         "q": name,
