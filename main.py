@@ -164,7 +164,7 @@ async def core(ctx):
 @lightbulb.option("name", "Anime")
 @lightbulb.command("anime", "Look up an anime.", auto_defer=True)
 @lightbulb.implements(lightbulb.SlashCommand)
-async def anisearch(ctx: lightbulb.Context) -> None:
+async def anime(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
         await bot.rest.create_message(channel, f"`{ctx.command.name}` was used in `{guild.name}`.")
@@ -218,7 +218,7 @@ async def anisearch(ctx: lightbulb.Context) -> None:
 @lightbulb.option("name", "Manga")
 @lightbulb.command("manga", "Look up a manga.", auto_defer=True)
 @lightbulb.implements(lightbulb.SlashCommand)
-async def mangasearch(ctx: lightbulb.Context) -> None:
+async def manga(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
     if guild is not None:
         await bot.rest.create_message(channel, f"`{ctx.command.name}` was used in `{guild.name}`.")
@@ -1387,12 +1387,12 @@ async def sixtynine(ctx: lightbulb.Context) -> None:
         return
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
-    if str(ctx.author.id) not in prem_users:
-        has_voted = await topgg_client.get_user_vote(ctx.author.id)
-        if not has_voted:
-            await ctx.respond("To use NSFW premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://ko-fi.com/azaelbots>).")
-            await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
-            return
+    # if str(ctx.author.id) not in prem_users:
+    #     has_voted = await topgg_client.get_user_vote(ctx.author.id)
+    #     if not has_voted:
+    #         await ctx.respond("To use NSFW premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://ko-fi.com/azaelbots>).")
+    #         await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
+    #         return
     gif = [
         "https://cdn.discordapp.com/attachments/1243886267767459871/1250115545504944321/1.gif?ex=6669c454&is=666872d4&hm=bc039cbc1d0348cab34e3d6fdd84656dc67a2f35c32c95d35f0832c6bd4d01bd&",
         "https://cdn.discordapp.com/attachments/1243886267767459871/1250115556476981308/2.gif?ex=6669c456&is=666872d6&hm=f358e18204aa91285f39020473fcfb43171f03adf5dad843d26ee6c5acfcdd8d&",
@@ -1430,12 +1430,12 @@ async def ride(ctx: lightbulb.Context) -> None:
         return
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
-    if str(ctx.author.id) not in prem_users:
-        has_voted = await topgg_client.get_user_vote(ctx.author.id)
-        if not has_voted:
-            await ctx.respond("To use NSFW premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://ko-fi.com/azaelbots>).")
-            await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
-            return
+    # if str(ctx.author.id) not in prem_users:
+    #     has_voted = await topgg_client.get_user_vote(ctx.author.id)
+    #     if not has_voted:
+    #         await ctx.respond("To use NSFW premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://ko-fi.com/azaelbots>).")
+    #         await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
+    #         return
     gif = [
         "https://cdn.discordapp.com/attachments/1243886309068767354/1250114135606296606/1.gif?ex=6669c303&is=66687183&hm=e9a1a8ca6a6947dfde67350bde58c89dbcbccce18447da1cff4abe0367b1d28f&",
         "https://cdn.discordapp.com/attachments/1243886309068767354/1250114171283181598/2.gif?ex=6669c30c&is=6668718c&hm=b06649af8a310af77b92e8d5d4c3c3ee43f10ccc7adaedeed57b560879af1f73&",
@@ -1486,12 +1486,12 @@ async def fingering(ctx: lightbulb.Context) -> None:
         return
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
-    if str(ctx.author.id) not in prem_users:
-        has_voted = await topgg_client.get_user_vote(ctx.author.id)
-        if not has_voted:
-            await ctx.respond("To use NSFW premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://ko-fi.com/azaelbots>).")
-            await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
-            return
+    # if str(ctx.author.id) not in prem_users:
+    #     has_voted = await topgg_client.get_user_vote(ctx.author.id)
+    #     if not has_voted:
+    #         await ctx.respond("To use NSFW premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://ko-fi.com/azaelbots>).")
+    #         await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
+    #         return
     gif = [
         "https://cdn.discordapp.com/attachments/1243886356879511602/1250112926296051832/1.gif?ex=6669c1e3&is=66687063&hm=5fcd42a3c8ced42869a0395784fc200ca4338ce3c8e1790d5d6b5c3d788e8fb3&",
         "https://cdn.discordapp.com/attachments/1243886356879511602/1250112941177569322/2.gif?ex=6669c1e7&is=66687067&hm=ae4879d990f23ef80906cbc81b7e12c5eba0c58fd28140a5694942bcac748442&",
@@ -1532,12 +1532,12 @@ async def boobsuck(ctx: lightbulb.Context) -> None:
         return
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
-    if str(ctx.author.id) not in prem_users:
-        has_voted = await topgg_client.get_user_vote(ctx.author.id)
-        if not has_voted:
-            await ctx.respond("To use NSFW premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://ko-fi.com/azaelbots>).")
-            await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
-            return
+    # if str(ctx.author.id) not in prem_users:
+    #     has_voted = await topgg_client.get_user_vote(ctx.author.id)
+    #     if not has_voted:
+    #         await ctx.respond("To use NSFW premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://ko-fi.com/azaelbots>).")
+    #         await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
+    #         return
     gif = [
         "https://cdn.discordapp.com/attachments/1243886396628930580/1250111991477964901/1.gif?ex=6669c104&is=66686f84&hm=4d91bdf261403aa154a6acba1c270628e720279a2fa75952fbeb979ddaa605cc&",
         "https://cdn.discordapp.com/attachments/1243886396628930580/1250112011308634203/2.gif?ex=6669c109&is=66686f89&hm=88585c16567df1b66c75ca033ae3c1269994b9ed8d381d97c9e303943b00e8eb&",
@@ -1602,12 +1602,12 @@ async def hmeme(ctx: lightbulb.Context) -> None:
         return
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
-    if str(ctx.author.id) not in prem_users:
-        has_voted = await topgg_client.get_user_vote(ctx.author.id)
-        if not has_voted:
-            await ctx.respond("To use NSFW premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://ko-fi.com/azaelbots>).")
-            await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
-            return
+    # if str(ctx.author.id) not in prem_users:
+    #     has_voted = await topgg_client.get_user_vote(ctx.author.id)
+    #     if not has_voted:
+    #         await ctx.respond("To use NSFW premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://ko-fi.com/azaelbots>).")
+    #         await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
+    #         return
     sub = reddit.subreddit("hentaimemes")
     posts = [post for post in sub.hot(limit=50)]
     random_post = choice(posts)
@@ -1639,12 +1639,12 @@ async def hgif(ctx: lightbulb.Context) -> None:
         return
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
-    if str(ctx.author.id) not in prem_users:
-        has_voted = await topgg_client.get_user_vote(ctx.author.id)
-        if not has_voted:
-            await ctx.respond("To use NSFW premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://ko-fi.com/azaelbots>).")
-            await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
-            return
+    # if str(ctx.author.id) not in prem_users:
+    #     has_voted = await topgg_client.get_user_vote(ctx.author.id)
+    #     if not has_voted:
+    #         await ctx.respond("To use NSFW premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://ko-fi.com/azaelbots>).")
+    #         await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
+    #         return
     sub = reddit.subreddit("HENTAI_GIF")
     posts = [post for post in sub.hot(limit=50)]
     random_post = choice(posts)
@@ -1675,12 +1675,12 @@ async def himage(ctx: lightbulb.Context) -> None:
         return
     if any(word in str(ctx.author.id) for word in prem_users):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
-    if str(ctx.author.id) not in prem_users:
-        has_voted = await topgg_client.get_user_vote(ctx.author.id)
-        if not has_voted:
-            await ctx.respond("To use all premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://ko-fi.com/azaelbots>).")
-            await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
-            return
+    # if str(ctx.author.id) not in prem_users:
+    #     has_voted = await topgg_client.get_user_vote(ctx.author.id)
+    #     if not has_voted:
+    #         await ctx.respond("To use all premium commands for free, [vote](https://top.gg/bot/1003247499911376956/vote) on top.gg to gain access for the next 12 hours or become a [member](<https://ko-fi.com/azaelbots>).")
+    #         await bot.rest.create_message(channel, f"Voting message was sent" + (f" in `{guild.name}`." if guild else "."))
+    #         returnS
     sub = reddit.subreddit("hentai+nhentai+3DPorncraft")
     posts = list(sub.hot(limit=50))
     image_posts = [post for post in posts if post.url.endswith(('.jpg', '.jpeg', '.png'))]
