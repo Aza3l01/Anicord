@@ -74,7 +74,6 @@ async def on_starting(event: hikari.StartedEvent) -> None:
             )
         )
         await topgg_client.post_guild_count(server_count)
-        await bot.rest.create_message(1258818078335176724, f"{server_count}")
         await asyncio.sleep(3600)
 
 #join
