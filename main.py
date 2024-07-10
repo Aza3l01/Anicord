@@ -1282,7 +1282,10 @@ async def blowjob(ctx: lightbulb.Context) -> None:
         "https://cdn.discordapp.com/attachments/1243886126117290054/1252643186527047700/18.gif?ex=6672f660&is=6671a4e0&hm=af017db72ee05aa1a369634e17f05788cfe0502e8a07c9aaacde9794ddbe73a1&",
         "https://cdn.discordapp.com/attachments/1243886126117290054/1252643199252697100/19.gif?ex=6672f663&is=6671a4e3&hm=8f70a9a16d14ca2807b0eef00289407cd784c6cb0399f1fddac56b7cca0a796d&",
         "https://cdn.discordapp.com/attachments/1243886126117290054/1253978696201666630/20.gif?ex=6677d22a&is=667680aa&hm=9d899f43e5c1b4eb47bd73dd70cc909d18b7971987d6e76c71c2f33f44d606c9&",
-        "https://cdn.discordapp.com/attachments/1243886126117290054/1253983823163822111/21.gif?ex=6677d6f1&is=66768571&hm=28816a2fb4a8d8cd3bcb73a6d42d0e94bcff001c869ffabe6a4ac2fae2a96bb7&"
+        "https://cdn.discordapp.com/attachments/1243886126117290054/1253983823163822111/21.gif?ex=6677d6f1&is=66768571&hm=28816a2fb4a8d8cd3bcb73a6d42d0e94bcff001c869ffabe6a4ac2fae2a96bb7&",
+        "https://cdn.discordapp.com/attachments/1243886126117290054/1260596256267436064/22.gif?ex=668fe540&is=668e93c0&hm=4f964709aded13e27f16f88eadddfeacde1ef949cf6509e862d464a7d97812e9&",
+        "https://cdn.discordapp.com/attachments/1243886126117290054/1260596265050181692/23.gif?ex=668fe542&is=668e93c2&hm=bc384ccc172c98f08aaca9d3b5ee4f8192ce504280fc10a0422ab0d6c3e954eb&",
+        "https://cdn.discordapp.com/attachments/1243886126117290054/1260599493091397694/24.gif?ex=668fe843&is=668e96c3&hm=a653fdd816b5159c55d2b2c68d1e956e14482e89db1bec4555ed0325492555bc&"
     ]
     random_gif = choice(gif)
     embed = hikari.Embed(
@@ -1325,7 +1328,10 @@ async def boobjob(ctx: lightbulb.Context) -> None:
         "https://cdn.discordapp.com/attachments/1243886173810856007/1252644368985227361/12.gif?ex=6672f77a&is=6671a5fa&hm=48000e158bd54b1afad70de11f8e33d87bb189c3c6bcc7b2b40c4e4485a2fcf9&",
         "https://cdn.discordapp.com/attachments/1243886173810856007/1252644383472484402/13.gif?ex=6672f77e&is=6671a5fe&hm=e2a2774f5aca32a9a4283d7cd031a490e11da9f20c5f26274f6713a3435b8269&",
         "https://cdn.discordapp.com/attachments/1243886173810856007/1252644395082190891/14.gif?ex=6672f780&is=6671a600&hm=fcbf09529954c31d6be3ad83afc904428d01625ab97f7f1fddcf08da47fc0717&",
-        "https://cdn.discordapp.com/attachments/1243886173810856007/1253983733825015860/15.gif?ex=6677d6dc&is=6676855c&hm=b560f0e1f422de289842ec99308a0a89d70c3703037263f7e253b17fbc4edbfb&"
+        "https://cdn.discordapp.com/attachments/1243886173810856007/1253983733825015860/15.gif?ex=6677d6dc&is=6676855c&hm=b560f0e1f422de289842ec99308a0a89d70c3703037263f7e253b17fbc4edbfb&",
+        "https://cdn.discordapp.com/attachments/1243886173810856007/1260596383723819089/16.gif?ex=668fe55e&is=668e93de&hm=50ca135c825b195d0372b960bd4e6d657fe7ff29f4f47f2437a85e251114d5f0&",
+        "https://cdn.discordapp.com/attachments/1243886173810856007/1260596401671372941/17.gif?ex=668fe562&is=668e93e2&hm=cbdeb8a7f8a54a4a7589481fbcbf654b0e0870d3fce7cf244e9751b63979c354&",
+        "https://cdn.discordapp.com/attachments/1243886173810856007/1260596411519598633/18.gif?ex=668fe565&is=668e93e5&hm=b4d85e098f1cea2a730e93729a684963b97b443ae3138a788ab13982dd082a7a&"
     ]
     random_gif = choice(gif)
     embed = hikari.Embed(
@@ -1410,7 +1416,9 @@ async def sixtynine(ctx: lightbulb.Context) -> None:
         "https://cdn.discordapp.com/attachments/1243886267767459871/1250362508229869598/7.gif?ex=666aaa54&is=666958d4&hm=d12b36865d67298d9e9ed7abe67ec5372e5e0c21b8246748305650d3ef7e7d71&",
         "https://cdn.discordapp.com/attachments/1243886267767459871/1252643532250812449/8.gif?ex=6672f6b3&is=6671a533&hm=dc484e43266167e3cb27045200408a2580b3fc300360638f64a7f5e034b6c570&",
         "https://cdn.discordapp.com/attachments/1243886267767459871/1252643720449228913/9.gif?ex=6672f6df&is=6671a55f&hm=cb865b4bb2f3a3120c13df0297143bc567090dfe4be6e5b0838a794f489a600e&",
-        "https://cdn.discordapp.com/attachments/1243886267767459871/1253975059609948201/10.gif?ex=6677cec7&is=66767d47&hm=b2e876cdb22e7c356b5b78f472d5be3cbd0b16da09bd8da96d0c1a52de9de630&"
+        "https://cdn.discordapp.com/attachments/1243886267767459871/1253975059609948201/10.gif?ex=6677cec7&is=66767d47&hm=b2e876cdb22e7c356b5b78f472d5be3cbd0b16da09bd8da96d0c1a52de9de630&",
+        "https://cdn.discordapp.com/attachments/1243886267767459871/1260596546182053938/11.gif?ex=668fe585&is=668e9405&hm=73bd55f4cf05839776cc941ba0d65202a96c1b2a6d2649dfae8ada93c0cecfa2&",
+        "https://cdn.discordapp.com/attachments/1243886267767459871/1260599638008926239/12.gif?ex=668fe866&is=668e96e6&hm=e64f6fc466e9db1ec18097658b5ec2a53f884b1c5804e5bb274b46d86d3ff493&"
     ]
     random_gif = choice(gif)
     embed = hikari.Embed(
@@ -1466,7 +1474,9 @@ async def ride(ctx: lightbulb.Context) -> None:
         "https://cdn.discordapp.com/attachments/1243886309068767354/1252636952449257592/19.gif?ex=6672f092&is=66719f12&hm=e6923e922e9a4a2760b09a9d4f727a8ab79f37639c74a3a5e16a9b8f157005ef&",
         "https://cdn.discordapp.com/attachments/1243886309068767354/1252636977900159026/20.gif?ex=6672f098&is=66719f18&hm=d569e78a5eb4bd37981ed9ba2a4c395d0c4ea022d8d17b811c008583c3dbb3da&",
         "https://cdn.discordapp.com/attachments/1243886309068767354/1252636992542609479/21.gif?ex=6672f09b&is=66719f1b&hm=c08c6cd73e25c7619102043eab62c0d44fb4cff84149321a5c6e3adb00fa4d72&",
-        "https://cdn.discordapp.com/attachments/1243886309068767354/1252637007939633162/22.gif?ex=6672f09f&is=66719f1f&hm=97a6df161468546d1bd5594ea3cc6ac068de8f9f58a411e09efb7332093c44b2&"
+        "https://cdn.discordapp.com/attachments/1243886309068767354/1252637007939633162/22.gif?ex=6672f09f&is=66719f1f&hm=97a6df161468546d1bd5594ea3cc6ac068de8f9f58a411e09efb7332093c44b2&",
+        "https://cdn.discordapp.com/attachments/1243886309068767354/1260596620173770872/23.gif?ex=668fe597&is=668e9417&hm=4ba733c9c04a2e76514abacba9f9fc68c43d801fd84b5b1a6a34e4a0c3e8696e&",
+        "https://cdn.discordapp.com/attachments/1243886309068767354/1260599742702944357/24.gif?ex=668fe87f&is=668e96ff&hm=8be9dca4d8a2e95c48e0753af065f5e9c88292c572ae637485d5e01a94e9d51c&"
     ]
     random_gif = choice(gif)
     embed = hikari.Embed(
@@ -1512,7 +1522,8 @@ async def fingering(ctx: lightbulb.Context) -> None:
         "https://cdn.discordapp.com/attachments/1243886356879511602/1250808866950742026/9.gif?ex=666c4a08&is=666af888&hm=2ab42cbbc8197d4cf13969de0b8370bb172838844e619f33de90d858056e0c7e&",
         "https://cdn.discordapp.com/attachments/1243886356879511602/1250809521056780420/10.gif?ex=666c4aa4&is=666af924&hm=fa1b900b066310fcb9fd6e3b7006b7ac130860371a33c7080bfc425b0f5df6b5&",
         "https://cdn.discordapp.com/attachments/1243886356879511602/1252632753233592350/11.gif?ex=6672eca9&is=66719b29&hm=cdc206412991c1b3b4a630617058341ca2c5a142b37029a5102a8d0c2bea0f8a&",
-        "https://cdn.discordapp.com/attachments/1243886356879511602/1252642056006926346/12.gif?ex=6672f553&is=6671a3d3&hm=8b1b4583ba341e8af49334fffdff63ebd145e94f7b8e8f1acb0d3b528858b4fb&"
+        "https://cdn.discordapp.com/attachments/1243886356879511602/1252642056006926346/12.gif?ex=6672f553&is=6671a3d3&hm=8b1b4583ba341e8af49334fffdff63ebd145e94f7b8e8f1acb0d3b528858b4fb&",
+        "https://cdn.discordapp.com/attachments/1243886356879511602/1260596730513195028/13.gif?ex=668fe5b1&is=668e9431&hm=6f497f172179071f759bb301b8a8f7cd3abc0c62561473fee68895ab700272ac&"
     ]
     random_gif = choice(gif)
     embed = hikari.Embed(
