@@ -286,7 +286,7 @@ async def fetch_character_info(name, limit=25):
 @bot.command
 @lightbulb.add_cooldown(length=10, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.option("name", "Character")
-@lightbulb.command("character", "Look up a character.", auto_defer=True)
+@lightbulb.command("character", "Look up a character. (May contain spoilers)", auto_defer=True)
 @lightbulb.implements(lightbulb.SlashCommand)
 async def character(ctx: lightbulb.Context) -> None:
     guild = ctx.get_guild()
