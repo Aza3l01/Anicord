@@ -17,7 +17,6 @@ prem_users = prem_users_string.split(",")
 jikan = jikanpy.Jikan()
 
 bot = lightbulb.BotApp(token=os.getenv('BOT_TOKEN'))
-animegan_api_key = os.getenv('ANIMEGAN_API_KEY')
 
 reddit = praw.Reddit(
     client_id=os.getenv("CLIENT_ID"),
@@ -25,40 +24,6 @@ reddit = praw.Reddit(
     user_agent="reddit app to pull posts to discord app by /u/licensed_",
     check_for_async=False
 )
-
-class TopGGClient:
-    def __init__(self, bot, token):
-        self.bot = bot
-        self.token = token
-        self.session = aiohttp.ClientSession()
-    async def post_guild_count(self, count):
-        url = f"https://top.gg/api/bots/{self.bot.get_me().id}/stats"
-        headers = {
-            "Authorization": self.token
-        }
-        payload = {
-            "server_count": count
-        }
-        async with self.session.post(url, json=payload, headers=headers) as response:
-            if response.status != 200:
-                print(f"Failed to post guild count to Top.gg: {response.status}")
-            else:
-                print("Posted server count to Top.gg")
-    async def get_user_vote(self, user_id):
-        url = f"https://top.gg/api/bots/{self.bot.get_me().id}/check?userId={user_id}"
-        headers = {
-            "Authorization": self.token
-        }
-        async with self.session.get(url, headers=headers) as response:
-            if response.status == 200:
-                data = await response.json()
-                return data.get('voted') == 1
-            return False
-    async def close(self):
-        await self.session.close()
-
-topgg_token = os.getenv("TOPGG_TOKEN")
-topgg_client = TopGGClient(bot, topgg_token)
 
 #count update
 @bot.listen(hikari.StartedEvent)
@@ -72,8 +37,6 @@ async def on_starting(event: hikari.StartedEvent) -> None:
                 type=hikari.ActivityType.WATCHING,
             )
         )
-        await topgg_client.post_guild_count(server_count)
-        await asyncio.sleep(3600)
 
 #join
 @bot.listen(hikari.GuildJoinEvent)
@@ -1324,10 +1287,5 @@ async def on_error(event: lightbulb.CommandErrorEvent) -> None:
         await event.context.respond(f"`/{event.context.command.name}` is on cooldown. Retry in `{exception.retry_after:.0f}` seconds. ⏱️\nCommands are ratelimited to prevent spam abuse which could bring the bot down. To remove cool-downs, become a [member](<https://ko-fi.com/azaelbots>).")
     else:
         raise exception
-
-#top.gg stop
-@bot.listen(hikari.StoppedEvent)
-async def on_stopping(event: hikari.StoppedEvent) -> None:
-    await topgg_client.close()
 
 bot.run()
