@@ -1187,7 +1187,7 @@ async def privacy(ctx):
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
     embed = hikari.Embed(
 		title="Privacy Policy:",
-		description="The personal information of any user, including the username or the commands used by a user, is not tracked by Anicord.\n\nThe user_id of premium members are stored to provide the user the with perks and is deleted once a user is no longer a member.\n\nJoin the [support server](https://discord.com/invite/x7MdgVFUwa) to request the deletion of your data.\n\n[Click to view the full privacy policy statement.](https://gist.github.com/Aza3l01/4374050bc9749c6588a6291629f08f39)",
+		description="The personal information of any user, including the username or the commands used by a user, is not tracked by Anicord.\n\nThe user_id of premium members are stored to provide the user the with perks and is deleted once a user is no longer a member.\n\nJoin the [support server](https://discord.com/invite/x7MdgVFUwa) to request the deletion of your data.",
 		color=0x2B2D31
 	)
     await ctx.respond(embed=embed)
